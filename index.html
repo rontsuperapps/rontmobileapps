@@ -1,16 +1,454 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ront Super Apps</title>
-    <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-        iframe { border: none; width: 100%; height: 100%; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Ront Mobile Apps</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html, body { overscroll-behavior: none; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .nav-btn.active-nav { color: #2563eb; }
+</style>
 </head>
-<body>
-    <!-- Ganti URL di bawah dengan URL Web App Google Script kamu -->
-    <iframe src="https://script.google.com/macros/s/AKfycbxYE8JMrab1cIZQba9HmNM76ikogzjg8XPnvdJERJeBhSwTWD3yAwdb6wWleVDFeE-uHQ/exec"></iframe>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+<!-- ======================================================
+     GANTI URL DI BAWAH DENGAN URL DEPLOYMENT APPS SCRIPT (.../exec)
+     ====================================================== -->
+<script>
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxYE8JMrab1cIZQba9HmNM76ikogzjg8XPnvdJERJeBhSwTWD3yAwdb6wWleVDFeE-uHQ/exec';
+</script>
+
+<div id="toast" class="fixed top-3 left-1/2 -translate-x-1/2 z-50 hidden px-4 py-2 rounded-lg text-sm text-white shadow-lg max-w-[90%] text-center"></div>
+
+<div class="max-w-md mx-auto pb-20 min-h-screen bg-gray-50">
+
+  <div class="bg-blue-600 text-white px-4 py-4 sticky top-0 z-40 shadow">
+    <h1 class="text-lg font-bold">Ront Mobile Apps</h1>
+    <p id="headerSub" class="text-xs text-blue-100">Memuat data pengguna...</p>
+  </div>
+
+  <!-- MENU -->
+  <div id="screen-menu" class="screen active p-4 space-y-3">
+    <div class="bg-white rounded-xl p-4 shadow-sm">
+      <p class="text-sm text-gray-500">Selamat datang</p>
+      <p id="menuNama" class="text-base font-semibold text-gray-800">-</p>
+    </div>
+    <button onclick="goTo('register')" class="w-full bg-white rounded-xl p-4 shadow-sm flex items-center gap-3 active:scale-[0.98] transition">
+      <span class="text-2xl">📝</span>
+      <div class="text-left"><p class="font-semibold text-gray-800">Register</p><p class="text-xs text-gray-500">Daftar sebagai teknisi baru</p></div>
+    </button>
+    <button onclick="goTo('login')" class="w-full bg-white rounded-xl p-4 shadow-sm flex items-center gap-3 active:scale-[0.98] transition">
+      <span class="text-2xl">🔑</span>
+      <div class="text-left"><p class="font-semibold text-gray-800">Login</p><p class="text-xs text-gray-500">Masuk menggunakan NIK</p></div>
+    </button>
+    <button onclick="goTo('presensi')" class="w-full bg-white rounded-xl p-4 shadow-sm flex items-center gap-3 active:scale-[0.98] transition">
+      <span class="text-2xl">📍</span>
+      <div class="text-left"><p class="font-semibold text-gray-800">Presensi</p><p class="text-xs text-gray-500">Absen dengan lokasi & foto</p></div>
+    </button>
+    <button onclick="goTo('justifikasi')" class="w-full bg-white rounded-xl p-4 shadow-sm flex items-center gap-3 active:scale-[0.98] transition">
+      <span class="text-2xl">🧾</span>
+      <div class="text-left"><p class="font-semibold text-gray-800">Justifikasi</p><p class="text-xs text-gray-500">Kirim bukti & nominal biaya</p></div>
+    </button>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="screen-register" class="screen p-4">
+    <h2 class="text-base font-bold text-gray-800 mb-3">Form Register</h2>
+    <div class="bg-white rounded-xl p-4 shadow-sm space-y-3">
+      <div>
+        <label class="text-xs font-medium text-gray-600">NIK Teknisi</label>
+        <input id="regNik" type="text" placeholder="Masukkan NIK" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Nama Lengkap Teknisi</label>
+        <input id="regNama" type="text" placeholder="Masukkan Nama Lengkap" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <button id="btnRegister" onclick="handleRegister()" class="w-full bg-blue-600 text-white font-semibold rounded-lg py-2.5 text-sm">
+        <span id="regBtnText">Submit Register</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="screen-login" class="screen p-4">
+    <h2 class="text-base font-bold text-gray-800 mb-3">Form Login</h2>
+    <div class="bg-white rounded-xl p-4 shadow-sm space-y-3">
+      <div>
+        <label class="text-xs font-medium text-gray-600">NIK</label>
+        <input id="loginNik" type="text" placeholder="Masukkan NIK" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Password</label>
+        <input id="loginPassword" type="password" placeholder="Masukkan Password" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <button id="btnLogin" onclick="handleLogin()" class="w-full bg-blue-600 text-white font-semibold rounded-lg py-2.5 text-sm">
+        <span id="loginBtnText">Login</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- PRESENSI -->
+  <div id="screen-presensi" class="screen p-4">
+    <h2 class="text-base font-bold text-gray-800 mb-3">Form Presensi</h2>
+    <div class="bg-white rounded-xl p-4 shadow-sm space-y-4">
+      <div>
+        <label class="text-xs font-medium text-gray-600">Lokasi (GPS)</label>
+        <div class="mt-1 border border-gray-200 rounded-lg p-3 bg-gray-50 text-xs text-gray-700 space-y-1">
+          <p><span class="font-semibold">Koordinat:</span> <span id="presKoordinat">Belum diambil</span></p>
+          <p><span class="font-semibold">Alamat:</span> <span id="presAlamat">-</span></p>
+        </div>
+        <button onclick="ambilLokasi()" class="mt-2 w-full border border-blue-600 text-blue-600 rounded-lg py-2 text-sm font-medium">📍 Ambil Lokasi Saat Ini</button>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">STO</label>
+        <select id="presSto" onchange="cekRequirement()" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">-- Pilih STO --</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Evidence (Foto Selfie)</label>
+        <input type="file" id="presensiPhotoInput" accept="image/*" capture="user" class="hidden" onchange="handlePresensiPhoto(event)">
+        <button onclick="document.getElementById('presensiPhotoInput').click()" class="mt-1 w-full border border-dashed border-gray-400 rounded-lg py-6 text-sm text-gray-500 flex flex-col items-center gap-1">
+          <span class="text-2xl">📷</span>
+          <span id="presFotoLabel">Klik untuk Evidence (Kamera)</span>
+        </button>
+        <img id="presFotoPreview" class="hidden mt-2 rounded-lg w-full max-h-56 object-cover" />
+      </div>
+      <button id="btnAbsen" onclick="handlePresensi()" disabled class="w-full bg-red-500 text-white font-semibold rounded-lg py-2.5 text-sm transition-colors">
+        <span id="absenBtnText">Absen</span>
+      </button>
+      <p class="text-[11px] text-gray-400 text-center">Tombol biru jika semua data (lokasi, STO, foto) sudah lengkap.</p>
+    </div>
+  </div>
+
+  <!-- JUSTIFIKASI -->
+  <div id="screen-justifikasi" class="screen p-4">
+    <h2 class="text-base font-bold text-gray-800 mb-3">Form Justifikasi</h2>
+    <div class="bg-white rounded-xl p-4 shadow-sm space-y-4">
+      <div>
+        <label class="text-xs font-medium text-gray-600">Upload Gambar</label>
+        <input type="file" id="justifikasiPhotoInput" accept="image/*" class="hidden" onchange="handleJustifikasiPhoto(event)">
+        <button onclick="document.getElementById('justifikasiPhotoInput').click()" class="mt-1 w-full border border-dashed border-gray-400 rounded-lg py-6 text-sm text-gray-500 flex flex-col items-center gap-1">
+          <span class="text-2xl">🖼️</span>
+          <span id="justFotoLabel">Klik untuk pilih gambar (galeri/kamera)</span>
+        </button>
+        <img id="justFotoPreview" class="hidden mt-2 rounded-lg w-full max-h-56 object-cover" />
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-600">Nominal</label>
+        <input id="justNominal" type="number" inputmode="numeric" placeholder="Masukkan nominal (angka)" class="mt-1 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <button id="btnJustifikasi" onclick="handleJustifikasi()" class="w-full bg-blue-600 text-white font-semibold rounded-lg py-2.5 text-sm">
+        <span id="justBtnText">Submit</span>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto flex justify-around py-2 z-40">
+  <button class="nav-btn flex flex-col items-center text-[11px] text-gray-500 gap-0.5 px-2" data-screen="menu" onclick="goTo('menu')"><span class="text-lg">🏠</span>Menu</button>
+  <button class="nav-btn flex flex-col items-center text-[11px] text-gray-500 gap-0.5 px-2" data-screen="register" onclick="goTo('register')"><span class="text-lg">📝</span>Register</button>
+  <button class="nav-btn flex flex-col items-center text-[11px] text-gray-500 gap-0.5 px-2" data-screen="login" onclick="goTo('login')"><span class="text-lg">🔑</span>Login</button>
+  <button class="nav-btn flex flex-col items-center text-[11px] text-gray-500 gap-0.5 px-2" data-screen="presensi" onclick="goTo('presensi')"><span class="text-lg">📍</span>Presensi</button>
+  <button class="nav-btn flex flex-col items-center text-[11px] text-gray-500 gap-0.5 px-2" data-screen="justifikasi" onclick="goTo('justifikasi')"><span class="text-lg">🧾</span>Justifikasi</button>
+</div>
+
+<script>
+const STO_LIST = [
+  "AMBUNTEN","ARJASA","AROSBAYA","BANGKALAN","BATANG BATANG","BLEGA",
+  "DARMO","GUBENG","INJOKO","JAGIR","KALIANAK","KAMAL","KANDANGAN",
+  "KAPASAN","KARANGPILANG","KEBALEN","KENJERAN","KETAPANG","LAKARSANTRI",
+  "MANYAR","MASALEMBU","MERGOYOSO","OMBEN","PAMEKASAN","PRAGAAN",
+  "RUNGKUT","SAMPANG","SAPEKEN","SAPUDI","SUMENEP","TANDES",
+  "TANJUNG BUMI","WARU PAMEKASAN"
+];
+
+let tgUser = { id: null, username: null };
+let presensiState = { koordinat: null, alamat: null, sto: null, photoBase64: null };
+let justifikasiState = { photoBase64: null };
+
+/* ============================================================
+ *  HELPER PANGGIL API APPS SCRIPT
+ * ============================================================ */
+function apiGet(params) {
+  const qs = new URLSearchParams(params).toString();
+  return fetch(API_URL + '?' + qs).then(r => r.json());
+}
+function apiPost(data) {
+  // pakai text/plain agar tidak memicu CORS preflight OPTIONS
+  return fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(data)
+  }).then(r => r.json());
+}
+
+/* ============================================================
+ *  INIT
+ * ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  try {
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+    const u = Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
+    if (u) {
+      tgUser.id = u.id;
+      tgUser.username = u.username || u.first_name || ('user' + u.id);
+    }
+  } catch (e) { /* mode uji di luar Telegram */ }
+
+  document.getElementById('headerSub').textContent = tgUser.id
+    ? ('Telegram ID: ' + tgUser.id)
+    : 'Dibuka di luar Telegram (mode uji)';
+
+  const sel = document.getElementById('presSto');
+  STO_LIST.forEach(sto => {
+    const opt = document.createElement('option');
+    opt.value = sto; opt.textContent = sto;
+    sel.appendChild(opt);
+  });
+
+  if (tgUser.id) {
+    apiGet({ action: 'checkUser', telegramId: tgUser.id }).then(res => {
+      if (res.registered) {
+        document.getElementById('menuNama').textContent = res.nama + ' (' + res.nik + ')';
+      }
+    });
+  }
+
+  const session = getSession();
+  if (session) {
+    document.getElementById('menuNama').textContent = session.nama + ' (' + session.nik + ')';
+  }
+});
+
+/* ============================================================
+ *  NAVIGASI & SESSION
+ * ============================================================ */
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+  const navBtn = document.querySelector('.nav-btn[data-screen="' + screen + '"]');
+  if (navBtn) navBtn.classList.add('active-nav');
+
+  if ((screen === 'presensi' || screen === 'justifikasi') && !getSession()) {
+    showToast('Silakan Login terlebih dahulu.', 'bg-red-500');
+    goTo('login');
+  }
+}
+function getSession() {
+  try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; }
+}
+function setSession(data) { sessionStorage.setItem('rontSession', JSON.stringify(data)); }
+
+function showToast(msg, colorClass) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'fixed top-3 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg text-sm text-white shadow-lg max-w-[90%] text-center ' + (colorClass || 'bg-gray-800');
+  setTimeout(() => { t.classList.add('hidden'); }, 2800);
+}
+
+/* ============================================================
+ *  REGISTER
+ * ============================================================ */
+function handleRegister() {
+  const nik = document.getElementById('regNik').value.trim();
+  const nama = document.getElementById('regNama').value.trim();
+  if (!nik || !nama) { showToast('NIK dan Nama Lengkap wajib diisi.', 'bg-red-500'); return; }
+  if (!tgUser.id) { showToast('Gagal membaca data Telegram. Buka melalui Bot Telegram.', 'bg-red-500'); return; }
+
+  setLoading('btnRegister', 'regBtnText', 'Mengirim...');
+  apiPost({ action: 'register', telegramId: tgUser.id, username: tgUser.username, nik: nik, namaTeknisi: nama })
+    .then(res => {
+      resetLoading('btnRegister', 'regBtnText', 'Submit Register');
+      if (res.success) {
+        showToast(res.message, 'bg-green-600');
+        document.getElementById('regNik').value = '';
+        document.getElementById('regNama').value = '';
+        goTo('menu');
+      } else { showToast(res.message, 'bg-red-500'); }
+    })
+    .catch(err => { resetLoading('btnRegister', 'regBtnText', 'Submit Register'); showToast('Error: ' + err.message, 'bg-red-500'); });
+}
+
+/* ============================================================
+ *  LOGIN
+ * ============================================================ */
+function handleLogin() {
+  const nik = document.getElementById('loginNik').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  if (!nik || !password) { showToast('NIK dan Password wajib diisi.', 'bg-red-500'); return; }
+
+  setLoading('btnLogin', 'loginBtnText', 'Memproses...');
+  apiPost({ action: 'login', nik: nik, password: password })
+    .then(res => {
+      resetLoading('btnLogin', 'loginBtnText', 'Login');
+      if (res.success) {
+        setSession(res);
+        document.getElementById('menuNama').textContent = res.nama + ' (' + res.nik + ')';
+        showToast('Login berhasil.', 'bg-green-600');
+        goTo('menu');
+      } else { showToast(res.message, 'bg-red-500'); }
+    })
+    .catch(err => { resetLoading('btnLogin', 'loginBtnText', 'Login'); showToast('Error: ' + err.message, 'bg-red-500'); });
+}
+
+/* ============================================================
+ *  PRESENSI
+ * ============================================================ */
+function ambilLokasi() {
+  if (!navigator.geolocation) { showToast('Perangkat tidak mendukung GPS.', 'bg-red-500'); return; }
+  document.getElementById('presKoordinat').textContent = 'Mengambil lokasi...';
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude.toFixed(6);
+    const lng = pos.coords.longitude.toFixed(6);
+    presensiState.koordinat = lat + ', ' + lng;
+    document.getElementById('presKoordinat').textContent = presensiState.koordinat;
+    document.getElementById('presAlamat').textContent = 'Mencari alamat...';
+
+    apiGet({ action: 'reverseGeocode', lat: lat, lng: lng })
+      .then(res => {
+        presensiState.alamat = res.alamat;
+        document.getElementById('presAlamat').textContent = res.alamat;
+        cekRequirement();
+      })
+      .catch(() => {
+        presensiState.alamat = '-';
+        document.getElementById('presAlamat').textContent = 'Gagal memuat alamat';
+        cekRequirement();
+      });
+    cekRequirement();
+  }, err => { showToast('Gagal mengambil lokasi: ' + err.message, 'bg-red-500'); }, { enableHighAccuracy: true, timeout: 15000 });
+}
+
+function handlePresensiPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    presensiState.photoBase64 = e.target.result;
+    const preview = document.getElementById('presFotoPreview');
+    preview.src = e.target.result;
+    preview.classList.remove('hidden');
+    document.getElementById('presFotoLabel').textContent = 'Foto berhasil diambil';
+    cekRequirement();
+  };
+  reader.readAsDataURL(file);
+}
+
+function cekRequirement() {
+  presensiState.sto = document.getElementById('presSto').value || null;
+  const btn = document.getElementById('btnAbsen');
+  const memenuhi = presensiState.koordinat && presensiState.sto && presensiState.photoBase64;
+  if (memenuhi) {
+    btn.disabled = false;
+    btn.classList.remove('bg-red-500'); btn.classList.add('bg-blue-600');
+  } else {
+    btn.disabled = true;
+    btn.classList.remove('bg-blue-600'); btn.classList.add('bg-red-500');
+  }
+}
+
+function handlePresensi() {
+  const session = getSession();
+  if (!session) { showToast('Silakan Login terlebih dahulu.', 'bg-red-500'); goTo('login'); return; }
+  if (!presensiState.koordinat || !presensiState.sto || !presensiState.photoBase64) {
+    showToast('Lengkapi lokasi, STO, dan foto evidence terlebih dahulu.', 'bg-red-500'); return;
+  }
+
+  setLoading('btnAbsen', 'absenBtnText', 'Mengirim...');
+  apiPost({
+    action: 'presensi',
+    telegramId: session.telegramId,
+    username: session.username,
+    koordinat: presensiState.koordinat,
+    alamat: presensiState.alamat,
+    sto: presensiState.sto,
+    photoBase64: presensiState.photoBase64
+  }).then(res => {
+    resetLoading('btnAbsen', 'absenBtnText', 'Absen');
+    if (res.success) { showToast(res.message, 'bg-green-600'); resetPresensiForm(); goTo('menu'); }
+    else { showToast(res.message, 'bg-red-500'); }
+  }).catch(err => { resetLoading('btnAbsen', 'absenBtnText', 'Absen'); showToast('Error: ' + err.message, 'bg-red-500'); });
+}
+
+function resetPresensiForm() {
+  presensiState = { koordinat: null, alamat: null, sto: null, photoBase64: null };
+  document.getElementById('presKoordinat').textContent = 'Belum diambil';
+  document.getElementById('presAlamat').textContent = '-';
+  document.getElementById('presSto').value = '';
+  document.getElementById('presFotoPreview').classList.add('hidden');
+  document.getElementById('presFotoLabel').textContent = 'Klik untuk Evidence (Kamera)';
+  document.getElementById('presensiPhotoInput').value = '';
+  cekRequirement();
+}
+
+/* ============================================================
+ *  JUSTIFIKASI
+ * ============================================================ */
+function handleJustifikasiPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    justifikasiState.photoBase64 = e.target.result;
+    const preview = document.getElementById('justFotoPreview');
+    preview.src = e.target.result;
+    preview.classList.remove('hidden');
+    document.getElementById('justFotoLabel').textContent = 'Gambar berhasil dipilih';
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleJustifikasi() {
+  const session = getSession();
+  if (!session) { showToast('Silakan Login terlebih dahulu.', 'bg-red-500'); goTo('login'); return; }
+  const nominal = document.getElementById('justNominal').value.trim();
+  if (!justifikasiState.photoBase64) { showToast('Upload gambar terlebih dahulu.', 'bg-red-500'); return; }
+  if (!nominal || isNaN(Number(nominal))) { showToast('Nominal harus diisi dengan angka.', 'bg-red-500'); return; }
+
+  setLoading('btnJustifikasi', 'justBtnText', 'Mengirim...');
+  apiPost({
+    action: 'justifikasi',
+    telegramId: session.telegramId,
+    username: session.username,
+    nominal: nominal,
+    photoBase64: justifikasiState.photoBase64
+  }).then(res => {
+    resetLoading('btnJustifikasi', 'justBtnText', 'Submit');
+    if (res.success) { showToast(res.message, 'bg-green-600'); resetJustifikasiForm(); goTo('menu'); }
+    else { showToast(res.message, 'bg-red-500'); }
+  }).catch(err => { resetLoading('btnJustifikasi', 'justBtnText', 'Submit'); showToast('Error: ' + err.message, 'bg-red-500'); });
+}
+
+function resetJustifikasiForm() {
+  justifikasiState = { photoBase64: null };
+  document.getElementById('justFotoPreview').classList.add('hidden');
+  document.getElementById('justFotoLabel').textContent = 'Klik untuk pilih gambar (galeri/kamera)';
+  document.getElementById('justifikasiPhotoInput').value = '';
+  document.getElementById('justNominal').value = '';
+}
+
+/* ============================================================
+ *  LOADING STATE
+ * ============================================================ */
+function setLoading(btnId, textId, label) {
+  document.getElementById(btnId).disabled = true;
+  document.getElementById(textId).textContent = label;
+}
+function resetLoading(btnId, textId, label) {
+  document.getElementById(btnId).disabled = (btnId === 'btnAbsen') ? !allPresensiReady() : false;
+  document.getElementById(textId).textContent = label;
+}
+function allPresensiReady() {
+  return !(presensiState.koordinat && presensiState.sto && presensiState.photoBase64);
+}
+</script>
 </body>
 </html>
