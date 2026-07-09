@@ -79,6 +79,7 @@ body { position:relative; overscroll-behavior:none; }
   border-bottom:1px solid var(--glass-border);
   padding:16px 18px;
   display:flex; align-items:center; gap:12px;
+  transition: padding-top 0.2s;
 }
 .header-icon {
   width:38px; height:38px; border-radius:11px; flex-shrink:0;
@@ -224,16 +225,17 @@ body { position:relative; overscroll-behavior:none; }
 /* ================================================================
    TOAST
 ================================================================ */
-#toastWrap { position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:100; width:calc(100% - 32px); max-width:440px; pointer-events:none; }
+#toastWrap { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:100; width:calc(100% - 64px); max-width:380px; pointer-events:none; }
 .toast-box {
-  display:flex; align-items:center; gap:9px; border-radius:11px; padding:12px 16px; font-size:12.5px; font-weight:500;
-  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-  opacity:0; transform:translateY(-10px); transition:opacity 0.25s, transform 0.25s;
-  box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  display:flex; align-items:center; gap:9px; border-radius:14px; padding:16px 18px; font-size:13px; font-weight:600;
+  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  opacity:0; transform:scale(0.92); transition:opacity 0.25s, transform 0.25s;
+  box-shadow:0 20px 50px rgba(0,0,0,0.5);
+  background:rgba(15,20,35,0.85);
 }
-.toast-box.show { opacity:1; transform:translateY(0); }
-.toast-box.error { background:rgba(239,68,68,0.16); border:1px solid rgba(239,68,68,0.3); color:#fca5a5; }
-.toast-box.success { background:rgba(16,185,129,0.16); border:1px solid rgba(16,185,129,0.3); color:#6ee7b7; }
+.toast-box.show { opacity:1; transform:scale(1); }
+.toast-box.error { border:1px solid rgba(239,68,68,0.4); color:#fca5a5; }
+.toast-box.success { border:1px solid rgba(16,185,129,0.4); color:#6ee7b7; }
 </style>
 </head>
 <body>
@@ -247,7 +249,7 @@ body { position:relative; overscroll-behavior:none; }
      GANTI URL DI BAWAH DENGAN URL DEPLOYMENT APPS SCRIPT (.../exec)
      ====================================================== -->
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxYE8JMrab1cIZQba9HmNM76ikogzjg8XPnvdJERJeBhSwTWD3yAwdb6wWleVDFeE-uHQ/exec';
+  const API_URL = 'GANTI_DENGAN_URL_DEPLOYMENT_APPS_SCRIPT_ANDA/exec';
 </script>
 
 <div id="toastWrap"><div class="toast-box" id="toast"><i id="toastIcon" class="ic-check"></i><span id="toastMsg"></span></div></div>
@@ -444,6 +446,26 @@ body { position:relative; overscroll-behavior:none; }
 })();
 
 /* ============================================================
+ *  SAFE AREA - hindari header ketutup tombol Close/menu Telegram
+ *  saat Mini App dibuka dalam mode Fullscreen
+ * ============================================================ */
+function applySafeArea() {
+  let top = 54; // fallback perkiraan tinggi overlay Close/menu Telegram
+  try {
+    const csi = Telegram.WebApp.contentSafeAreaInset;
+    if (csi && typeof csi.top === 'number' && csi.top > 0) top = csi.top;
+    const isFullscreen = Telegram.WebApp.isFullscreen;
+    if (isFullscreen === false && (!csi || !csi.top)) top = 0;
+  } catch (e) {}
+
+  const header = document.querySelector('.app-header');
+  header.style.paddingTop = (16 + top) + 'px';
+  requestAnimationFrame(() => {
+    document.querySelector('.app-main').style.paddingTop = (header.offsetHeight + 14) + 'px';
+  });
+}
+
+/* ============================================================
  *  STATE
  * ============================================================ */
 const STO_LIST = [
@@ -480,6 +502,10 @@ window.addEventListener('DOMContentLoaded', () => {
     const u = Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
     if (u) { tgUser.id = u.id; tgUser.username = u.username || u.first_name || ('user' + u.id); }
   } catch (e) {}
+
+  applySafeArea();
+  try { Telegram.WebApp.onEvent('fullscreenChanged', applySafeArea); } catch (e) {}
+  try { Telegram.WebApp.onEvent('viewportChanged', applySafeArea); } catch (e) {}
 
   document.getElementById('headerSub').textContent = tgUser.id ? ('Telegram ID: ' + tgUser.id) : 'Dibuka di luar Telegram (mode uji)';
 
