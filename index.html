@@ -42,6 +42,8 @@ i[class*="ic-"] {
 .link-btn:hover { text-decoration: underline; }
 .bottom-nav.hidden-nav { display: none; }
 
+input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:none; }
+
 /* ================================================================
    ROOT / THEME
 ================================================================ */
@@ -142,8 +144,7 @@ body { position:relative; overscroll-behavior:none; }
   background:linear-gradient(90deg, var(--brand-grad-1) 0%, var(--brand-grad-2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .header-text .brand-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
 
-.app-main { flex:1; padding:84px 16px 92px; display:flex; flex-direction:column; justify-content:flex-start; }
-.app-main.center-mode { justify-content:center; }
+.app-main { flex:1; padding:84px 16px 92px; display:flex; flex-direction:column; justify-content:safe center; }
 
 .screen { display:none; animation:screenIn 0.35s ease both; }
 .screen.active { display:block; }
@@ -274,15 +275,15 @@ body { position:relative; overscroll-behavior:none; }
 /* ================================================================
    TOAST
 ================================================================ */
-#toastWrap { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:100; width:calc(100% - 64px); max-width:380px; pointer-events:none; }
+#toastWrap { position:fixed; bottom:110px; left:50%; transform:translateX(-50%); z-index:100; width:calc(100% - 48px); max-width:400px; pointer-events:none; }
 .toast-box {
-  display:flex; align-items:center; gap:9px; border-radius:14px; padding:16px 18px; font-size:13px; font-weight:600;
+  display:flex; align-items:center; gap:9px; border-radius:14px; padding:14px 18px; font-size:13px; font-weight:600;
   backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
-  opacity:0; transform:scale(0.92); transition:opacity 0.25s, transform 0.25s;
-  box-shadow:0 20px 50px var(--shadow-strong);
+  opacity:0; transform:translateY(14px); transition:opacity 0.25s, transform 0.25s;
+  box-shadow:0 12px 34px var(--shadow-strong);
   background:var(--toast-bg);
 }
-.toast-box.show { opacity:1; transform:scale(1); }
+.toast-box.show { opacity:1; transform:translateY(0); }
 .toast-box.error { border:1px solid rgba(239,68,68,0.4); color:#fca5a5; }
 .toast-box.success { border:1px solid rgba(16,185,129,0.4); color:#6ee7b7; }
 </style>
@@ -366,7 +367,7 @@ body { position:relative; overscroll-behavior:none; }
         <div class="field-wrap">
           <label class="field-label">Password</label>
           <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="loginPassword" type="password" placeholder="Masukkan Password" class="field-input" onkeydown="if(event.key==='Enter') handleLogin(event)">
+          <input id="loginPassword" type="password" placeholder="Masukkan Password" class="field-input" autocomplete="new-password" name="ront_login_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') handleLogin(event)">
           <i class="ic-eye field-icon-right" id="loginEyeIcon" style="top:calc(50% + 10px);" onclick="toggleLoginPwd()"></i>
         </div>
         <button id="btnLogin" onclick="handleLogin(event)" class="btn-primary" style="margin-top:4px;">
@@ -611,8 +612,6 @@ function goTo(screen) {
 
   const nav = document.querySelector('.bottom-nav');
   nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'register');
-
-  document.querySelector('.app-main').classList.toggle('center-mode', screen === 'login' || screen === 'register');
 
   if ((screen === 'presensi' || screen === 'justifikasi' || screen === 'menu') && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
