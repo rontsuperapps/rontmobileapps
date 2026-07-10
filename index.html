@@ -210,6 +210,31 @@ body { position:relative; overscroll-behavior:none; }
 
 /* info box (koordinat/alamat) */
 .info-box { border:1px solid var(--glass-border); border-radius:11px; padding:12px 14px; background:var(--info-bg); font-size:12px; color:var(--info-text); margin-bottom:12px; }
+
+/* MODAL */
+.modal-overlay {
+  position:fixed; inset:0; z-index:150; display:flex; align-items:center; justify-content:center;
+  background:rgba(5,10,24,0.55); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  opacity:0; pointer-events:none; transition:opacity 0.25s; padding:24px;
+}
+.modal-overlay.show { opacity:1; pointer-events:auto; }
+.modal-box {
+  width:100%; max-width:320px; background:var(--glass-bg); border:1px solid var(--glass-border);
+  border-radius:18px; padding:24px 20px 20px; text-align:center;
+  backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%);
+  box-shadow:0 24px 60px var(--shadow-strong);
+  transform:scale(0.9); transition:transform 0.25s;
+}
+.modal-overlay.show .modal-box { transform:scale(1); }
+.modal-icon {
+  width:44px; height:44px; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center;
+  background:var(--accent-soft); color:var(--accent);
+}
+.modal-icon .icon, .modal-icon i { width:20px; height:20px; }
+.modal-title { font-size:14.5px; font-weight:700; margin-bottom:8px; }
+.modal-text { font-size:13px; color:var(--text-muted); margin-bottom:20px; line-height:1.5; }
+.modal-actions { display:flex; gap:10px; }
+.modal-actions .btn-outline, .modal-actions .btn-primary { flex:1; padding:11px; font-size:13px; }
 .info-box .info-row { display:flex; gap:6px; margin-bottom:4px; }
 .info-box .info-row:last-child { margin-bottom:0; }
 .info-box .info-key { font-weight:600; color:var(--text-muted); white-space:nowrap; }
@@ -299,10 +324,22 @@ body { position:relative; overscroll-behavior:none; }
      GANTI URL DI BAWAH DENGAN URL DEPLOYMENT APPS SCRIPT (.../exec)
      ====================================================== -->
 <script>
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxYE8JMrab1cIZQba9HmNM76ikogzjg8XPnvdJERJeBhSwTWD3yAwdb6wWleVDFeE-uHQ/exec';
+  const API_URL = 'GANTI_DENGAN_URL_DEPLOYMENT_APPS_SCRIPT_ANDA/exec';
 </script>
 
 <div id="toastWrap"><div class="toast-box" id="toast"><i id="toastIcon" class="ic-check"></i><span id="toastMsg"></span></div></div>
+
+<div id="modalOverlay" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon"><i class="ic-user"></i></div>
+    <div class="modal-title">Konfirmasi Identitas</div>
+    <div class="modal-text" id="modalText">-</div>
+    <div class="modal-actions">
+      <button class="btn-outline" onclick="closeModal(false)">Bukan Saya</button>
+      <button class="btn-primary" onclick="closeModal(true)">Ya, Benar</button>
+    </div>
+  </div>
+</div>
 
 <div class="app-shell">
 
@@ -348,6 +385,12 @@ body { position:relative; overscroll-behavior:none; }
           <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
           <input id="regNama" type="text" placeholder="Masukkan Nama Lengkap" class="field-input">
         </div>
+        <div class="field-wrap">
+          <label class="field-label">Password</label>
+          <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="regPassword" type="password" placeholder="Buat Password (min. 4 karakter)" class="field-input" autocomplete="new-password" name="ront_reg_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+          <i class="ic-eye field-icon-right" id="regEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('regPassword','regEyeIcon')"></i>
+        </div>
         <button id="btnRegister" onclick="handleRegister(event)" class="btn-primary" style="margin-top:4px;">
           <div class="btn-inner"><div class="btn-spinner" id="regSpinner"></div><span id="regBtnText">Submit Register</span></div>
         </button>
@@ -368,12 +411,54 @@ body { position:relative; overscroll-behavior:none; }
           <label class="field-label">Password</label>
           <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
           <input id="loginPassword" type="password" placeholder="Masukkan Password" class="field-input" autocomplete="new-password" name="ront_login_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') handleLogin(event)">
-          <i class="ic-eye field-icon-right" id="loginEyeIcon" style="top:calc(50% + 10px);" onclick="toggleLoginPwd()"></i>
+          <i class="ic-eye field-icon-right" id="loginEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('loginPassword','loginEyeIcon')"></i>
         </div>
         <button id="btnLogin" onclick="handleLogin(event)" class="btn-primary" style="margin-top:4px;">
           <div class="btn-inner"><div class="btn-spinner" id="loginSpinner"></div><span id="loginBtnText">Login</span></div>
         </button>
-        <div class="link-btn" style="text-align:center; margin-top:14px;" onclick="goTo('register')">Belum punya akun? Daftar di sini</div>
+        <div style="display:flex; justify-content:space-between; margin-top:14px;">
+          <div class="link-btn" onclick="goTo('register')">Belum punya akun? Daftar</div>
+          <div class="link-btn" onclick="goTo('resetpw')">Lupa Password?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESET PASSWORD -->
+    <div id="screen-resetpw" class="screen">
+      <div class="screen-title">Reset Password</div>
+      <div class="glass-card">
+
+        <div id="resetStep1">
+          <div class="field-wrap">
+            <label class="field-label">NIK Teknisi</label>
+            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="resetNik" type="text" placeholder="Masukkan NIK" class="field-input">
+          </div>
+          <button id="btnResetLookup" onclick="handleResetLookup(event)" class="btn-primary" style="margin-top:4px;">
+            <div class="btn-inner"><div class="btn-spinner" id="resetLookupSpinner"></div><span id="resetLookupText">Submit</span></div>
+          </button>
+        </div>
+
+        <div id="resetStep2" style="display:none;">
+          <div class="info-box">Reset password untuk: <strong id="resetNamaDisplay">-</strong></div>
+          <div class="field-wrap">
+            <label class="field-label">Password Baru</label>
+            <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="resetPasswordNew" type="password" placeholder="Min. 4 karakter" class="field-input" autocomplete="new-password" name="ront_reset_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+            <i class="ic-eye field-icon-right" id="resetPwEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('resetPasswordNew','resetPwEyeIcon')"></i>
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Konfirmasi Password Baru</label>
+            <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="resetPasswordConfirm" type="password" placeholder="Ulangi password baru" class="field-input" autocomplete="new-password" name="ront_reset_pwd_confirm" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+          </div>
+          <button id="btnResetSubmit" onclick="handleResetSubmit(event)" class="btn-primary" style="margin-top:4px;">
+            <div class="btn-inner"><div class="btn-spinner" id="resetSubmitSpinner"></div><span id="resetSubmitText">Simpan Password Baru</span></div>
+          </button>
+          <div class="link-btn" style="text-align:center; margin-top:14px;" onclick="resetResetForm()">Batal, mulai ulang</div>
+        </div>
+
+        <div class="link-btn" style="text-align:center; margin-top:14px;" onclick="goTo('login')">Kembali ke Login</div>
       </div>
     </div>
 
@@ -611,7 +696,7 @@ function goTo(screen) {
   window.scrollTo({ top:0, behavior:'instant' });
 
   const nav = document.querySelector('.bottom-nav');
-  nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'register');
+  nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'register' || screen === 'resetpw');
 
   if ((screen === 'presensi' || screen === 'justifikasi' || screen === 'menu') && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
@@ -660,11 +745,11 @@ function shakeEl(el) {
 }
 
 /* ============================================================
- *  LOGIN PASSWORD TOGGLE
+ *  PASSWORD TOGGLE (generic, dipakai di semua field password)
  * ============================================================ */
-function toggleLoginPwd() {
-  const inp = document.getElementById('loginPassword');
-  const icon = document.getElementById('loginEyeIcon');
+function togglePwd(inputId, iconId) {
+  const inp = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
   if (inp.type === 'password') { inp.type = 'text'; icon.className = 'ic-eye-slash field-icon-right'; }
   else { inp.type = 'password'; icon.className = 'ic-eye field-icon-right'; }
 }
@@ -677,17 +762,19 @@ function handleRegister(e) {
   if (e) addRipple(btn, e);
   const nik = document.getElementById('regNik').value.trim();
   const nama = document.getElementById('regNama').value.trim();
-  if (!nik || !nama) { showToast('error', 'NIK dan Nama Lengkap wajib diisi.'); shakeEl(btn.closest('.glass-card')); return; }
+  const password = document.getElementById('regPassword').value.trim();
+  if (!nik || !nama || !password) { showToast('error', 'NIK, Nama Lengkap, dan Password wajib diisi.'); shakeEl(btn.closest('.glass-card')); return; }
+  if (password.length < 4) { showToast('error', 'Password minimal 4 karakter.'); shakeEl(btn.closest('.glass-card')); return; }
   if (!tgUser.id) { showToast('error', 'Gagal membaca data Telegram. Buka melalui Bot Telegram.'); return; }
 
   setLoading('btnRegister', 'regSpinner', 'regBtnText', 'Mengirim...');
-  apiPost({ action:'register', telegramId: tgUser.id, username: tgUser.username, nik, namaTeknisi: nama })
+  apiPost({ action:'register', telegramId: tgUser.id, username: tgUser.username, nik, namaTeknisi: nama, password })
     .then(res => {
       resetLoading('btnRegister', 'regSpinner', 'regBtnText', 'Submit Register');
       if (res.success) {
         showToast('success', res.message + ' Silakan login.');
         document.getElementById('loginNik').value = nik;
-        document.getElementById('regNik').value = ''; document.getElementById('regNama').value = '';
+        document.getElementById('regNik').value = ''; document.getElementById('regNama').value = ''; document.getElementById('regPassword').value = '';
         goTo('login');
       } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
     })
@@ -717,6 +804,82 @@ function handleLogin(e) {
       } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
     })
     .catch(err => { resetLoading('btnLogin', 'loginSpinner', 'loginBtnText', 'Login'); showToast('error', 'Error: ' + err.message); });
+}
+
+/* ============================================================
+ *  MODAL KONFIRMASI (generic)
+ * ============================================================ */
+let _modalResolve = null;
+function showModal(text) {
+  document.getElementById('modalText').textContent = text;
+  document.getElementById('modalOverlay').classList.add('show');
+  return new Promise(resolve => { _modalResolve = resolve; });
+}
+function closeModal(result) {
+  document.getElementById('modalOverlay').classList.remove('show');
+  if (_modalResolve) { _modalResolve(result); _modalResolve = null; }
+}
+
+/* ============================================================
+ *  RESET PASSWORD
+ * ============================================================ */
+let resetState = { nik: null, nama: null };
+
+function handleResetLookup(e) {
+  const btn = document.getElementById('btnResetLookup');
+  if (e) addRipple(btn, e);
+  const nik = document.getElementById('resetNik').value.trim();
+  if (!nik) { showToast('error', 'NIK wajib diisi.'); shakeEl(btn.closest('.glass-card')); return; }
+  if (!tgUser.id) { showToast('error', 'Gagal membaca data Telegram. Buka melalui Bot Telegram.'); return; }
+
+  setLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Memeriksa...');
+  apiPost({ action:'checkReset', telegramId: tgUser.id, nik })
+    .then(async res => {
+      resetLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Submit');
+      if (res.success) {
+        resetState.nik = nik; resetState.nama = res.nama;
+        const confirmed = await showModal('Apakah nama Anda "' + res.nama + '" benar?');
+        if (confirmed) {
+          document.getElementById('resetStep1').style.display = 'none';
+          document.getElementById('resetStep2').style.display = 'block';
+          document.getElementById('resetNamaDisplay').textContent = res.nama;
+        }
+      } else {
+        showToast('error', res.message); shakeEl(btn.closest('.glass-card'));
+      }
+    })
+    .catch(err => { resetLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Submit'); showToast('error', 'Error: ' + err.message); });
+}
+
+function handleResetSubmit(e) {
+  const btn = document.getElementById('btnResetSubmit');
+  if (e) addRipple(btn, e);
+  const pw1 = document.getElementById('resetPasswordNew').value.trim();
+  const pw2 = document.getElementById('resetPasswordConfirm').value.trim();
+  if (!pw1 || pw1.length < 4) { showToast('error', 'Password baru minimal 4 karakter.'); shakeEl(btn.closest('.glass-card')); return; }
+  if (pw1 !== pw2) { showToast('error', 'Konfirmasi password tidak cocok.'); shakeEl(btn.closest('.glass-card')); return; }
+
+  setLoading('btnResetSubmit', 'resetSubmitSpinner', 'resetSubmitText', 'Menyimpan...');
+  apiPost({ action:'resetPassword', telegramId: tgUser.id, nik: resetState.nik, newPassword: pw1 })
+    .then(res => {
+      resetLoading('btnResetSubmit', 'resetSubmitSpinner', 'resetSubmitText', 'Simpan Password Baru');
+      if (res.success) {
+        showToast('success', res.message);
+        document.getElementById('loginNik').value = resetState.nik;
+        resetResetForm();
+        goTo('login');
+      } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
+    })
+    .catch(err => { resetLoading('btnResetSubmit', 'resetSubmitSpinner', 'resetSubmitText', 'Simpan Password Baru'); showToast('error', 'Error: ' + err.message); });
+}
+
+function resetResetForm() {
+  resetState = { nik: null, nama: null };
+  document.getElementById('resetNik').value = '';
+  document.getElementById('resetPasswordNew').value = '';
+  document.getElementById('resetPasswordConfirm').value = '';
+  document.getElementById('resetStep1').style.display = 'block';
+  document.getElementById('resetStep2').style.display = 'none';
 }
 
 /* ============================================================
