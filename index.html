@@ -6,6 +6,7 @@
 <title>Ront Mobile Apps</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
 <style>
 /* ================================================================
    ICON SET - SVG inline via CSS mask (tanpa dependency font/CDN icon)
@@ -37,6 +38,10 @@ i[class*="ic-"] {
 .ic-refresh { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 11A8 8 0 1 0 18.5 15.5'/%3E%3Cpolyline points='20 5 20 11 14 11'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 11A8 8 0 1 0 18.5 15.5'/%3E%3Cpolyline points='20 5 20 11 14 11'/%3E%3C/svg%3E"); }
 .ic-sun { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4.3' fill='%23000' stroke='none'/%3E%3Cline x1='12' y1='1.5' x2='12' y2='4'/%3E%3Cline x1='12' y1='20' x2='12' y2='22.5'/%3E%3Cline x1='1.5' y1='12' x2='4' y2='12'/%3E%3Cline x1='20' y1='12' x2='22.5' y2='12'/%3E%3Cline x1='4.4' y1='4.4' x2='6.1' y2='6.1'/%3E%3Cline x1='17.9' y1='17.9' x2='19.6' y2='19.6'/%3E%3Cline x1='4.4' y1='19.6' x2='6.1' y2='17.9'/%3E%3Cline x1='17.9' y1='6.1' x2='19.6' y2='4.4'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4.3' fill='%23000' stroke='none'/%3E%3Cline x1='12' y1='1.5' x2='12' y2='4'/%3E%3Cline x1='12' y1='20' x2='12' y2='22.5'/%3E%3Cline x1='1.5' y1='12' x2='4' y2='12'/%3E%3Cline x1='20' y1='12' x2='22.5' y2='12'/%3E%3Cline x1='4.4' y1='4.4' x2='6.1' y2='6.1'/%3E%3Cline x1='17.9' y1='17.9' x2='19.6' y2='19.6'/%3E%3Cline x1='4.4' y1='19.6' x2='6.1' y2='17.9'/%3E%3Cline x1='17.9' y1='6.1' x2='19.6' y2='4.4'/%3E%3C/svg%3E"); }
 .ic-moon { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'/%3E%3C/svg%3E"); }
+.ic-arrow-left { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='20' y1='12' x2='5' y2='12'/%3E%3Cpolyline points='11 5 4 12 11 19'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='20' y1='12' x2='5' y2='12'/%3E%3Cpolyline points='11 5 4 12 11 19'/%3E%3C/svg%3E"); }
+.ic-scan { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8 V5.5 A1.5 1.5 0 0 1 5.5 4 H8'/%3E%3Cpath d='M16 4 h2.5 A1.5 1.5 0 0 1 20 5.5 V8'/%3E%3Cpath d='M20 16 v2.5 a1.5 1.5 0 0 1-1.5 1.5 H16'/%3E%3Cpath d='M8 20 H5.5 A1.5 1.5 0 0 1 4 18.5 V16'/%3E%3Cline x1='4.5' y1='12' x2='19.5' y2='12'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8 V5.5 A1.5 1.5 0 0 1 5.5 4 H8'/%3E%3Cpath d='M16 4 h2.5 A1.5 1.5 0 0 1 20 5.5 V8'/%3E%3Cpath d='M20 16 v2.5 a1.5 1.5 0 0 1-1.5 1.5 H16'/%3E%3Cpath d='M8 20 H5.5 A1.5 1.5 0 0 1 4 18.5 V16'/%3E%3Cline x1='4.5' y1='12' x2='19.5' y2='12'/%3E%3C/svg%3E"); }
+.ic-plus { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.3' stroke-linecap='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.3' stroke-linecap='round'%3E%3Cline x1='12' y1='5' x2='12' y2='19'/%3E%3Cline x1='5' y1='12' x2='19' y2='12'/%3E%3C/svg%3E"); }
+.ic-logout { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4 H6 a2 2 0 0 0-2 2 v12 a2 2 0 0 0 2 2 h3'/%3E%3Cpolyline points='15 16 20 12 15 8'/%3E%3Cline x1='20' y1='12' x2='9' y2='12'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4 H6 a2 2 0 0 0-2 2 v12 a2 2 0 0 0 2 2 h3'/%3E%3Cpolyline points='15 16 20 12 15 8'/%3E%3Cline x1='20' y1='12' x2='9' y2='12'/%3E%3C/svg%3E"); }
 
 .link-btn { font-size: 12.5px; color: var(--accent); cursor: pointer; display: inline-block; }
 .link-btn:hover { text-decoration: underline; }
@@ -45,10 +50,40 @@ i[class*="ic-"] {
 input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:none; }
 
 /* ================================================================
-   ROOT / THEME
+   ROOT / THEME  (light = default, mengikuti gaya mockup: kartu putih
+   solid di atas latar biru muda, aksen biru korporat)
 ================================================================ */
 * , *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
 :root {
+  --bg-deep: #eef2fb;
+  --accent: #2563eb;
+  --accent-2: #7c3aed;
+  --accent-glow: rgba(37,99,235,0.22);
+  --accent-soft: rgba(37,99,235,0.1);
+  --glass-bg: rgba(255,255,255,0.92);
+  --glass-border: rgba(30,41,59,0.08);
+  --text-white: #16213e;
+  --text-muted: #64748b;
+  --error: #ef4444;
+  --success: #10b981;
+  --header-bg: rgba(255,255,255,0.85);
+  --nav-bg: rgba(255,255,255,0.92);
+  --field-bg: rgba(37,99,235,0.045);
+  --field-border: rgba(30,41,59,0.12);
+  --select-option-bg: #ffffff;
+  --info-bg: rgba(37,99,235,0.06);
+  --info-text: #334155;
+  --shadow-soft: rgba(30,41,59,0.10);
+  --shadow-strong: rgba(30,41,59,0.14);
+  --toast-bg: rgba(255,255,255,0.96);
+  --blob-opacity: 0.16;
+  --particle-rgb: 37,99,235;
+  --brand-grad-1: #1d4ed8;
+  --brand-grad-2: #2563eb;
+  --skeleton-base: rgba(30,41,59,0.06);
+  --skeleton-shine: rgba(30,41,59,0.13);
+}
+:root[data-theme="dark"] {
   --bg-deep: #050a18;
   --accent: #3b82f6;
   --accent-2: #7c3aed;
@@ -58,8 +93,6 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
   --glass-border: rgba(255,255,255,0.09);
   --text-white: #f0f4ff;
   --text-muted: #6b7fa3;
-  --error: #ef4444;
-  --success: #10b981;
   --header-bg: rgba(5,10,24,0.72);
   --nav-bg: rgba(5,10,24,0.78);
   --field-bg: rgba(255,255,255,0.05);
@@ -74,31 +107,8 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
   --particle-rgb: 59,130,246;
   --brand-grad-1: #e0eaff;
   --brand-grad-2: #93c5fd;
-}
-:root[data-theme="light"] {
-  --bg-deep: #eef2fb;
-  --accent: #2563eb;
-  --accent-2: #7c3aed;
-  --accent-glow: rgba(37,99,235,0.22);
-  --accent-soft: rgba(37,99,235,0.1);
-  --glass-bg: rgba(255,255,255,0.55);
-  --glass-border: rgba(30,41,59,0.1);
-  --text-white: #1e293b;
-  --text-muted: #64748b;
-  --header-bg: rgba(255,255,255,0.72);
-  --nav-bg: rgba(255,255,255,0.8);
-  --field-bg: rgba(255,255,255,0.7);
-  --field-border: rgba(30,41,59,0.14);
-  --select-option-bg: #ffffff;
-  --info-bg: rgba(37,99,235,0.06);
-  --info-text: #334155;
-  --shadow-soft: rgba(30,41,59,0.14);
-  --shadow-strong: rgba(30,41,59,0.16);
-  --toast-bg: rgba(255,255,255,0.92);
-  --blob-opacity: 0.14;
-  --particle-rgb: 37,99,235;
-  --brand-grad-1: #1d4ed8;
-  --brand-grad-2: #2563eb;
+  --skeleton-base: rgba(255,255,255,0.05);
+  --skeleton-shine: rgba(255,255,255,0.12);
 }
 html, body { width:100%; min-height:100%; font-family:'Inter',sans-serif; background:var(--bg-deep); color:var(--text-white); transition:background 0.25s, color 0.25s; }
 body { position:relative; overscroll-behavior:none; }
@@ -144,6 +154,17 @@ body { position:relative; overscroll-behavior:none; }
   background:linear-gradient(90deg, var(--brand-grad-1) 0%, var(--brand-grad-2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .header-text .brand-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
 
+/* header dinamis untuk layar dengan tombol kembali (back-header) */
+.back-btn {
+  display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text-white);
+  font-size:13.5px; font-weight:700; margin-bottom:14px;
+}
+.back-btn .back-circle {
+  width:30px; height:30px; border-radius:9px; background:var(--glass-bg); border:1px solid var(--glass-border);
+  display:flex; align-items:center; justify-content:center; color:var(--accent); font-size:13px; flex-shrink:0;
+}
+.back-btn:active .back-circle { transform:scale(0.92); }
+
 .app-main { flex:1; padding:84px 16px 92px; display:flex; flex-direction:column; justify-content:safe center; }
 
 .screen { display:none; animation:screenIn 0.35s ease both; }
@@ -159,14 +180,45 @@ body { position:relative; overscroll-behavior:none; }
   background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:18px;
   padding:20px; margin-bottom:14px;
   backdrop-filter:blur(20px) saturate(150%); -webkit-backdrop-filter:blur(20px) saturate(150%);
-  box-shadow:0 0 0 1px rgba(255,255,255,0.03) inset, 0 20px 44px var(--shadow-strong);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.03) inset, 0 14px 34px var(--shadow-strong);
   animation:cardEntrance 0.5s cubic-bezier(0.22,1,0.36,1) both;
 }
 @keyframes cardEntrance { from{opacity:0; transform:translateY(16px) scale(0.98);} to{opacity:1; transform:translateY(0) scale(1);} }
 .card-shake { animation:shakeX 0.42s ease both !important; }
 @keyframes shakeX { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(5px);} }
 
-/* menu list item */
+/* ================================================================
+   MENU GRID (redesign gaya mockup - ubin ikon berwarna 2 kolom)
+================================================================ */
+.summary-row { display:flex; justify-content:space-between; margin-top:14px; gap:8px; }
+.summary-chip { flex:1; text-align:center; padding:10px 4px; border-radius:12px; background:var(--info-bg); }
+.summary-chip .sc-num { font-size:18px; font-weight:800; line-height:1.1; }
+.summary-chip .sc-label { font-size:9.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.2px; margin-top:3px; }
+.summary-chip.sc-total .sc-num { color:var(--accent); }
+.summary-chip.sc-unpicked .sc-num { color:#f59e0b; }
+.summary-chip.sc-progress .sc-num { color:#a855f7; }
+.summary-chip.sc-close .sc-num { color:#10b981; }
+
+.menu-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px; }
+.menu-tile {
+  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px;
+  padding:16px 14px; cursor:pointer; text-align:left;
+  display:flex; flex-direction:column; gap:10px;
+  transition:transform .15s, border-color .2s; backdrop-filter:blur(16px);
+}
+.menu-tile:active { transform:scale(0.97); }
+.menu-tile .mt-icon {
+  width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px;
+}
+.menu-tile .mt-title { font-size:13.5px; font-weight:700; }
+.menu-tile .mt-sub { font-size:10.5px; color:var(--text-muted); margin-top:1px; }
+.tile-blue .mt-icon { background:rgba(37,99,235,0.13); color:#2563eb; }
+.tile-green .mt-icon { background:rgba(16,185,129,0.13); color:#059669; }
+.tile-orange .mt-icon { background:rgba(245,158,11,0.13); color:#d97706; }
+.tile-purple .mt-icon { background:rgba(124,58,237,0.13); color:#7c3aed; }
+.tile-indigo .mt-icon { background:rgba(79,70,229,0.13); color:#4f46e5; }
+
+/* menu list item (masih dipakai untuk beberapa list sederhana) */
 .menu-item {
   width:100%; text-align:left; display:flex; align-items:center; gap:14px;
   background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px;
@@ -174,11 +226,10 @@ body { position:relative; overscroll-behavior:none; }
   backdrop-filter:blur(16px); transition:transform 0.15s, border-color 0.2s, background 0.2s;
 }
 .menu-item:active { transform:scale(0.98); }
-.menu-item:hover { border-color:rgba(59,130,246,0.4); background:rgba(59,130,246,0.06); }
 .menu-item .menu-icon-wrap {
   width:42px; height:42px; border-radius:12px; flex-shrink:0;
   background:linear-gradient(135deg, rgba(59,130,246,0.25), rgba(124,58,237,0.2));
-  display:flex; align-items:center; justify-content:center; font-size:18px; color:#93c5fd;
+  display:flex; align-items:center; justify-content:center; font-size:18px; color:#2563eb;
 }
 .menu-item .menu-item-title { font-size:14px; font-weight:600; }
 .menu-item .menu-item-sub { font-size:11.5px; color:var(--text-muted); margin-top:2px; }
@@ -196,16 +247,19 @@ body { position:relative; overscroll-behavior:none; }
   padding:12px 14px 12px 42px; outline:none; transition:border-color 0.25s, box-shadow 0.25s, background 0.25s;
   appearance:none; -webkit-appearance:none;
 }
-.field-input[type="date"] { color-scheme: dark; }
+.field-input.has-scan { padding-right:42px; }
+.field-input[type="date"] { color-scheme: light; }
+:root[data-theme="dark"] .field-input[type="date"] { color-scheme: dark; }
 .field-select { padding-right:36px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7fa3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:16px; }
 .field-select option { background:var(--select-option-bg); color:var(--text-white); }
 .field-input::placeholder { color:var(--text-muted); }
 .field-input:focus, .field-select:focus {
-  border-color:var(--accent); background:rgba(59,130,246,0.07);
-  box-shadow:0 0 0 3px var(--accent-soft), 0 0 20px rgba(59,130,246,0.15);
+  border-color:var(--accent); background:rgba(37,99,235,0.07);
+  box-shadow:0 0 0 3px var(--accent-soft), 0 0 20px rgba(37,99,235,0.12);
 }
 .field-icon-right { position:absolute; right:14px; top:50%; transform:translateY(-50%); font-size:13px; color:var(--text-muted); cursor:pointer; z-index:2; transition:color 0.2s; }
 .field-icon-right:hover { color:var(--text-white); }
+.field-icon-right.scan-trigger { color:var(--accent); }
 .field-hint { font-size:11px; color:var(--text-muted); margin-top:6px; }
 
 /* info box (koordinat/alamat) */
@@ -241,14 +295,14 @@ body { position:relative; overscroll-behavior:none; }
 
 /* upload / photo box */
 .upload-box {
-  width:100%; border:1.5px dashed rgba(255,255,255,0.18); border-radius:14px;
-  padding:26px 14px; background:rgba(255,255,255,0.02);
+  width:100%; border:1.5px dashed rgba(37,99,235,0.28); border-radius:14px;
+  padding:26px 14px; background:rgba(37,99,235,0.03);
   display:flex; flex-direction:column; align-items:center; gap:8px;
   color:var(--text-muted); font-size:13px; cursor:pointer; transition:border-color 0.2s, background 0.2s;
 }
 .upload-box:active { transform:scale(0.99); }
-.upload-box:hover { border-color:rgba(59,130,246,0.4); background:rgba(59,130,246,0.05); }
-.upload-box .upload-icon { width:42px; height:42px; border-radius:50%; background:rgba(59,130,246,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; color:#93c5fd; }
+.upload-box:hover { border-color:rgba(37,99,235,0.5); background:rgba(37,99,235,0.06); }
+.upload-box .upload-icon { width:42px; height:42px; border-radius:50%; background:rgba(37,99,235,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; color:#2563eb; }
 .photo-preview { display:none; width:100%; max-height:230px; object-fit:cover; border-radius:14px; margin-top:10px; border:1px solid var(--glass-border); box-shadow:0 8px 24px var(--shadow-soft); }
 .photo-preview.show { display:block; }
 
@@ -260,10 +314,10 @@ body { position:relative; overscroll-behavior:none; }
   font-size:14px; font-weight:700; padding:14px; cursor:pointer; position:relative; overflow:hidden;
   transition:transform 0.15s, box-shadow 0.2s, background 0.3s;
   background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 100%);
-  box-shadow:0 6px 22px rgba(59,130,246,0.4); letter-spacing:0.2px;
+  box-shadow:0 6px 22px rgba(37,99,235,0.35); letter-spacing:0.2px;
 }
 .btn-primary:active:not(:disabled) { transform:translateY(0); }
-.btn-primary:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 10px 30px rgba(59,130,246,0.55); }
+.btn-primary:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 10px 30px rgba(37,99,235,0.5); }
 .btn-primary:disabled { opacity:0.55; cursor:not-allowed; }
 .btn-primary.btn-danger { background:linear-gradient(135deg,#b91c1c 0%,#ef4444 100%); box-shadow:0 6px 22px rgba(239,68,68,0.35); }
 .btn-primary .ripple { position:absolute; border-radius:50%; background:rgba(255,255,255,0.25); transform:scale(0); animation:rippleOut 0.6s linear; pointer-events:none; }
@@ -273,30 +327,38 @@ body { position:relative; overscroll-behavior:none; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
 .btn-outline {
-  width:100%; border:1px solid rgba(59,130,246,0.5); border-radius:11px; background:rgba(59,130,246,0.06);
-  color:#93c5fd; font-size:13px; font-weight:600; padding:11px; cursor:pointer; margin-bottom:12px;
+  width:100%; border:1px solid rgba(37,99,235,0.4); border-radius:11px; background:rgba(37,99,235,0.05);
+  color:#2563eb; font-size:13px; font-weight:600; padding:11px; cursor:pointer; margin-bottom:12px;
   display:flex; align-items:center; justify-content:center; gap:7px; transition:background 0.2s;
 }
-.btn-outline:hover { background:rgba(59,130,246,0.14); }
+.btn-outline:hover { background:rgba(37,99,235,0.12); }
 .btn-outline:disabled { opacity:0.55; cursor:not-allowed; }
 
 /* ================================================================
-   BOTTOM NAV
+   BOTTOM NAV (v5 - 5 ikon, Order jadi tombol tengah yang mengambang)
 ================================================================ */
 .bottom-nav {
   position:fixed; bottom:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
   background:var(--nav-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-top:1px solid var(--glass-border);
-  display:flex; justify-content:space-around; padding:9px 4px;
+  display:flex; justify-content:space-around; align-items:flex-end; padding:9px 4px 10px;
 }
 .nav-btn {
   background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px;
   font-size:10.5px; color:var(--text-muted); padding:4px 8px; cursor:pointer; transition:color 0.2s;
 }
 .nav-btn i { font-size:17px; }
-.nav-btn.active-nav { color:#93c5fd; }
-.nav-btn.active-nav i { filter:drop-shadow(0 0 6px rgba(59,130,246,0.7)); }
+.nav-btn.active-nav { color:var(--accent); }
+.nav-btn.active-nav i { filter:drop-shadow(0 0 6px rgba(37,99,235,0.55)); }
+.nav-btn.nav-fab { position:relative; top:-16px; }
+.nav-btn.nav-fab .fab-circle {
+  width:48px; height:48px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#1d4ed8,#3b82f6); color:#fff; font-size:20px;
+  box-shadow:0 8px 22px rgba(37,99,235,0.5); margin-bottom:2px; transition:transform .15s;
+}
+.nav-btn.nav-fab:active .fab-circle { transform:scale(0.93); }
+.nav-btn.nav-fab.active-nav { color:var(--text-muted); }
 
 /* ================================================================
    TOAST
@@ -310,8 +372,10 @@ body { position:relative; overscroll-behavior:none; }
   background:var(--toast-bg);
 }
 .toast-box.show { opacity:1; transform:translateY(0); }
-.toast-box.error { border:1px solid rgba(239,68,68,0.4); color:#fca5a5; }
-.toast-box.success { border:1px solid rgba(16,185,129,0.4); color:#6ee7b7; }
+.toast-box.error { border:1px solid rgba(239,68,68,0.4); color:#dc2626; }
+.toast-box.success { border:1px solid rgba(16,185,129,0.4); color:#059669; }
+:root[data-theme="dark"] .toast-box.error { color:#fca5a5; }
+:root[data-theme="dark"] .toast-box.success { color:#6ee7b7; }
 
 /* ================================================================
    ORDER MENU - Dashboard, List, Info & Form
@@ -322,12 +386,12 @@ body { position:relative; overscroll-behavior:none; }
   cursor:pointer; transition:transform .15s, border-color .2s; backdrop-filter:blur(16px);
 }
 .stat-card:active { transform:scale(0.97); }
-.stat-card:hover { border-color:rgba(59,130,246,0.4); }
-.stat-card.total { grid-column:1 / -1; background:linear-gradient(135deg, rgba(59,130,246,0.18), rgba(124,58,237,0.14)); }
+.stat-card:hover { border-color:rgba(37,99,235,0.4); }
+.stat-card.total { grid-column:1 / -1; background:linear-gradient(135deg, rgba(37,99,235,0.14), rgba(124,58,237,0.1)); }
 .stat-number { font-size:24px; font-weight:800; line-height:1.1; }
 .stat-label { font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; margin-top:4px; }
 .stat-card[data-status="UNPICKED"] .stat-number { color:#f59e0b; }
-.stat-card[data-status="PICKED UP"] .stat-number { color:#3b82f6; }
+.stat-card[data-status="PICKED UP"] .stat-number { color:#2563eb; }
 .stat-card[data-status="MANJA"] .stat-number { color:#a855f7; }
 .stat-card[data-status="KENDALA"] .stat-number { color:#ef4444; }
 .stat-card[data-status="CLOSE"] .stat-number { color:#10b981; }
@@ -339,11 +403,11 @@ body { position:relative; overscroll-behavior:none; }
 }
 .order-item-info .order-noinet { font-size:13.5px; font-weight:700; }
 .order-status-badge { font-size:10.5px; font-weight:700; padding:2px 9px; border-radius:20px; display:inline-block; margin-top:5px; letter-spacing:.3px; }
-.badge-unpicked { background:rgba(245,158,11,0.15); color:#f59e0b; }
-.badge-pickedup { background:rgba(59,130,246,0.15); color:#3b82f6; }
-.badge-manja { background:rgba(168,85,247,0.15); color:#a855f7; }
-.badge-kendala { background:rgba(239,68,68,0.15); color:#ef4444; }
-.badge-close { background:rgba(16,185,129,0.15); color:#10b981; }
+.badge-unpicked { background:rgba(245,158,11,0.15); color:#d97706; }
+.badge-pickedup { background:rgba(37,99,235,0.15); color:#2563eb; }
+.badge-manja { background:rgba(168,85,247,0.15); color:#7c3aed; }
+.badge-kendala { background:rgba(239,68,68,0.15); color:#dc2626; }
+.badge-close { background:rgba(16,185,129,0.15); color:#059669; }
 .order-item-btn {
   flex-shrink:0; border:none; border-radius:10px; padding:9px 14px; font-size:12.5px; font-weight:700;
   color:#fff; cursor:pointer; background:linear-gradient(135deg,#1d4ed8,#3b82f6);
@@ -364,8 +428,24 @@ body { position:relative; overscroll-behavior:none; }
 .info-list .il-key { color:var(--text-muted); }
 .info-list .il-val { font-weight:600; text-align:right; }
 
-.skeleton-line { height:14px; border-radius:6px; background:linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 37%, rgba(255,255,255,0.05) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; margin-bottom:10px; }
+/* ================================================================
+   LOADING SKELETON (v5 - dipakai saat fetch dashboard/detail order)
+================================================================ */
+.skeleton-line { height:14px; border-radius:6px; background:linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; margin-bottom:10px; }
 @keyframes skeletonShine { 0%{background-position:100% 50%;} 100%{background-position:0 50%;} }
+
+.skeleton-stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.skeleton-stat { height:78px; border-radius:14px; background:linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; }
+.skeleton-stat.wide { grid-column:1 / -1; height:64px; }
+
+.skeleton-order-item { height:64px; border-radius:14px; margin-bottom:10px; background:linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; }
+
+/* ================================================================
+   SCANNER OVERLAY (Scan QR / SN)
+================================================================ */
+.scanner-hint { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px; background:var(--info-bg); font-size:12.5px; color:var(--info-text); margin-bottom:14px; }
+.scanner-hint i { font-size:18px; color:var(--accent); flex-shrink:0; }
+.scan-canvas-hidden { display:none; }
 </style>
 </head>
 <body>
@@ -383,6 +463,10 @@ body { position:relative; overscroll-behavior:none; }
 </script>
 
 <div id="toastWrap"><div class="toast-box" id="toast"><i id="toastIcon" class="ic-check"></i><span id="toastMsg"></span></div></div>
+
+<canvas id="scanDecodeCanvas" class="scan-canvas-hidden"></canvas>
+<input type="file" id="scanOrderInput" accept="image/*" capture="environment" style="display:none;" onchange="handleScanFile(event, 'order')">
+<input type="file" id="scanFieldInput" accept="image/*" capture="environment" style="display:none;" onchange="handleScanFile(event, 'field')">
 
 <div id="modalOverlay" class="modal-overlay">
   <div class="modal-box">
@@ -404,7 +488,7 @@ body { position:relative; overscroll-behavior:none; }
       <div class="brand-title">Ront Mobile Apps</div>
       <div class="brand-sub" id="headerSub">Memuat data pengguna...</div>
     </div>
-    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="ic-moon" id="themeIcon"></i></div>
+    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="ic-sun" id="themeIcon"></i></div>
   </div>
 
   <div class="app-main">
@@ -414,24 +498,38 @@ body { position:relative; overscroll-behavior:none; }
       <div class="glass-card">
         <div class="field-hint" style="margin-bottom:4px;">Selamat datang</div>
         <div id="menuNama" style="font-size:15px; font-weight:700;">-</div>
-        <div class="link-btn" style="margin-top:10px;" onclick="logout()">Keluar</div>
+        <div class="summary-row" id="menuSummaryRow" style="display:none;">
+          <div class="summary-chip sc-total"><div class="sc-num" id="sumTotal">0</div><div class="sc-label">Total</div></div>
+          <div class="summary-chip sc-unpicked"><div class="sc-num" id="sumUnpicked">0</div><div class="sc-label">Baru</div></div>
+          <div class="summary-chip sc-progress"><div class="sc-num" id="sumProgress">0</div><div class="sc-label">Proses</div></div>
+          <div class="summary-chip sc-close"><div class="sc-num" id="sumClose">0</div><div class="sc-label">Close</div></div>
+        </div>
       </div>
-      <div class="menu-item" onclick="goTo('presensi')">
-        <div class="menu-icon-wrap"><i class="ic-location"></i></div>
-        <div><div class="menu-item-title">Presensi</div><div class="menu-item-sub">Absen dengan lokasi & foto</div></div>
-      </div>
-      <div class="menu-item" onclick="goTo('justifikasi')">
-        <div class="menu-icon-wrap"><i class="ic-inbox"></i></div>
-        <div><div class="menu-item-title">Justifikasi</div><div class="menu-item-sub">Kirim bukti & nominal biaya</div></div>
-      </div>
-      <div class="menu-item" onclick="goTo('orderDashboard')">
-        <div class="menu-icon-wrap"><i class="ic-clipboard"></i></div>
-        <div><div class="menu-item-title">Order</div><div class="menu-item-sub">Dashboard & progres order teknisi</div></div>
+
+      <div class="section-label">Menu Utama</div>
+      <div class="menu-grid">
+        <div class="menu-tile tile-blue" onclick="goTo('orderDashboard')">
+          <div class="mt-icon"><i class="ic-clipboard"></i></div>
+          <div><div class="mt-title">Order</div><div class="mt-sub">Dashboard & progres</div></div>
+        </div>
+        <div class="menu-tile tile-purple" onclick="triggerScan('order')">
+          <div class="mt-icon"><i class="ic-scan"></i></div>
+          <div><div class="mt-title">Scan QR / SN</div><div class="mt-sub">Cari order cepat</div></div>
+        </div>
+        <div class="menu-tile tile-green" onclick="goTo('presensi')">
+          <div class="mt-icon"><i class="ic-location"></i></div>
+          <div><div class="mt-title">Presensi</div><div class="mt-sub">Absen lokasi & foto</div></div>
+        </div>
+        <div class="menu-tile tile-orange" onclick="goTo('justifikasi')">
+          <div class="mt-icon"><i class="ic-inbox"></i></div>
+          <div><div class="mt-title">Justifikasi</div><div class="mt-sub">Bukti & nominal biaya</div></div>
+        </div>
       </div>
     </div>
 
     <!-- REGISTER -->
     <div id="screen-register" class="screen">
+      <div class="back-btn" onclick="goTo('login')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Kembali</div>
       <div class="screen-title">Form Register</div>
       <div class="glass-card">
         <div class="field-wrap">
@@ -484,6 +582,7 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- RESET PASSWORD -->
     <div id="screen-resetpw" class="screen">
+      <div class="back-btn" onclick="goTo('login')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Kembali</div>
       <div class="screen-title">Reset Password</div>
       <div class="glass-card">
 
@@ -516,8 +615,6 @@ body { position:relative; overscroll-behavior:none; }
           </button>
           <div class="link-btn" style="text-align:center; margin-top:14px;" onclick="resetResetForm()">Batal, mulai ulang</div>
         </div>
-
-        <div class="link-btn" style="text-align:center; margin-top:14px;" onclick="goTo('login')">Kembali ke Login</div>
       </div>
     </div>
 
@@ -605,7 +702,18 @@ body { position:relative; overscroll-behavior:none; }
     <!-- ORDER DASHBOARD -->
     <div id="screen-orderDashboard" class="screen">
       <div class="screen-title">Dashboard Order</div>
-      <div class="glass-card" style="padding:14px;">
+
+      <div id="dashboardSkeleton" style="display:none;">
+        <div class="skeleton-stat-grid">
+          <div class="skeleton-stat wide"></div>
+          <div class="skeleton-stat"></div>
+          <div class="skeleton-stat"></div>
+          <div class="skeleton-stat"></div>
+          <div class="skeleton-stat"></div>
+        </div>
+      </div>
+
+      <div id="dashboardContent" class="glass-card" style="padding:14px;">
         <div class="stat-grid">
           <div class="stat-card total" data-status="TOTAL" onclick="openOrderDetail('TOTAL')">
             <div class="stat-number" id="statTotal">0</div>
@@ -633,21 +741,27 @@ body { position:relative; overscroll-behavior:none; }
           </div>
         </div>
         <button type="button" class="btn-outline" id="btnRefreshDashboard" style="margin-top:2px;" onclick="loadOrderDashboard(true)"><i class="ic-refresh"></i> Refresh Data</button>
+        <button type="button" class="btn-outline" style="margin-bottom:0;" onclick="triggerScan('order')"><i class="ic-scan"></i> Scan QR / SN untuk Cari Order</button>
       </div>
     </div>
 
     <!-- ORDER DETAIL -->
     <div id="screen-orderDetail" class="screen">
+      <div class="back-btn" onclick="goTo('orderDashboard')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Dashboard</div>
       <div class="screen-title" id="orderDetailTitle">Detail Order</div>
-      <div class="link-btn" style="margin-bottom:12px;" onclick="goTo('orderDashboard')">&larr; Kembali ke Dashboard</div>
+      <div id="orderDetailSkeleton" style="display:none;">
+        <div class="skeleton-order-item"></div>
+        <div class="skeleton-order-item"></div>
+        <div class="skeleton-order-item"></div>
+      </div>
       <div id="orderDetailList"></div>
       <div class="glass-card field-hint" id="orderDetailEmpty" style="display:none; text-align:center;">Tidak ada data order untuk status ini.</div>
     </div>
 
     <!-- ORDER PICKUP -->
     <div id="screen-orderPickup" class="screen">
+      <div class="back-btn" onclick="goTo('orderDetail')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Detail Order</div>
       <div class="screen-title">Konfirmasi Pickup</div>
-      <div class="link-btn" style="margin-bottom:12px;" onclick="goTo('orderDetail')">&larr; Kembali ke Detail Order</div>
       <div class="glass-card">
         <div class="info-list" id="pickupInfoList">
           <div class="info-list-row"><span class="il-key">Prioritas</span><span class="il-val" id="pkPrioritas">-</span></div>
@@ -667,8 +781,8 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- ORDER UPDATE -->
     <div id="screen-orderUpdate" class="screen">
+      <div class="back-btn" onclick="goTo('orderDetail')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Detail Order</div>
       <div class="screen-title">Update Order</div>
-      <div class="link-btn" style="margin-bottom:12px;" onclick="goTo('orderDetail')">&larr; Kembali ke Detail Order</div>
       <div class="glass-card">
         <div class="section-label">Data Order</div>
 
@@ -738,12 +852,14 @@ body { position:relative; overscroll-behavior:none; }
         <div class="field-wrap" id="wrapSnOntLama">
           <label class="field-label">SN ONT Lama</label>
           <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updSnOntLama" type="text" placeholder="Wajib jika Status Task Close" class="field-input" oninput="validateUpdateForm()">
+          <input id="updSnOntLama" type="text" placeholder="Wajib jika Status Task Close" class="field-input has-scan" oninput="validateUpdateForm()">
+          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="triggerScan('field','updSnOntLama')" title="Scan barcode SN"></i>
         </div>
         <div class="field-wrap" id="wrapSnOntBaru">
           <label class="field-label">SN ONT Baru</label>
           <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updSnOntBaru" type="text" placeholder="Wajib jika Status Task Close" class="field-input" oninput="validateUpdateForm()">
+          <input id="updSnOntBaru" type="text" placeholder="Wajib jika Status Task Close" class="field-input has-scan" oninput="validateUpdateForm()">
+          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="triggerScan('field','updSnOntBaru')" title="Scan barcode SN"></i>
         </div>
         <div class="field-wrap">
           <label class="field-label">Valins ID</label>
@@ -762,13 +878,29 @@ body { position:relative; overscroll-behavior:none; }
       </div>
     </div>
 
+    <!-- AKUN -->
+    <div id="screen-akun" class="screen">
+      <div class="screen-title">Akun</div>
+      <div class="glass-card" style="text-align:center;">
+        <div style="width:56px; height:56px; border-radius:16px; margin:0 auto 12px; background:linear-gradient(135deg,#1d4ed8,#3b82f6); display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;"><i class="ic-user"></i></div>
+        <div id="akunNama" style="font-size:15px; font-weight:700;">-</div>
+        <div id="akunNik" class="field-hint" style="margin-top:2px;">-</div>
+      </div>
+      <div class="glass-card">
+        <div class="section-label" style="margin-top:0;">Tampilan</div>
+        <button type="button" class="btn-outline" style="margin-bottom:0;" onclick="toggleTheme()"><i class="ic-sun"></i> Ganti Mode Terang / Gelap</button>
+      </div>
+      <button class="btn-primary btn-danger" onclick="logout()"><div class="btn-inner"><i class="ic-logout"></i><span>Keluar</span></div></button>
+    </div>
+
   </div>
 
   <div class="bottom-nav">
-    <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Menu</button>
+    <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Beranda</button>
     <button class="nav-btn" data-screen="presensi" onclick="goTo('presensi')"><i class="ic-location"></i>Presensi</button>
-    <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Justifikasi</button>
-    <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
+    <button class="nav-btn nav-fab" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><div class="fab-circle"><i class="ic-clipboard"></i></div>Order</button>
+    <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Laporan</button>
+    <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-user"></i>Akun</button>
   </div>
 
 </div>
@@ -782,7 +914,7 @@ body { position:relative; overscroll-behavior:none; }
   const ctx = canvas.getContext('2d');
   let W, H, particles = [];
   function getParticleRGB() {
-    return getComputedStyle(document.documentElement).getPropertyValue('--particle-rgb').trim() || '59,130,246';
+    return getComputedStyle(document.documentElement).getPropertyValue('--particle-rgb').trim() || '37,99,235';
   }
   function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   window.addEventListener('resize', resize); resize();
@@ -822,12 +954,12 @@ body { position:relative; overscroll-behavior:none; }
 })();
 
 /* ============================================================
- *  THEME (default: light)
+ *  THEME (default: light, mengikuti gaya mockup)
  * ============================================================ */
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   const icon = document.getElementById('themeIcon');
-  if (icon) icon.className = theme === 'light' ? 'ic-moon' : 'ic-sun';
+  if (icon) icon.className = theme === 'light' ? 'ic-sun' : 'ic-moon';
   localStorage.setItem('ront_theme', theme);
 }
 function toggleTheme() {
@@ -841,7 +973,7 @@ applyTheme(localStorage.getItem('ront_theme') || 'light');
  *  saat Mini App dibuka dalam mode Fullscreen
  * ============================================================ */
 function applySafeArea() {
-  let top = 54; // fallback perkiraan tinggi overlay Close/menu Telegram
+  let top = 54;
   try {
     const csi = Telegram.WebApp.contentSafeAreaInset;
     if (csi && typeof csi.top === 'number' && csi.top > 0) top = csi.top;
@@ -872,6 +1004,7 @@ let tgUser = { id: null, username: null };
 let presensiState = { koordinat: null, alamat: null, sto: null, photoBase64: null };
 let justifikasiState = { photoBase64: null, tanggal: null, jenisTransaksi: null, keterangan: null };
 let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null };
+let scanTargetFieldId = null; // dipakai saat scan ditujukan ke 1 field spesifik (mis. SN ONT)
 
 /* ============================================================
  *  API HELPER
@@ -915,7 +1048,10 @@ window.addEventListener('DOMContentLoaded', () => {
   const session = getSession();
   if (session) {
     document.getElementById('menuNama').textContent = session.nama + ' (' + session.nik + ')';
+    document.getElementById('akunNama').textContent = session.nama;
+    document.getElementById('akunNik').textContent = 'NIK ' + session.nik;
     goTo('menu');
+    loadMenuSummary();
   } else {
     goTo('login');
   }
@@ -938,17 +1074,15 @@ function goTo(screen) {
   const nav = document.querySelector('.bottom-nav');
   nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'register' || screen === 'resetpw');
 
-  const needsLogin = screen === 'presensi' || screen === 'justifikasi' || screen === 'menu' || ORDER_SCREENS.indexOf(screen) !== -1;
+  const needsLogin = screen === 'presensi' || screen === 'justifikasi' || screen === 'menu' || screen === 'akun' || ORDER_SCREENS.indexOf(screen) !== -1;
   if (needsLogin && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
     goTo('login');
     return;
   }
 
-  // Hanya panggil dashboard saat benar-benar masuk ke layar dashboard itu
-  // sendiri (bukan orderDetail/orderPickup/orderUpdate), supaya tidak
-  // fetch berulang setiap kali berpindah antar sub-layar Order.
   if (screen === 'orderDashboard') loadOrderDashboard();
+  if (screen === 'menu') loadMenuSummary();
 }
 function getSession() { try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; } }
 function setSession(data) { sessionStorage.setItem('rontSession', JSON.stringify(data)); }
@@ -1046,6 +1180,8 @@ function handleLogin(e) {
         setSession(res);
         localStorage.setItem('ront_nik', res.nik);
         document.getElementById('menuNama').textContent = res.nama + ' (' + res.nik + ')';
+        document.getElementById('akunNama').textContent = res.nama;
+        document.getElementById('akunNik').textContent = 'NIK ' + res.nik;
         showToast('success', 'Login berhasil.');
         goTo('menu');
       } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
@@ -1289,10 +1425,23 @@ function resetJustifikasiForm() {
 }
 
 /* ============================================================
- *  ORDER - DASHBOARD
- *  (v4.1 - dilengkapi guard anti-request-dobel + cache-buster
- *  saat "Refresh Data" ditekan manual, plus disable tombol
- *  refresh selama proses berlangsung)
+ *  MENU - RINGKASAN HARI INI (memakai getOrderDashboard yang sudah cache)
+ * ============================================================ */
+function loadMenuSummary() {
+  const session = getSession();
+  if (!session) return;
+  apiGet({ action:'orderDashboard', nik: session.nik }).then(res => {
+    if (!res.success) return;
+    document.getElementById('menuSummaryRow').style.display = 'flex';
+    document.getElementById('sumTotal').textContent = res.total;
+    document.getElementById('sumUnpicked').textContent = res.counts.UNPICKED;
+    document.getElementById('sumProgress').textContent = res.counts['PICKED UP'] + res.counts.MANJA;
+    document.getElementById('sumClose').textContent = res.counts.CLOSE;
+  }).catch(() => {});
+}
+
+/* ============================================================
+ *  ORDER - DASHBOARD (v5 - dengan loading skeleton)
  * ============================================================ */
 function normStatus(s) { return String(s || '').trim().toUpperCase(); }
 
@@ -1312,25 +1461,23 @@ let _dashboardLoading = false;
 function loadOrderDashboard(forceRefresh) {
   const session = getSession();
   if (!session) return;
-
-  // Guard: cegah beberapa request bertumpuk berjalan bersamaan
-  // (mis. user klik-klik cepat, atau goTo() terpanggil beruntun)
   if (_dashboardLoading) return;
   _dashboardLoading = true;
+
+  document.getElementById('dashboardSkeleton').style.display = 'block';
+  document.getElementById('dashboardContent').style.display = 'none';
 
   const refreshBtn = document.getElementById('btnRefreshDashboard');
   if (refreshBtn) refreshBtn.disabled = true;
 
   const params = { action:'orderDashboard', nik: session.nik };
-  // Saat user menekan tombol "Refresh Data" secara manual, kirim
-  // penanda agar cache 60 detik di backend tidak dipakai (opsional,
-  // backend cukup baca action & nik; param ini hanya membantu
-  // membedakan trigger di log/analitik bila diperlukan nanti)
   if (forceRefresh) params._t = Date.now();
 
   apiGet(params).then(res => {
     _dashboardLoading = false;
     if (refreshBtn) refreshBtn.disabled = false;
+    document.getElementById('dashboardSkeleton').style.display = 'none';
+    document.getElementById('dashboardContent').style.display = 'block';
     if (!res.success) { showToast('error', res.message || 'Gagal memuat dashboard order.'); return; }
     document.getElementById('statTotal').textContent = res.total;
     document.getElementById('statUnpicked').textContent = res.counts.UNPICKED;
@@ -1341,13 +1488,14 @@ function loadOrderDashboard(forceRefresh) {
   }).catch(err => {
     _dashboardLoading = false;
     if (refreshBtn) refreshBtn.disabled = false;
+    document.getElementById('dashboardSkeleton').style.display = 'none';
+    document.getElementById('dashboardContent').style.display = 'block';
     showToast('error', 'Error: ' + err.message);
   });
 }
 
 /* ============================================================
- *  ORDER - DETAIL LIST
- *  (v4.1 - guard anti-request-dobel yang sama seperti dashboard)
+ *  ORDER - DETAIL LIST (v5 - dengan loading skeleton)
  * ============================================================ */
 const ORDER_STATUS_TITLES = {
   TOTAL: 'Semua Order', UNPICKED: 'Unpicked', 'PICKED UP': 'Picked Up',
@@ -1371,11 +1519,14 @@ function loadOrderDetail() {
 
   const listEl = document.getElementById('orderDetailList');
   const emptyEl = document.getElementById('orderDetailEmpty');
+  const skeletonEl = document.getElementById('orderDetailSkeleton');
   listEl.innerHTML = '';
   emptyEl.style.display = 'none';
+  skeletonEl.style.display = 'block';
 
   apiGet({ action:'orderDetail', nik: session.nik, status: orderState.filter }).then(res => {
     _detailLoading = false;
+    skeletonEl.style.display = 'none';
     if (!res.success) { showToast('error', res.message || 'Gagal memuat detail order.'); return; }
     orderState.list = res.items || [];
     if (!orderState.list.length) { emptyEl.style.display = 'block'; return; }
@@ -1408,7 +1559,7 @@ function loadOrderDetail() {
       frag.appendChild(div);
     });
     listEl.appendChild(frag);
-  }).catch(err => { _detailLoading = false; showToast('error', 'Error: ' + err.message); });
+  }).catch(err => { _detailLoading = false; skeletonEl.style.display = 'none'; showToast('error', 'Error: ' + err.message); });
 }
 
 /* ============================================================
@@ -1565,6 +1716,85 @@ function ambilAlamatOrderUpdate() {
       validateUpdateForm();
     })
     .catch(() => showToast('error', 'Gagal memuat alamat.'));
+}
+
+/* ============================================================
+ *  SCAN QR / SN (v5 - fitur baru)
+ *
+ *  CATATAN PENTING: live camera preview lewat getUserMedia diketahui
+ *  black-screen di Telegram in-app WebView (sama seperti kenapa foto
+ *  Presensi juga pakai <input capture> dan bukan getUserMedia). Supaya
+ *  Scan QR/SN aman dipakai di dalam Telegram, fitur ini memakai pola
+ *  yang sama: buka kamera lewat <input type=file capture>, ambil 1
+ *  foto barcode/QR, lalu decode dari gambar diam memakai jsQR - bukan
+ *  video stream langsung.
+ *
+ *  mode 'order' -> hasil decode dipakai sebagai No Inet, langsung
+ *  cari & buka layar Pickup/Update order tsb (dipakai dari tombol
+ *  "Scan QR / SN" di Menu & Dashboard Order).
+ *  mode 'field'  -> hasil decode ditulis ke satu input tertentu
+ *  (dipakai dari tombol scan kecil di sebelah SN ONT Lama/Baru).
+ * ============================================================ */
+function triggerScan(mode, fieldId) {
+  const session = getSession();
+  if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
+  if (mode === 'field') {
+    scanTargetFieldId = fieldId;
+    document.getElementById('scanFieldInput').click();
+  } else {
+    document.getElementById('scanOrderInput').click();
+  }
+}
+
+function handleScanFile(event, mode) {
+  const file = event.target.files[0];
+  event.target.value = '';
+  if (!file) return;
+
+  showToast('success', 'Membaca barcode/QR...');
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = e => {
+    img.onload = () => {
+      const canvas = document.getElementById('scanDecodeCanvas');
+      const maxDim = 1000; // downscale supaya decode cepat untuk foto beresolusi besar
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = (typeof jsQR === 'function') ? jsQR(imageData.data, imageData.width, imageData.height) : null;
+
+      if (!code || !code.data) {
+        showToast('error', 'QR/Barcode tidak terbaca. Coba foto ulang lebih dekat & fokus.');
+        return;
+      }
+      const value = code.data.trim();
+
+      if (mode === 'field') {
+        if (scanTargetFieldId) {
+          const el = document.getElementById(scanTargetFieldId);
+          if (el) { el.value = value; validateUpdateForm(); }
+        }
+        showToast('success', 'Berhasil scan: ' + value);
+      } else {
+        scanAndOpenOrder(value);
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function scanAndOpenOrder(noInet) {
+  const session = getSession();
+  apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
+    if (!res.success) { showToast('error', res.message || 'Order dengan No Inet "' + noInet + '" tidak ditemukan.'); return; }
+    const st = normStatus(res.data.statusTask);
+    showToast('success', 'Order ditemukan: ' + noInet);
+    if (st === 'UNPICKED') openPickup(noInet); else openUpdate(noInet);
+  }).catch(err => showToast('error', 'Error: ' + err.message));
 }
 
 /* ============================================================
