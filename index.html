@@ -278,6 +278,7 @@ body { position:relative; overscroll-behavior:none; }
   display:flex; align-items:center; justify-content:center; gap:7px; transition:background 0.2s;
 }
 .btn-outline:hover { background:rgba(59,130,246,0.14); }
+.btn-outline:disabled { opacity:0.55; cursor:not-allowed; }
 
 /* ================================================================
    BOTTOM NAV
@@ -362,6 +363,9 @@ body { position:relative; overscroll-behavior:none; }
 .info-list .info-list-row:last-child { border-bottom:none; }
 .info-list .il-key { color:var(--text-muted); }
 .info-list .il-val { font-weight:600; text-align:right; }
+
+.skeleton-line { height:14px; border-radius:6px; background:linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 37%, rgba(255,255,255,0.05) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; margin-bottom:10px; }
+@keyframes skeletonShine { 0%{background-position:100% 50%;} 100%{background-position:0 50%;} }
 </style>
 </head>
 <body>
@@ -628,7 +632,7 @@ body { position:relative; overscroll-behavior:none; }
             <div class="stat-label">Close</div>
           </div>
         </div>
-        <button type="button" class="btn-outline" style="margin-top:2px;" onclick="loadOrderDashboard()"><i class="ic-refresh"></i> Refresh Data</button>
+        <button type="button" class="btn-outline" id="btnRefreshDashboard" style="margin-top:2px;" onclick="loadOrderDashboard(true)"><i class="ic-refresh"></i> Refresh Data</button>
       </div>
     </div>
 
@@ -941,6 +945,9 @@ function goTo(screen) {
     return;
   }
 
+  // Hanya panggil dashboard saat benar-benar masuk ke layar dashboard itu
+  // sendiri (bukan orderDetail/orderPickup/orderUpdate), supaya tidak
+  // fetch berulang setiap kali berpindah antar sub-layar Order.
   if (screen === 'orderDashboard') loadOrderDashboard();
 }
 function getSession() { try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; } }
@@ -1283,6 +1290,9 @@ function resetJustifikasiForm() {
 
 /* ============================================================
  *  ORDER - DASHBOARD
+ *  (v4.1 - dilengkapi guard anti-request-dobel + cache-buster
+ *  saat "Refresh Data" ditekan manual, plus disable tombol
+ *  refresh selama proses berlangsung)
  * ============================================================ */
 function normStatus(s) { return String(s || '').trim().toUpperCase(); }
 
@@ -1297,10 +1307,30 @@ function statusBadgeClass(s) {
   }
 }
 
-function loadOrderDashboard() {
+let _dashboardLoading = false;
+
+function loadOrderDashboard(forceRefresh) {
   const session = getSession();
   if (!session) return;
-  apiGet({ action:'orderDashboard', nik: session.nik }).then(res => {
+
+  // Guard: cegah beberapa request bertumpuk berjalan bersamaan
+  // (mis. user klik-klik cepat, atau goTo() terpanggil beruntun)
+  if (_dashboardLoading) return;
+  _dashboardLoading = true;
+
+  const refreshBtn = document.getElementById('btnRefreshDashboard');
+  if (refreshBtn) refreshBtn.disabled = true;
+
+  const params = { action:'orderDashboard', nik: session.nik };
+  // Saat user menekan tombol "Refresh Data" secara manual, kirim
+  // penanda agar cache 60 detik di backend tidak dipakai (opsional,
+  // backend cukup baca action & nik; param ini hanya membantu
+  // membedakan trigger di log/analitik bila diperlukan nanti)
+  if (forceRefresh) params._t = Date.now();
+
+  apiGet(params).then(res => {
+    _dashboardLoading = false;
+    if (refreshBtn) refreshBtn.disabled = false;
     if (!res.success) { showToast('error', res.message || 'Gagal memuat dashboard order.'); return; }
     document.getElementById('statTotal').textContent = res.total;
     document.getElementById('statUnpicked').textContent = res.counts.UNPICKED;
@@ -1308,11 +1338,16 @@ function loadOrderDashboard() {
     document.getElementById('statManja').textContent = res.counts.MANJA;
     document.getElementById('statKendala').textContent = res.counts.KENDALA;
     document.getElementById('statClose').textContent = res.counts.CLOSE;
-  }).catch(err => showToast('error', 'Error: ' + err.message));
+  }).catch(err => {
+    _dashboardLoading = false;
+    if (refreshBtn) refreshBtn.disabled = false;
+    showToast('error', 'Error: ' + err.message);
+  });
 }
 
 /* ============================================================
  *  ORDER - DETAIL LIST
+ *  (v4.1 - guard anti-request-dobel yang sama seperti dashboard)
  * ============================================================ */
 const ORDER_STATUS_TITLES = {
   TOTAL: 'Semua Order', UNPICKED: 'Unpicked', 'PICKED UP': 'Picked Up',
@@ -1326,19 +1361,26 @@ function openOrderDetail(status) {
   loadOrderDetail();
 }
 
+let _detailLoading = false;
+
 function loadOrderDetail() {
   const session = getSession();
   if (!session) return;
+  if (_detailLoading) return;
+  _detailLoading = true;
+
   const listEl = document.getElementById('orderDetailList');
   const emptyEl = document.getElementById('orderDetailEmpty');
   listEl.innerHTML = '';
   emptyEl.style.display = 'none';
 
   apiGet({ action:'orderDetail', nik: session.nik, status: orderState.filter }).then(res => {
+    _detailLoading = false;
     if (!res.success) { showToast('error', res.message || 'Gagal memuat detail order.'); return; }
     orderState.list = res.items || [];
     if (!orderState.list.length) { emptyEl.style.display = 'block'; return; }
 
+    const frag = document.createDocumentFragment();
     orderState.list.forEach(item => {
       const st = normStatus(item.statusTask);
       const isUnpicked = st === 'UNPICKED';
@@ -1363,9 +1405,10 @@ function loadOrderDetail() {
 
       div.appendChild(infoWrap);
       div.appendChild(actionBtn);
-      listEl.appendChild(div);
+      frag.appendChild(div);
     });
-  }).catch(err => showToast('error', 'Error: ' + err.message));
+    listEl.appendChild(frag);
+  }).catch(err => { _detailLoading = false; showToast('error', 'Error: ' + err.message); });
 }
 
 /* ============================================================
