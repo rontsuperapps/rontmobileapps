@@ -521,6 +521,22 @@ body { position:relative; overscroll-behavior:none; }
           <input id="justNominal" type="text" inputmode="numeric" placeholder="Rp 0" oninput="formatRupiah(this)" class="field-input">
         </div>
 
+        <div class="field-wrap">
+          <label class="field-label">Jenis Transaksi</label>
+          <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
+          <select id="justJenisTransaksi" class="field-select">
+            <option value="">-- Pilih Jenis Transaksi --</option>
+            <option value="Uang Masuk">Uang Masuk</option>
+            <option value="Uang Keluar">Uang Keluar</option>
+          </select>
+        </div>
+
+        <div class="field-wrap">
+          <label class="field-label">Keterangan</label>
+          <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="justKeterangan" type="text" placeholder="Keterangan (opsional)" class="field-input">
+        </div>
+
         <button id="btnJustifikasi" onclick="handleJustifikasi(event)" class="btn-primary" style="margin-top:4px;">
           <div class="btn-inner"><div class="btn-spinner" id="justSpinner"></div><span id="justBtnText">Submit</span></div>
         </button>
@@ -634,7 +650,7 @@ const STO_LIST = [
 
 let tgUser = { id: null, username: null };
 let presensiState = { koordinat: null, alamat: null, sto: null, photoBase64: null };
-let justifikasiState = { photoBase64: null, tanggal: null };
+let justifikasiState = { photoBase64: null, tanggal: null, jenisTransaksi: null, keterangan: null };
 
 /* ============================================================
  *  API HELPER
@@ -1005,15 +1021,22 @@ function handleJustifikasi(e) {
 
   const nominalInput = document.getElementById('justNominal');
   const nominalRaw = nominalInput.dataset.raw || '';
+  const jenisTransaksi = document.getElementById('justJenisTransaksi').value || '';
+  const keterangan = document.getElementById('justKeterangan').value.trim();
 
   if (!justifikasiState.photoBase64) { showToast('error', 'Upload gambar terlebih dahulu.'); return; }
   if (!justifikasiState.tanggal) { showToast('error', 'Tanggal wajib diisi.'); return; }
   if (!nominalRaw || isNaN(Number(nominalRaw))) { showToast('error', 'Nominal harus diisi dengan angka.'); return; }
+  if (!jenisTransaksi) { showToast('error', 'Jenis Transaksi wajib dipilih.'); return; }
+
+  justifikasiState.jenisTransaksi = jenisTransaksi;
+  justifikasiState.keterangan = keterangan;
 
   setLoading('btnJustifikasi', 'justSpinner', 'justBtnText', 'Mengirim...');
   apiPost({
     action:'justifikasi', telegramId: session.telegramId, username: session.username,
-    nominal: nominalRaw, tanggal: justifikasiState.tanggal, photoBase64: justifikasiState.photoBase64
+    nominal: nominalRaw, tanggal: justifikasiState.tanggal, photoBase64: justifikasiState.photoBase64,
+    jenisTransaksi: jenisTransaksi, keterangan: keterangan
   }).then(res => {
     resetLoading('btnJustifikasi', 'justSpinner', 'justBtnText', 'Submit');
     if (res.success) { showToast('success', res.message); resetJustifikasiForm(); goTo('menu'); }
@@ -1022,7 +1045,7 @@ function handleJustifikasi(e) {
 }
 
 function resetJustifikasiForm() {
-  justifikasiState = { photoBase64:null, tanggal:null };
+  justifikasiState = { photoBase64:null, tanggal:null, jenisTransaksi:null, keterangan:null };
   document.getElementById('justFotoPreview').classList.remove('show');
   document.getElementById('justFotoLabel').textContent = 'Klik untuk pilih gambar (galeri/kamera)';
   document.getElementById('justifikasiPhotoInput').value = '';
@@ -1030,6 +1053,8 @@ function resetJustifikasiForm() {
   document.getElementById('justTanggalPreview').textContent = '-';
   document.getElementById('justNominal').value = '';
   document.getElementById('justNominal').dataset.raw = '';
+  document.getElementById('justJenisTransaksi').value = '';
+  document.getElementById('justKeterangan').value = '';
 }
 
 /* ============================================================
