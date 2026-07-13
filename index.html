@@ -311,6 +311,57 @@ body { position:relative; overscroll-behavior:none; }
 .toast-box.show { opacity:1; transform:translateY(0); }
 .toast-box.error { border:1px solid rgba(239,68,68,0.4); color:#fca5a5; }
 .toast-box.success { border:1px solid rgba(16,185,129,0.4); color:#6ee7b7; }
+
+/* ================================================================
+   ORDER MENU - Dashboard, List, Info & Form
+================================================================ */
+.stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
+.stat-card {
+  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:14px; padding:14px;
+  cursor:pointer; transition:transform .15s, border-color .2s; backdrop-filter:blur(16px);
+}
+.stat-card:active { transform:scale(0.97); }
+.stat-card:hover { border-color:rgba(59,130,246,0.4); }
+.stat-card.total { grid-column:1 / -1; background:linear-gradient(135deg, rgba(59,130,246,0.18), rgba(124,58,237,0.14)); }
+.stat-number { font-size:24px; font-weight:800; line-height:1.1; }
+.stat-label { font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; margin-top:4px; }
+.stat-card[data-status="UNPICKED"] .stat-number { color:#f59e0b; }
+.stat-card[data-status="PICKED UP"] .stat-number { color:#3b82f6; }
+.stat-card[data-status="MANJA"] .stat-number { color:#a855f7; }
+.stat-card[data-status="KENDALA"] .stat-number { color:#ef4444; }
+.stat-card[data-status="CLOSE"] .stat-number { color:#10b981; }
+
+.order-item {
+  display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px;
+  border-radius:14px; background:var(--glass-bg); border:1px solid var(--glass-border); margin-bottom:10px;
+  backdrop-filter:blur(16px);
+}
+.order-item-info .order-noinet { font-size:13.5px; font-weight:700; }
+.order-status-badge { font-size:10.5px; font-weight:700; padding:2px 9px; border-radius:20px; display:inline-block; margin-top:5px; letter-spacing:.3px; }
+.badge-unpicked { background:rgba(245,158,11,0.15); color:#f59e0b; }
+.badge-pickedup { background:rgba(59,130,246,0.15); color:#3b82f6; }
+.badge-manja { background:rgba(168,85,247,0.15); color:#a855f7; }
+.badge-kendala { background:rgba(239,68,68,0.15); color:#ef4444; }
+.badge-close { background:rgba(16,185,129,0.15); color:#10b981; }
+.order-item-btn {
+  flex-shrink:0; border:none; border-radius:10px; padding:9px 14px; font-size:12.5px; font-weight:700;
+  color:#fff; cursor:pointer; background:linear-gradient(135deg,#1d4ed8,#3b82f6);
+}
+.order-item-btn.btn-update { background:linear-gradient(135deg,#7c3aed,#a855f7); }
+
+.btn-primary.btn-ready { background:linear-gradient(135deg,#059669 0%,#10b981 100%); box-shadow:0 6px 22px rgba(16,185,129,0.4); }
+
+.section-label { font-size:12px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.4px; margin:18px 0 10px; }
+.section-label:first-child { margin-top:0; }
+
+.view-only-box { border:1px solid var(--glass-border); border-radius:11px; padding:12px 14px; background:var(--info-bg); font-size:13px; color:var(--info-text); margin-bottom:16px; }
+.view-only-box .voi-label { font-size:10.5px; text-transform:uppercase; color:var(--text-muted); letter-spacing:.3px; }
+.view-only-box .voi-value { font-size:14px; font-weight:600; margin-top:2px; }
+
+.info-list .info-list-row { display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--glass-border); font-size:13px; }
+.info-list .info-list-row:last-child { border-bottom:none; }
+.info-list .il-key { color:var(--text-muted); }
+.info-list .il-val { font-weight:600; text-align:right; }
 </style>
 </head>
 <body>
@@ -368,6 +419,10 @@ body { position:relative; overscroll-behavior:none; }
       <div class="menu-item" onclick="goTo('justifikasi')">
         <div class="menu-icon-wrap"><i class="ic-inbox"></i></div>
         <div><div class="menu-item-title">Justifikasi</div><div class="menu-item-sub">Kirim bukti & nominal biaya</div></div>
+      </div>
+      <div class="menu-item" onclick="goTo('orderDashboard')">
+        <div class="menu-icon-wrap"><i class="ic-clipboard"></i></div>
+        <div><div class="menu-item-title">Order</div><div class="menu-item-sub">Dashboard & progres order teknisi</div></div>
       </div>
     </div>
 
@@ -543,12 +598,173 @@ body { position:relative; overscroll-behavior:none; }
       </div>
     </div>
 
+    <!-- ORDER DASHBOARD -->
+    <div id="screen-orderDashboard" class="screen">
+      <div class="screen-title">Dashboard Order</div>
+      <div class="glass-card" style="padding:14px;">
+        <div class="stat-grid">
+          <div class="stat-card total" data-status="TOTAL" onclick="openOrderDetail('TOTAL')">
+            <div class="stat-number" id="statTotal">0</div>
+            <div class="stat-label">Total Order</div>
+          </div>
+          <div class="stat-card" data-status="UNPICKED" onclick="openOrderDetail('UNPICKED')">
+            <div class="stat-number" id="statUnpicked">0</div>
+            <div class="stat-label">Unpicked</div>
+          </div>
+          <div class="stat-card" data-status="PICKED UP" onclick="openOrderDetail('PICKED UP')">
+            <div class="stat-number" id="statPickedUp">0</div>
+            <div class="stat-label">Picked Up</div>
+          </div>
+          <div class="stat-card" data-status="MANJA" onclick="openOrderDetail('MANJA')">
+            <div class="stat-number" id="statManja">0</div>
+            <div class="stat-label">Manja</div>
+          </div>
+          <div class="stat-card" data-status="KENDALA" onclick="openOrderDetail('KENDALA')">
+            <div class="stat-number" id="statKendala">0</div>
+            <div class="stat-label">Kendala</div>
+          </div>
+          <div class="stat-card" data-status="CLOSE" onclick="openOrderDetail('CLOSE')">
+            <div class="stat-number" id="statClose">0</div>
+            <div class="stat-label">Close</div>
+          </div>
+        </div>
+        <button type="button" class="btn-outline" style="margin-top:2px;" onclick="loadOrderDashboard()"><i class="ic-refresh"></i> Refresh Data</button>
+      </div>
+    </div>
+
+    <!-- ORDER DETAIL -->
+    <div id="screen-orderDetail" class="screen">
+      <div class="screen-title" id="orderDetailTitle">Detail Order</div>
+      <div class="link-btn" style="margin-bottom:12px;" onclick="goTo('orderDashboard')">&larr; Kembali ke Dashboard</div>
+      <div id="orderDetailList"></div>
+      <div class="glass-card field-hint" id="orderDetailEmpty" style="display:none; text-align:center;">Tidak ada data order untuk status ini.</div>
+    </div>
+
+    <!-- ORDER PICKUP -->
+    <div id="screen-orderPickup" class="screen">
+      <div class="screen-title">Konfirmasi Pickup</div>
+      <div class="link-btn" style="margin-bottom:12px;" onclick="goTo('orderDetail')">&larr; Kembali ke Detail Order</div>
+      <div class="glass-card">
+        <div class="info-list" id="pickupInfoList">
+          <div class="info-list-row"><span class="il-key">Prioritas</span><span class="il-val" id="pkPrioritas">-</span></div>
+          <div class="info-list-row"><span class="il-key">Nama</span><span class="il-val" id="pkNama">-</span></div>
+          <div class="info-list-row"><span class="il-key">Nomor HP</span><span class="il-val" id="pkNomorHp">-</span></div>
+          <div class="info-list-row"><span class="il-key">Alamat</span><span class="il-val" id="pkAlamat">-</span></div>
+          <div class="info-list-row"><span class="il-key">Koordinate</span><span class="il-val" id="pkKoordinate">-</span></div>
+          <div class="info-list-row"><span class="il-key">Paket Speed</span><span class="il-val" id="pkPaketSpeed">-</span></div>
+          <div class="info-list-row"><span class="il-key">Request ONT</span><span class="il-val" id="pkRequestOnt">-</span></div>
+          <div class="info-list-row"><span class="il-key">Ticket ID</span><span class="il-val" id="pkTicketId">-</span></div>
+        </div>
+        <button id="btnConfirmPickup" onclick="confirmPickup(event)" class="btn-primary" style="margin-top:16px;">
+          <div class="btn-inner"><div class="btn-spinner" id="pickupSpinner"></div><span id="pickupBtnText">Konfirmasi Picked Up</span></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- ORDER UPDATE -->
+    <div id="screen-orderUpdate" class="screen">
+      <div class="screen-title">Update Order</div>
+      <div class="link-btn" style="margin-bottom:12px;" onclick="goTo('orderDetail')">&larr; Kembali ke Detail Order</div>
+      <div class="glass-card">
+        <div class="section-label">Data Order</div>
+
+        <div class="field-wrap">
+          <label class="field-label">Prioritas</label>
+          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updPrioritas" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">Nama</label>
+          <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updNama" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">Nomor HP</label>
+          <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updNomorHp" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">Koordinate</label>
+          <i class="ic-location field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updKoordinate" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <button type="button" class="btn-outline" onclick="ambilLokasiOrderUpdate()"><i class="ic-location"></i> Get Sistem Koordinat (GPS)</button>
+
+        <div class="field-wrap">
+          <label class="field-label">Alamat</label>
+          <i class="ic-location field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updAlamat" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <button type="button" class="btn-outline" onclick="ambilAlamatOrderUpdate()"><i class="ic-location"></i> Get Sistem Alamat by Koordinat</button>
+
+        <div class="field-wrap">
+          <label class="field-label">Paket Speed</label>
+          <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updPaketSpeed" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">Request ONT</label>
+          <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updRequestOnt" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+        </div>
+
+        <div class="section-label">Data Progres</div>
+
+        <div class="view-only-box">
+          <div class="voi-label">Ticket ID</div>
+          <div class="voi-value" id="updTicketId">-</div>
+        </div>
+
+        <div class="field-wrap">
+          <label class="field-label">Status Task</label>
+          <i class="ic-check field-icon" style="top:calc(50% + 10px);"></i>
+          <select id="updStatusTask" class="field-select" onchange="onStatusTaskChange()">
+            <option value="">-- Pilih Status Task --</option>
+            <option value="MANJA">Manja</option>
+            <option value="KENDALA">Kendala</option>
+            <option value="CLOSE">Close</option>
+          </select>
+        </div>
+
+        <div class="view-only-box">
+          <div class="voi-label">Status Order</div>
+          <div class="voi-value" id="updStatusOrder">-</div>
+        </div>
+
+        <div class="field-wrap" id="wrapSnOntLama">
+          <label class="field-label">SN ONT Lama</label>
+          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updSnOntLama" type="text" placeholder="Wajib jika Status Task Close" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <div class="field-wrap" id="wrapSnOntBaru">
+          <label class="field-label">SN ONT Baru</label>
+          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updSnOntBaru" type="text" placeholder="Wajib jika Status Task Close" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <div class="field-wrap">
+          <label class="field-label">Valins ID</label>
+          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updValinsId" type="text" inputmode="numeric" placeholder="Wajib diisi angka" class="field-input" oninput="validateUpdateForm()">
+        </div>
+        <div class="field-wrap" id="wrapKeterangan">
+          <label class="field-label">Keterangan</label>
+          <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updKeterangan" type="text" placeholder="Wajib jika Status Task Kendala" class="field-input" oninput="validateUpdateForm()">
+        </div>
+
+        <button id="btnUpdateOrder" onclick="handleUpdateOrder(event)" class="btn-primary" style="margin-top:4px;">
+          <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Update</span></div>
+        </button>
+      </div>
+    </div>
+
   </div>
 
   <div class="bottom-nav">
     <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Menu</button>
     <button class="nav-btn" data-screen="presensi" onclick="goTo('presensi')"><i class="ic-location"></i>Presensi</button>
     <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Justifikasi</button>
+    <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
   </div>
 
 </div>
@@ -651,6 +867,7 @@ const STO_LIST = [
 let tgUser = { id: null, username: null };
 let presensiState = { koordinat: null, alamat: null, sto: null, photoBase64: null };
 let justifikasiState = { photoBase64: null, tanggal: null, jenisTransaksi: null, keterangan: null };
+let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null };
 
 /* ============================================================
  *  API HELPER
@@ -703,21 +920,28 @@ window.addEventListener('DOMContentLoaded', () => {
 /* ============================================================
  *  NAVIGASI & SESSION
  * ============================================================ */
+const ORDER_SCREENS = ['orderDashboard', 'orderDetail', 'orderPickup', 'orderUpdate'];
+
 function goTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-  const navBtn = document.querySelector('.nav-btn[data-screen="' + screen + '"]');
+  const navKey = ORDER_SCREENS.indexOf(screen) !== -1 ? 'orderDashboard' : screen;
+  const navBtn = document.querySelector('.nav-btn[data-screen="' + navKey + '"]');
   if (navBtn) navBtn.classList.add('active-nav');
   window.scrollTo({ top:0, behavior:'instant' });
 
   const nav = document.querySelector('.bottom-nav');
   nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'register' || screen === 'resetpw');
 
-  if ((screen === 'presensi' || screen === 'justifikasi' || screen === 'menu') && !getSession()) {
+  const needsLogin = screen === 'presensi' || screen === 'justifikasi' || screen === 'menu' || ORDER_SCREENS.indexOf(screen) !== -1;
+  if (needsLogin && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
     goTo('login');
+    return;
   }
+
+  if (screen === 'orderDashboard') loadOrderDashboard();
 }
 function getSession() { try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; } }
 function setSession(data) { sessionStorage.setItem('rontSession', JSON.stringify(data)); }
@@ -1055,6 +1279,249 @@ function resetJustifikasiForm() {
   document.getElementById('justNominal').dataset.raw = '';
   document.getElementById('justJenisTransaksi').value = '';
   document.getElementById('justKeterangan').value = '';
+}
+
+/* ============================================================
+ *  ORDER - DASHBOARD
+ * ============================================================ */
+function normStatus(s) { return String(s || '').trim().toUpperCase(); }
+
+function statusBadgeClass(s) {
+  switch (normStatus(s)) {
+    case 'UNPICKED': return 'badge-unpicked';
+    case 'PICKED UP': return 'badge-pickedup';
+    case 'MANJA': return 'badge-manja';
+    case 'KENDALA': return 'badge-kendala';
+    case 'CLOSE': return 'badge-close';
+    default: return '';
+  }
+}
+
+function loadOrderDashboard() {
+  const session = getSession();
+  if (!session) return;
+  apiGet({ action:'orderDashboard', nik: session.nik }).then(res => {
+    if (!res.success) { showToast('error', res.message || 'Gagal memuat dashboard order.'); return; }
+    document.getElementById('statTotal').textContent = res.total;
+    document.getElementById('statUnpicked').textContent = res.counts.UNPICKED;
+    document.getElementById('statPickedUp').textContent = res.counts['PICKED UP'];
+    document.getElementById('statManja').textContent = res.counts.MANJA;
+    document.getElementById('statKendala').textContent = res.counts.KENDALA;
+    document.getElementById('statClose').textContent = res.counts.CLOSE;
+  }).catch(err => showToast('error', 'Error: ' + err.message));
+}
+
+/* ============================================================
+ *  ORDER - DETAIL LIST
+ * ============================================================ */
+const ORDER_STATUS_TITLES = {
+  TOTAL: 'Semua Order', UNPICKED: 'Unpicked', 'PICKED UP': 'Picked Up',
+  MANJA: 'Manja', KENDALA: 'Kendala', CLOSE: 'Close'
+};
+
+function openOrderDetail(status) {
+  orderState.filter = status;
+  goTo('orderDetail');
+  document.getElementById('orderDetailTitle').textContent = 'Detail Order - ' + (ORDER_STATUS_TITLES[status] || status);
+  loadOrderDetail();
+}
+
+function loadOrderDetail() {
+  const session = getSession();
+  if (!session) return;
+  const listEl = document.getElementById('orderDetailList');
+  const emptyEl = document.getElementById('orderDetailEmpty');
+  listEl.innerHTML = '';
+  emptyEl.style.display = 'none';
+
+  apiGet({ action:'orderDetail', nik: session.nik, status: orderState.filter }).then(res => {
+    if (!res.success) { showToast('error', res.message || 'Gagal memuat detail order.'); return; }
+    orderState.list = res.items || [];
+    if (!orderState.list.length) { emptyEl.style.display = 'block'; return; }
+
+    orderState.list.forEach(item => {
+      const st = normStatus(item.statusTask);
+      const isUnpicked = st === 'UNPICKED';
+      const div = document.createElement('div');
+      div.className = 'order-item';
+
+      const infoWrap = document.createElement('div');
+      infoWrap.className = 'order-item-info';
+      const noInetEl = document.createElement('div');
+      noInetEl.className = 'order-noinet';
+      noInetEl.textContent = item.noInet;
+      const badgeEl = document.createElement('span');
+      badgeEl.className = 'order-status-badge ' + statusBadgeClass(st);
+      badgeEl.textContent = st;
+      infoWrap.appendChild(noInetEl);
+      infoWrap.appendChild(badgeEl);
+
+      const actionBtn = document.createElement('button');
+      actionBtn.className = 'order-item-btn' + (isUnpicked ? '' : ' btn-update');
+      actionBtn.textContent = isUnpicked ? 'Picked Up' : 'Update';
+      actionBtn.onclick = () => (isUnpicked ? openPickup(item.noInet) : openUpdate(item.noInet));
+
+      div.appendChild(infoWrap);
+      div.appendChild(actionBtn);
+      listEl.appendChild(div);
+    });
+  }).catch(err => showToast('error', 'Error: ' + err.message));
+}
+
+/* ============================================================
+ *  ORDER - PICKUP
+ * ============================================================ */
+function openPickup(noInet) {
+  orderState.currentNoInet = noInet;
+  goTo('orderPickup');
+  const session = getSession();
+  apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
+    if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
+    const d = res.data;
+    orderState.currentRow = d;
+    document.getElementById('pkPrioritas').textContent = d.prioritas || '-';
+    document.getElementById('pkNama').textContent = d.nama || '-';
+    document.getElementById('pkNomorHp').textContent = d.nomorHp || '-';
+    document.getElementById('pkAlamat').textContent = d.alamat || '-';
+    document.getElementById('pkKoordinate').textContent = d.koordinate || '-';
+    document.getElementById('pkPaketSpeed').textContent = d.paketSpeed || '-';
+    document.getElementById('pkRequestOnt').textContent = d.requestOnt || '-';
+    document.getElementById('pkTicketId').textContent = d.ticketId || '-';
+  }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
+}
+
+function confirmPickup(e) {
+  const btn = document.getElementById('btnConfirmPickup');
+  if (e) addRipple(btn, e);
+  const session = getSession();
+  if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
+
+  setLoading('btnConfirmPickup', 'pickupSpinner', 'pickupBtnText', 'Memproses...');
+  apiPost({ action:'orderPickup', nik: session.nik, telegramId: session.telegramId, noInet: orderState.currentNoInet })
+    .then(res => {
+      resetLoading('btnConfirmPickup', 'pickupSpinner', 'pickupBtnText', 'Konfirmasi Picked Up');
+      if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(); loadOrderDashboard(); }
+      else { showToast('error', res.message); }
+    })
+    .catch(err => { resetLoading('btnConfirmPickup', 'pickupSpinner', 'pickupBtnText', 'Konfirmasi Picked Up'); showToast('error', 'Error: ' + err.message); });
+}
+
+/* ============================================================
+ *  ORDER - UPDATE
+ * ============================================================ */
+function openUpdate(noInet) {
+  orderState.currentNoInet = noInet;
+  goTo('orderUpdate');
+  const session = getSession();
+  apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
+    if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
+    const d = res.data;
+    orderState.currentRow = d;
+    document.getElementById('updPrioritas').value = d.prioritas || '';
+    document.getElementById('updNama').value = d.nama || '';
+    document.getElementById('updNomorHp').value = d.nomorHp || '';
+    document.getElementById('updAlamat').value = d.alamat || '';
+    document.getElementById('updKoordinate').value = d.koordinate || '';
+    document.getElementById('updPaketSpeed').value = d.paketSpeed || '';
+    document.getElementById('updRequestOnt').value = d.requestOnt || '';
+    document.getElementById('updTicketId').textContent = d.ticketId || '-';
+    document.getElementById('updStatusTask').value = '';
+    document.getElementById('updStatusOrder').textContent = d.statusOrder || '-';
+    document.getElementById('updSnOntLama').value = d.snOntLama || '';
+    document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
+    document.getElementById('updValinsId').value = d.valinsId || '';
+    document.getElementById('updKeterangan').value = d.keterangan || '';
+    onStatusTaskChange();
+  }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
+}
+
+function onStatusTaskChange() {
+  const st = document.getElementById('updStatusTask').value;
+  const orderStatusMap = { MANJA:'IN PROGRESS', KENDALA:'COMPLETED', CLOSE:'COMPLETED' };
+  document.getElementById('updStatusOrder').textContent = orderStatusMap[st] || (orderState.currentRow ? (orderState.currentRow.statusOrder || '-') : '-');
+  document.getElementById('wrapSnOntLama').style.display = st === 'CLOSE' ? 'block' : 'none';
+  document.getElementById('wrapSnOntBaru').style.display = st === 'CLOSE' ? 'block' : 'none';
+  document.getElementById('wrapKeterangan').style.display = st === 'KENDALA' ? 'block' : 'none';
+  validateUpdateForm();
+}
+
+function validateUpdateForm() {
+  const st = document.getElementById('updStatusTask').value;
+  const valinsId = document.getElementById('updValinsId').value.trim();
+  const snLama = document.getElementById('updSnOntLama').value.trim();
+  const snBaru = document.getElementById('updSnOntBaru').value.trim();
+  const keterangan = document.getElementById('updKeterangan').value.trim();
+
+  let valid = true;
+  if (!st) valid = false;
+  if (!valinsId || isNaN(Number(valinsId))) valid = false;
+  if (st === 'CLOSE' && (!snLama || !snBaru)) valid = false;
+  if (st === 'KENDALA' && !keterangan) valid = false;
+
+  const btn = document.getElementById('btnUpdateOrder');
+  if (btn) btn.classList.toggle('btn-ready', valid);
+  return valid;
+}
+
+function handleUpdateOrder(e) {
+  const btn = document.getElementById('btnUpdateOrder');
+  if (e) addRipple(btn, e);
+  const session = getSession();
+  if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
+  if (!validateUpdateForm()) { showToast('error', 'Lengkapi parameter wajib sebelum update.'); shakeEl(btn.closest('.glass-card')); return; }
+
+  const payload = {
+    action:'orderUpdate', nik: session.nik, telegramId: session.telegramId, noInet: orderState.currentNoInet,
+    prioritas: document.getElementById('updPrioritas').value.trim(),
+    nama: document.getElementById('updNama').value.trim(),
+    nomorHp: document.getElementById('updNomorHp').value.trim(),
+    alamat: document.getElementById('updAlamat').value.trim(),
+    koordinate: document.getElementById('updKoordinate').value.trim(),
+    paketSpeed: document.getElementById('updPaketSpeed').value.trim(),
+    requestOnt: document.getElementById('updRequestOnt').value.trim(),
+    statusTask: document.getElementById('updStatusTask').value,
+    snOntLama: document.getElementById('updSnOntLama').value.trim(),
+    snOntBaru: document.getElementById('updSnOntBaru').value.trim(),
+    valinsId: document.getElementById('updValinsId').value.trim(),
+    keterangan: document.getElementById('updKeterangan').value.trim()
+  };
+
+  setLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Mengirim...');
+  apiPost(payload).then(res => {
+    resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Update');
+    if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(); loadOrderDashboard(); }
+    else { showToast('error', res.message); }
+  }).catch(err => { resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Update'); showToast('error', 'Error: ' + err.message); });
+}
+
+function ambilLokasiOrderUpdate() {
+  if (!navigator.geolocation) { showToast('error', 'Perangkat tidak mendukung GPS.'); return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude.toFixed(6);
+    const lng = pos.coords.longitude.toFixed(6);
+    document.getElementById('updKoordinate').value = lat + ', ' + lng;
+    validateUpdateForm();
+    showToast('success', 'Koordinat berhasil diambil.');
+  }, err => { showToast('error', 'Gagal mengambil lokasi: ' + err.message); }, { enableHighAccuracy:true, timeout:15000 });
+}
+
+function ambilAlamatOrderUpdate() {
+  const koor = document.getElementById('updKoordinate').value.trim();
+  if (!koor || koor.indexOf(',') === -1) { showToast('error', 'Isi Koordinate terlebih dahulu (format: lat, lng).'); return; }
+  const parts = koor.split(',').map(s => s.trim());
+  const lat = parts[0], lng = parts[1];
+  if (isNaN(Number(lat)) || isNaN(Number(lng))) { showToast('error', 'Format Koordinate tidak valid.'); return; }
+
+  showToast('success', 'Mencari alamat...');
+  fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + lat + '&longitude=' + lng + '&localityLanguage=id')
+    .then(r => r.json())
+    .then(data => {
+      const parts2 = [data.locality, data.city, data.principalSubdivision, data.countryName]
+        .filter(Boolean).filter((v,i,arr) => arr.indexOf(v) === i);
+      document.getElementById('updAlamat').value = parts2.length ? parts2.join(', ') : 'Alamat tidak ditemukan';
+      validateUpdateForm();
+    })
+    .catch(() => showToast('error', 'Gagal memuat alamat.'));
 }
 
 /* ============================================================
