@@ -119,7 +119,7 @@ html, body { width:100%; min-height:100%; font-family:'Inter',sans-serif; backgr
 body { position:relative; overscroll-behavior:none; }
 
 .theme-toggle {
-  margin-left:auto; width:36px; height:36px; border-radius:10px; border:1px solid var(--glass-border);
+  width:34px; height:34px; border-radius:10px; border:1px solid var(--glass-border);
   background:var(--glass-bg); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
   color:var(--text-muted); transition:color 0.2s, border-color 0.2s;
 }
@@ -137,40 +137,49 @@ body { position:relative; overscroll-behavior:none; }
 ================================================================ */
 .app-shell { position:relative; z-index:5; max-width:480px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; }
 
+/* ================================================================
+   HEADER (v6 - 1 header dinamis, 2 mode:
+   - "brand"  : logo + nama app + subtitle + notifikasi + tema (Beranda & Login)
+   - "title"  : tombol kembali (opsional) + judul layar + tema (layar lain)
+   Sebelumnya tombol kembali & judul layar terpisah dari header sehingga
+   terlihat seperti 2 baris navigasi berbeda; sekarang keduanya jadi 1
+   baris di header yang sama, lebih compact & rapi.
+================================================================ */
 .app-header {
   position:fixed; top:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
   background:var(--header-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-bottom:1px solid var(--glass-border);
-  padding:16px 18px;
-  display:flex; align-items:center; gap:12px;
+  padding:13px 16px;
+  display:flex; align-items:center; gap:10px;
   transition: padding-top 0.2s;
 }
 .header-icon {
-  width:38px; height:38px; border-radius:11px; flex-shrink:0;
+  width:36px; height:36px; border-radius:11px; flex-shrink:0;
   background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 100%);
   display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:16px;
+  color:#fff; font-size:15px;
   box-shadow:0 6px 18px rgba(59,130,246,0.4);
   animation:iconPulse 3s ease-in-out infinite;
 }
 @keyframes iconPulse { 0%,100%{box-shadow:0 6px 18px rgba(59,130,246,0.4);} 50%{box-shadow:0 6px 30px rgba(59,130,246,0.7);} }
-.header-text .brand-title { font-size:15px; font-weight:800; letter-spacing:-0.3px;
+.header-text .brand-title { font-size:14.5px; font-weight:800; letter-spacing:-0.3px;
   background:linear-gradient(90deg, var(--brand-grad-1) 0%, var(--brand-grad-2) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.header-text .brand-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
+.header-text .brand-sub { font-size:10.5px; color:var(--text-muted); margin-top:1px; }
 
-/* header dinamis untuk layar dengan tombol kembali (back-header) */
-.back-btn {
-  display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text-white);
-  font-size:13.5px; font-weight:700; margin-bottom:14px;
+.header-brand { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+.header-titlebar { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
+.header-titlebar .back-circle {
+  width:31px; height:31px; border-radius:9px; flex-shrink:0; cursor:pointer;
+  background:var(--glass-bg); border:1px solid var(--glass-border);
+  display:flex; align-items:center; justify-content:center; color:var(--accent); font-size:13px;
+  transition:transform .15s;
 }
-.back-btn .back-circle {
-  width:30px; height:30px; border-radius:9px; background:var(--glass-bg); border:1px solid var(--glass-border);
-  display:flex; align-items:center; justify-content:center; color:var(--accent); font-size:13px; flex-shrink:0;
-}
-.back-btn:active .back-circle { transform:scale(0.92); }
+.header-titlebar .back-circle:active { transform:scale(0.9); }
+.header-titlebar-text { font-size:14.5px; font-weight:700; letter-spacing:-0.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.header-actions { display:flex; align-items:center; gap:7px; margin-left:auto; flex-shrink:0; }
 
-.app-main { flex:1; padding:84px 16px 92px; display:flex; flex-direction:column; justify-content:safe center; }
+.app-main { flex:1; padding:76px 16px 92px; display:flex; flex-direction:column; justify-content:safe center; }
 
 .screen { display:none; animation:screenIn 0.35s ease both; }
 .screen.active { display:block; }
@@ -210,7 +219,7 @@ body { position:relative; overscroll-behavior:none; }
 .badge-mitra { font-size:10px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:2px 9px; border-radius:20px; letter-spacing:.2px; }
 
 .notif-btn {
-  width:36px; height:36px; border-radius:10px; border:1px solid var(--glass-border);
+  width:34px; height:34px; border-radius:10px; border:1px solid var(--glass-border);
   background:var(--glass-bg); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
   color:var(--text-muted); position:relative;
 }
@@ -379,7 +388,7 @@ body { position:relative; overscroll-behavior:none; }
 .btn-outline:disabled { opacity:0.55; cursor:not-allowed; }
 
 /* ================================================================
-   BOTTOM NAV (v6 - 7 ikon: Presensi, Order, Claim, Home (FAB tengah),
+   BOTTOM NAV (7 ikon: Presensi, Order, Claim, Home (FAB tengah),
    Scan SN ONT, Justifikasi, Profile)
 ================================================================ */
 .bottom-nav {
@@ -494,7 +503,7 @@ body { position:relative; overscroll-behavior:none; }
 .coming-soon-text { font-size:12.5px; color:var(--text-muted); line-height:1.6; max-width:280px; margin:0 auto; }
 
 /* ================================================================
-   LOADING SKELETON (v5 - dipakai saat fetch dashboard/detail order)
+   LOADING SKELETON (dipakai saat fetch dashboard/detail order)
 ================================================================ */
 .skeleton-line { height:14px; border-radius:6px; background:linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; margin-bottom:10px; }
 @keyframes skeletonShine { 0%{background-position:100% 50%;} 100%{background-position:0 50%;} }
@@ -547,14 +556,23 @@ body { position:relative; overscroll-behavior:none; }
 
 <div class="app-shell">
 
+  <!-- HEADER TUNGGAL - dinamis, diatur oleh applyHeaderForScreen() di JS -->
   <div class="app-header">
-    <div class="header-icon"><i class="ic-layers"></i></div>
-    <div class="header-text">
-      <div class="brand-title">Ront Mobile Apps</div>
-      <div class="brand-sub" id="headerSub">Memuat data pengguna...</div>
+    <div class="header-brand" id="headerBrand">
+      <div class="header-icon"><i class="ic-layers"></i></div>
+      <div class="header-text">
+        <div class="brand-title">Ront Mobile Apps</div>
+        <div class="brand-sub" id="headerSub">Memuat data pengguna...</div>
+      </div>
     </div>
-    <div class="notif-btn" id="notifBtn" onclick="handleNotifClick()"><i class="ic-bell"></i><span class="notif-dot" id="notifDot" style="display:none;"></span></div>
-    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="ic-sun" id="themeIcon"></i></div>
+    <div class="header-titlebar" id="headerTitlebar" style="display:none;">
+      <div class="back-circle" id="headerBackBtn"><i class="ic-arrow-left"></i></div>
+      <div class="header-titlebar-text" id="headerTitleText">-</div>
+    </div>
+    <div class="header-actions">
+      <div class="notif-btn" id="notifBtn" onclick="handleNotifClick()"><i class="ic-bell"></i><span class="notif-dot" id="notifDot" style="display:none;"></span></div>
+      <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="ic-sun" id="themeIcon"></i></div>
+    </div>
   </div>
 
   <div class="app-main">
@@ -609,8 +627,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- REGISTER -->
     <div id="screen-register" class="screen">
-      <div class="back-btn" onclick="goTo('login')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Kembali</div>
-      <div class="screen-title">Form Register</div>
       <div class="glass-card">
         <div class="field-wrap">
           <label class="field-label">NIK Teknisi</label>
@@ -637,7 +653,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- LOGIN -->
     <div id="screen-login" class="screen active">
-      <div class="screen-title">Form Login</div>
       <div class="glass-card">
         <div class="field-wrap">
           <label class="field-label">NIK</label>
@@ -666,8 +681,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- RESET PASSWORD -->
     <div id="screen-resetpw" class="screen">
-      <div class="back-btn" onclick="goTo('login')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Kembali</div>
-      <div class="screen-title">Reset Password</div>
       <div class="glass-card">
 
         <div id="resetStep1">
@@ -708,7 +721,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- PRESENSI -->
     <div id="screen-presensi" class="screen">
-      <div class="screen-title">Form Presensi</div>
       <div class="glass-card">
         <label class="field-label">Lokasi (GPS)</label>
         <div class="info-box">
@@ -745,7 +757,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- JUSTIFIKASI -->
     <div id="screen-justifikasi" class="screen">
-      <div class="screen-title">Form Justifikasi</div>
       <div class="glass-card">
         <label class="field-label">Upload Gambar</label>
         <input type="file" id="justifikasiPhotoInput" accept="image/*" style="display:none;" onchange="handleJustifikasiPhoto(event)">
@@ -795,7 +806,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- CLAIM (placeholder - fitur next dev) -->
     <div id="screen-claim" class="screen">
-      <div class="screen-title">Claim</div>
       <div class="glass-card">
         <div class="coming-soon-wrap">
           <div class="coming-soon-icon"><i class="ic-receipt"></i></div>
@@ -807,8 +817,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- ORDER DASHBOARD -->
     <div id="screen-orderDashboard" class="screen">
-      <div class="screen-title">Dashboard Order</div>
-
       <div id="dashboardSkeleton" style="display:none;">
         <div class="skeleton-stat-grid">
           <div class="skeleton-stat wide"></div>
@@ -853,8 +861,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- ORDER DETAIL -->
     <div id="screen-orderDetail" class="screen">
-      <div class="back-btn" onclick="goTo('orderDashboard')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Dashboard</div>
-      <div class="screen-title" id="orderDetailTitle">Detail Order</div>
       <div id="orderDetailSkeleton" style="display:none;">
         <div class="skeleton-order-item"></div>
         <div class="skeleton-order-item"></div>
@@ -866,8 +872,6 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- ORDER PICKUP -->
     <div id="screen-orderPickup" class="screen">
-      <div class="back-btn" onclick="goTo('orderDetail')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Detail Order</div>
-      <div class="screen-title">Konfirmasi Pickup</div>
       <div class="glass-card">
         <div class="info-list" id="pickupInfoList">
           <div class="info-list-row"><span class="il-key">Prioritas</span><span class="il-val" id="pkPrioritas">-</span></div>
@@ -887,10 +891,8 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- ORDER UPDATE -->
     <div id="screen-orderUpdate" class="screen">
-      <div class="back-btn" onclick="goTo('orderDetail')"><div class="back-circle"><i class="ic-arrow-left"></i></div>Detail Order</div>
-      <div class="screen-title">Update Order</div>
       <div class="glass-card">
-        <div class="section-label">Data Order</div>
+        <div class="section-label" style="margin-top:0;">Data Order</div>
 
         <div class="field-wrap">
           <label class="field-label">Prioritas</label>
@@ -984,9 +986,8 @@ body { position:relative; overscroll-behavior:none; }
       </div>
     </div>
 
-    <!-- PROFILE (dahulu "Akun") -->
+    <!-- PROFILE -->
     <div id="screen-akun" class="screen">
-      <div class="screen-title">Profile</div>
       <div class="glass-card" style="text-align:center;">
         <div class="avatar-circle" id="akunAvatar" style="margin:0 auto 12px; width:56px; height:56px; font-size:19px;">--</div>
         <div id="akunNama" style="font-size:15px; font-weight:700;">-</div>
@@ -1095,6 +1096,61 @@ function initialsFromName(name) {
 }
 
 /* ============================================================
+ *  HEADER TUNGGAL (v6)
+ *  Satu <div class="app-header"> dipakai di semua layar. Isinya
+ *  ditentukan lewat HEADER_CONFIG per nama layar:
+ *  - mode 'brand' -> tampilkan logo + judul app + subtitle + notif
+ *    (dipakai di Login & Beranda, layar tanpa konteks "kembali")
+ *  - mode 'title' -> tampilkan tombol kembali (jika ada) + judul
+ *    layar dalam 1 baris ringkas (dipakai di semua layar lainnya)
+ *  Dipanggil dari goTo() setiap kali pindah layar.
+ * ============================================================ */
+const HEADER_CONFIG = {
+  login:          { mode:'brand' },
+  register:       { mode:'title', title:'Form Register', back:'login' },
+  resetpw:        { mode:'title', title:'Reset Password', back:'login' },
+  menu:           { mode:'brand' },
+  presensi:       { mode:'title', title:'Presensi', back:'menu' },
+  justifikasi:    { mode:'title', title:'Justifikasi', back:'menu' },
+  claim:          { mode:'title', title:'Claim', back:'menu' },
+  orderDashboard: { mode:'title', title:'Dashboard Order', back:'menu' },
+  orderDetail:    { mode:'title', title:'Detail Order', back:'orderDashboard' },
+  orderPickup:    { mode:'title', title:'Konfirmasi Pickup', back:'orderDetail' },
+  orderUpdate:    { mode:'title', title:'Update Order', back:'orderDetail' },
+  akun:           { mode:'title', title:'Profile', back:'menu' }
+};
+
+function applyHeaderForScreen(screen) {
+  const cfg = HEADER_CONFIG[screen] || { mode:'title', title:'' };
+  const brandEl = document.getElementById('headerBrand');
+  const titlebarEl = document.getElementById('headerTitlebar');
+  const backBtn = document.getElementById('headerBackBtn');
+  const notifBtn = document.getElementById('notifBtn');
+
+  if (cfg.mode === 'brand') {
+    brandEl.style.display = 'flex';
+    titlebarEl.style.display = 'none';
+    notifBtn.style.display = 'flex';
+  } else {
+    brandEl.style.display = 'none';
+    titlebarEl.style.display = 'flex';
+    notifBtn.style.display = 'none';
+    document.getElementById('headerTitleText').textContent = cfg.title || '';
+    if (cfg.back) {
+      backBtn.style.display = 'flex';
+      backBtn.onclick = function () { goTo(cfg.back); };
+    } else {
+      backBtn.style.display = 'none';
+    }
+  }
+
+  requestAnimationFrame(() => {
+    const header = document.querySelector('.app-header');
+    document.querySelector('.app-main').style.paddingTop = (header.offsetHeight + 14) + 'px';
+  });
+}
+
+/* ============================================================
  *  SAFE AREA - hindari header ketutup tombol Close/menu Telegram
  *  saat Mini App dibuka dalam mode Fullscreen
  * ============================================================ */
@@ -1108,7 +1164,7 @@ function applySafeArea() {
   } catch (e) {}
 
   const header = document.querySelector('.app-header');
-  header.style.paddingTop = (16 + top) + 'px';
+  header.style.paddingTop = (13 + top) + 'px';
   requestAnimationFrame(() => {
     document.querySelector('.app-main').style.paddingTop = (header.offsetHeight + 14) + 'px';
   });
@@ -1211,9 +1267,13 @@ function goTo(screen) {
   const needsLogin = screen === 'presensi' || screen === 'justifikasi' || screen === 'menu' || screen === 'akun' || screen === 'claim' || ORDER_SCREENS.indexOf(screen) !== -1;
   if (needsLogin && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
-    goTo('login');
+    applyHeaderForScreen('login');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-login').classList.add('active');
     return;
   }
+
+  applyHeaderForScreen(screen);
 
   if (screen === 'orderDashboard') loadOrderDashboard();
   if (screen === 'menu') loadMenuSummary();
@@ -1591,7 +1651,7 @@ function loadMenuSummary() {
 }
 
 /* ============================================================
- *  ORDER - DASHBOARD (v5 - dengan loading skeleton)
+ *  ORDER - DASHBOARD (dengan loading skeleton)
  * ============================================================ */
 function normStatus(s) { return String(s || '').trim().toUpperCase(); }
 
@@ -1645,7 +1705,7 @@ function loadOrderDashboard(forceRefresh) {
 }
 
 /* ============================================================
- *  ORDER - DETAIL LIST (v5 - dengan loading skeleton)
+ *  ORDER - DETAIL LIST (dengan loading skeleton, judul di header)
  * ============================================================ */
 const ORDER_STATUS_TITLES = {
   TOTAL: 'Semua Order', UNPICKED: 'Unpicked', 'PICKED UP': 'Picked Up',
@@ -1655,7 +1715,7 @@ const ORDER_STATUS_TITLES = {
 function openOrderDetail(status) {
   orderState.filter = status;
   goTo('orderDetail');
-  document.getElementById('orderDetailTitle').textContent = 'Detail Order - ' + (ORDER_STATUS_TITLES[status] || status);
+  document.getElementById('headerTitleText').textContent = 'Detail - ' + (ORDER_STATUS_TITLES[status] || status);
   loadOrderDetail();
 }
 
@@ -1869,21 +1929,17 @@ function ambilAlamatOrderUpdate() {
 }
 
 /* ============================================================
- *  SCAN QR / SN (v5 - fitur baru)
+ *  SCAN QR / SN
  *
- *  CATATAN PENTING: live camera preview lewat getUserMedia diketahui
- *  black-screen di Telegram in-app WebView (sama seperti kenapa foto
- *  Presensi juga pakai <input capture> dan bukan getUserMedia). Supaya
- *  Scan QR/SN aman dipakai di dalam Telegram, fitur ini memakai pola
- *  yang sama: buka kamera lewat <input type=file capture>, ambil 1
- *  foto barcode/QR, lalu decode dari gambar diam memakai jsQR - bukan
- *  video stream langsung.
+ *  CATATAN: live camera preview lewat getUserMedia black-screen di
+ *  Telegram in-app WebView, jadi fitur ini memakai pola sama seperti
+ *  foto Presensi: buka kamera lewat <input type=file capture>, ambil
+ *  1 foto barcode/QR, lalu decode dari gambar diam via jsQR.
  *
  *  mode 'order' -> hasil decode dipakai sebagai No Inet, langsung
- *  cari & buka layar Pickup/Update order tsb (dipakai dari tombol
- *  "Scan QR / SN" di Menu & Dashboard Order).
+ *  cari & buka layar Pickup/Update order tsb.
  *  mode 'field'  -> hasil decode ditulis ke satu input tertentu
- *  (dipakai dari tombol scan kecil di sebelah SN ONT Lama/Baru).
+ *  (tombol scan kecil di sebelah SN ONT Lama/Baru).
  * ============================================================ */
 function triggerScan(mode, fieldId) {
   const session = getSession();
@@ -1907,7 +1963,7 @@ function handleScanFile(event, mode) {
   reader.onload = e => {
     img.onload = () => {
       const canvas = document.getElementById('scanDecodeCanvas');
-      const maxDim = 1000; // downscale supaya decode cepat untuk foto beresolusi besar
+      const maxDim = 1000;
       const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
       canvas.width = img.width * scale;
       canvas.height = img.height * scale;
