@@ -2,11 +2,18 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Ront Mobile Apps</title>
+<meta name="theme-color" content="#2563eb">
+<meta name="description" content="Aplikasi Presensi, Justifikasi, dan Order untuk Teknisi ONT">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ront Apps">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+<!-- ZXing dipakai untuk Barcode Scanner 1D (Scan SN ONT) -->
+<script src="https://unpkg.com/@zxing/library@0.20.0/umd/index.min.js"></script>
 <style>
 /* ================================================================
    ICON SET - SVG inline via CSS mask (tanpa dependency font/CDN icon)
@@ -44,9 +51,9 @@ i[class*="ic-"] {
 .ic-logout { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4 H6 a2 2 0 0 0-2 2 v12 a2 2 0 0 0 2 2 h3'/%3E%3Cpolyline points='15 16 20 12 15 8'/%3E%3Cline x1='20' y1='12' x2='9' y2='12'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4 H6 a2 2 0 0 0-2 2 v12 a2 2 0 0 0 2 2 h3'/%3E%3Cpolyline points='15 16 20 12 15 8'/%3E%3Cline x1='20' y1='12' x2='9' y2='12'/%3E%3C/svg%3E"); }
 .ic-bell { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9.5 a6 6 0 0 1 12 0 c0 4 1.5 5.2 1.5 6.2 H4.5 C4.5 14.7 6 13.5 6 9.5 Z'/%3E%3Cpath d='M9.7 19 a2.3 2.3 0 0 0 4.6 0'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9.5 a6 6 0 0 1 12 0 c0 4 1.5 5.2 1.5 6.2 H4.5 C4.5 14.7 6 13.5 6 9.5 Z'/%3E%3Cpath d='M9.7 19 a2.3 2.3 0 0 0 4.6 0'/%3E%3C/svg%3E"); }
 .ic-receipt { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 h12 v17 l-2-1.4 -2 1.4 -2-1.4 -2 1.4 -2-1.4 -2 1.4 Z'/%3E%3Cline x1='8.5' y1='8' x2='15.5' y2='8'/%3E%3Cline x1='8.5' y1='11.3' x2='15.5' y2='11.3'/%3E%3Cline x1='8.5' y1='14.6' x2='13' y2='14.6'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 h12 v17 l-2-1.4 -2 1.4 -2-1.4 -2 1.4 -2-1.4 -2 1.4 Z'/%3E%3Cline x1='8.5' y1='8' x2='15.5' y2='8'/%3E%3Cline x1='8.5' y1='11.3' x2='15.5' y2='11.3'/%3E%3Cline x1='8.5' y1='14.6' x2='13' y2='14.6'/%3E%3C/svg%3E"); }
-.ic-clock { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7 v5 l3.5 2'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7 v5 l3.5 2'/%3E%3C/svg%3E"); }
-.ic-alert { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5 L21.5 20 H2.5 Z'/%3E%3Cline x1='12' y1='9.5' x2='12' y2='14'/%3E%3Ccircle cx='12' cy='17' r='0.9' fill='%23000' stroke='none'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5 L21.5 20 H2.5 Z'/%3E%3Cline x1='12' y1='9.5' x2='12' y2='14'/%3E%3Ccircle cx='12' cy='17' r='0.9' fill='%23000' stroke='none'/%3E%3C/svg%3E"); }
 .ic-hourglass { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 h12 M6 20.5 h12'/%3E%3Cpath d='M7 3.5 v3 a5 5 0 0 0 5 5 a5 5 0 0 0 5-5 v-3'/%3E%3Cpath d='M7 20.5 v-3 a5 5 0 0 1 5-5 a5 5 0 0 1 5 5 v3'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3.5 h12 M6 20.5 h12'/%3E%3Cpath d='M7 3.5 v3 a5 5 0 0 0 5 5 a5 5 0 0 0 5-5 v-3'/%3E%3Cpath d='M7 20.5 v-3 a5 5 0 0 1 5-5 a5 5 0 0 1 5 5 v3'/%3E%3C/svg%3E"); }
+.ic-alert { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5 L21.5 20 H2.5 Z'/%3E%3Cline x1='12' y1='9.5' x2='12' y2='14'/%3E%3Ccircle cx='12' cy='17' r='0.9' fill='%23000' stroke='none'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5 L21.5 20 H2.5 Z'/%3E%3Cline x1='12' y1='9.5' x2='12' y2='14'/%3E%3Ccircle cx='12' cy='17' r='0.9' fill='%23000' stroke='none'/%3E%3C/svg%3E"); }
+.ic-telegram { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000'%3E%3Cpath d='M21.9 4.3 L2.9 11.6 c-1.3 0.5-1.3 1.2-0.2 1.5 l4.9 1.5 1.9 5.8 c0.2 0.6 0.4 0.9 0.9 0.9 0.4 0 0.6-0.2 0.9-0.5 l2.2-2.1 4.6 3.4 c0.8 0.5 1.4 0.2 1.6-0.8 L22.6 5.6 c0.3-1.2-0.4-1.8-1.4-1.4 Z M8.3 13.7 l9-5.6 c0.4-0.3 0.8 0 0.4 0.3 l-7.3 6.6 -0.3 3.1 -1.4-4.4 Z'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000'%3E%3Cpath d='M21.9 4.3 L2.9 11.6 c-1.3 0.5-1.3 1.2-0.2 1.5 l4.9 1.5 1.9 5.8 c0.2 0.6 0.4 0.9 0.9 0.9 0.4 0 0.6-0.2 0.9-0.5 l2.2-2.1 4.6 3.4 c0.8 0.5 1.4 0.2 1.6-0.8 L22.6 5.6 c0.3-1.2-0.4-1.8-1.4-1.4 Z M8.3 13.7 l9-5.6 c0.4-0.3 0.8 0 0.4 0.3 l-7.3 6.6 -0.3 3.1 -1.4-4.4 Z'/%3E%3C/svg%3E"); }
 
 .link-btn { font-size: 12.5px; color: var(--accent); cursor: pointer; display: inline-block; }
 .link-btn:hover { text-decoration: underline; }
@@ -55,8 +62,7 @@ i[class*="ic-"] {
 input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:none; }
 
 /* ================================================================
-   ROOT / THEME  (light = default, mengikuti gaya mockup: kartu putih
-   solid di atas latar biru muda, aksen biru korporat)
+   ROOT / THEME
 ================================================================ */
 * , *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
 :root {
@@ -138,19 +144,14 @@ body { position:relative; overscroll-behavior:none; }
 .app-shell { position:relative; z-index:5; max-width:480px; margin:0 auto; min-height:100vh; display:flex; flex-direction:column; }
 
 /* ================================================================
-   HEADER (v6 - 1 header dinamis, 2 mode:
-   - "brand"  : logo + nama app + subtitle + notifikasi + tema (Beranda & Login)
-   - "title"  : tombol kembali (opsional) + judul layar + tema (layar lain)
-   Sebelumnya tombol kembali & judul layar terpisah dari header sehingga
-   terlihat seperti 2 baris navigasi berbeda; sekarang keduanya jadi 1
-   baris di header yang sama, lebih compact & rapi.
+   HEADER
 ================================================================ */
 .app-header {
   position:fixed; top:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
   background:var(--header-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-bottom:1px solid var(--glass-border);
-  padding:13px 16px;
+  padding:calc(13px + env(safe-area-inset-top, 0px)) 16px 13px;
   display:flex; align-items:center; gap:10px;
   transition: padding-top 0.2s;
 }
@@ -202,7 +203,7 @@ body { position:relative; overscroll-behavior:none; }
 @keyframes shakeX { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-5px);} 80%{transform:translateX(5px);} }
 
 /* ================================================================
-   PROFILE HEADER (kartu sambutan di Beranda - gaya mockup)
+   PROFILE HEADER
 ================================================================ */
 .profile-hero { display:flex; align-items:center; gap:13px; }
 .avatar-circle {
@@ -242,7 +243,7 @@ body { position:relative; overscroll-behavior:none; }
 .summary-chip.sc-close .sc-num { color:#10b981; }
 
 /* ================================================================
-   QUICK ACCESS ROW (4 ikon sejajar - gaya mockup Beranda)
+   QUICK ACCESS ROW
 ================================================================ */
 .quick-access-row { display:flex; justify-content:space-between; gap:8px; margin-top:2px; }
 .quick-tile {
@@ -257,7 +258,6 @@ body { position:relative; overscroll-behavior:none; }
 .qt-orange { background:rgba(245,158,11,0.13); color:#d97706; }
 .qt-purple { background:rgba(124,58,237,0.13); color:#7c3aed; }
 
-/* menu list item (masih dipakai untuk beberapa list sederhana) */
 .menu-item {
   width:100%; text-align:left; display:flex; align-items:center; gap:14px;
   background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px;
@@ -289,6 +289,7 @@ body { position:relative; overscroll-behavior:none; }
 .field-input.has-scan { padding-right:42px; }
 .field-input[type="date"] { color-scheme: light; }
 :root[data-theme="dark"] .field-input[type="date"] { color-scheme: dark; }
+.field-input.otp-input { text-align:center; letter-spacing:8px; font-size:20px; font-weight:700; padding-left:14px; }
 .field-select { padding-right:36px; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7fa3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-size:16px; }
 .field-select option { background:var(--select-option-bg); color:var(--text-white); }
 .field-input::placeholder { color:var(--text-muted); }
@@ -301,15 +302,30 @@ body { position:relative; overscroll-behavior:none; }
 .field-icon-right.scan-trigger { color:var(--accent); }
 .field-hint { font-size:11px; color:var(--text-muted); margin-top:6px; }
 
-/* checkbox "Ingat saya" */
 .remember-row { display:flex; align-items:center; gap:8px; margin-bottom:16px; user-select:none; cursor:pointer; }
 .remember-row input[type="checkbox"] { appearance:none; -webkit-appearance:none; width:17px; height:17px; border-radius:5px; border:1.5px solid var(--field-border); background:var(--field-bg); cursor:pointer; position:relative; flex-shrink:0; }
 .remember-row input[type="checkbox"]:checked { background:var(--accent); border-color:var(--accent); }
 .remember-row input[type="checkbox"]:checked::after { content:''; position:absolute; left:4px; top:1px; width:5px; height:9px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg); }
 .remember-row label { font-size:12.5px; color:var(--info-text); cursor:pointer; }
 
-/* info box (koordinat/alamat) */
 .info-box { border:1px solid var(--glass-border); border-radius:11px; padding:12px 14px; background:var(--info-bg); font-size:12px; color:var(--info-text); margin-bottom:12px; }
+
+/* register-via-bot banner */
+.bot-register-banner {
+  display:flex; align-items:center; gap:12px; border:1px solid var(--glass-border);
+  border-radius:14px; padding:14px; background:var(--info-bg); margin-top:16px; text-decoration:none; color:inherit;
+}
+.bot-register-banner .brb-icon {
+  width:38px; height:38px; border-radius:11px; flex-shrink:0; background:#229ED9; color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:17px;
+}
+.bot-register-banner .brb-text-title { font-size:12.5px; font-weight:700; }
+.bot-register-banner .brb-text-sub { font-size:11px; color:var(--text-muted); margin-top:1px; }
+
+/* OTP countdown */
+.otp-timer { text-align:center; font-size:12.5px; color:var(--text-muted); margin-bottom:14px; }
+.otp-timer .otp-timer-num { font-weight:800; color:var(--accent); }
+.otp-timer .otp-expired { color:var(--error); font-weight:700; }
 
 /* MODAL */
 .modal-overlay {
@@ -339,16 +355,29 @@ body { position:relative; overscroll-behavior:none; }
 .info-box .info-row:last-child { margin-bottom:0; }
 .info-box .info-key { font-weight:600; color:var(--text-muted); white-space:nowrap; }
 
-/* upload / photo box */
-.upload-box {
-  width:100%; border:1.5px dashed rgba(37,99,235,0.28); border-radius:14px;
-  padding:26px 14px; background:rgba(37,99,235,0.03);
-  display:flex; flex-direction:column; align-items:center; gap:8px;
-  color:var(--text-muted); font-size:13px; cursor:pointer; transition:border-color 0.2s, background 0.2s;
+/* ================================================================
+   KAMERA LIVE (Presensi - selfie kamera depan, tanpa galeri)
+================================================================ */
+.camera-box {
+  width:100%; border-radius:14px; overflow:hidden; background:#000; position:relative;
+  aspect-ratio: 3 / 4; display:flex; align-items:center; justify-content:center;
 }
-.upload-box:active { transform:scale(0.99); }
-.upload-box:hover { border-color:rgba(37,99,235,0.5); background:rgba(37,99,235,0.06); }
-.upload-box .upload-icon { width:42px; height:42px; border-radius:50%; background:rgba(37,99,235,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; color:#2563eb; }
+.camera-box video { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); /* mirror kamera depan */ }
+.camera-box .camera-placeholder { color:rgba(255,255,255,0.6); font-size:12.5px; text-align:center; padding:0 20px; }
+.camera-controls { display:flex; gap:10px; margin-top:12px; }
+.camera-controls .btn-outline, .camera-controls .btn-primary { margin-bottom:0; }
+.shutter-btn {
+  width:60px; height:60px; border-radius:50%; border:4px solid #fff; background:rgba(255,255,255,0.25);
+  cursor:pointer; margin:14px auto 0; display:block; position:relative;
+}
+.shutter-btn::after { content:''; position:absolute; inset:5px; border-radius:50%; background:#fff; }
+.shutter-btn:active::after { background:#cbd5e1; }
+.camera-wrap-overlay { position:relative; }
+.camera-hint-badge {
+  position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.55); color:#fff; font-size:10.5px;
+  padding:4px 9px; border-radius:20px; display:flex; align-items:center; gap:5px;
+}
+
 .photo-preview-wrap { position:relative; display:none; margin-top:10px; }
 .photo-preview-wrap.show { display:block; }
 .photo-preview { width:100%; max-height:230px; object-fit:cover; border-radius:14px; display:block; border:1px solid var(--glass-border); box-shadow:0 8px 24px var(--shadow-soft); }
@@ -358,6 +387,17 @@ body { position:relative; overscroll-behavior:none; }
   display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:0 6px 16px rgba(37,99,235,0.45);
 }
 .retake-btn:active { transform:scale(0.92); }
+
+/* upload box (masih dipakai untuk Justifikasi - boleh dari galeri) */
+.upload-box {
+  width:100%; border:1.5px dashed rgba(37,99,235,0.28); border-radius:14px;
+  padding:26px 14px; background:rgba(37,99,235,0.03);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  color:var(--text-muted); font-size:13px; cursor:pointer; transition:border-color 0.2s, background 0.2s;
+}
+.upload-box:active { transform:scale(0.99); }
+.upload-box:hover { border-color:rgba(37,99,235,0.5); background:rgba(37,99,235,0.06); }
+.upload-box .upload-icon { width:42px; height:42px; border-radius:50%; background:rgba(37,99,235,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; color:#2563eb; }
 
 /* ================================================================
    BUTTONS
@@ -388,15 +428,14 @@ body { position:relative; overscroll-behavior:none; }
 .btn-outline:disabled { opacity:0.55; cursor:not-allowed; }
 
 /* ================================================================
-   BOTTOM NAV (7 ikon: Presensi, Order, Claim, Home (FAB tengah),
-   Scan SN ONT, Justifikasi, Profile)
+   BOTTOM NAV
 ================================================================ */
 .bottom-nav {
   position:fixed; bottom:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
   background:var(--nav-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-top:1px solid var(--glass-border);
-  display:flex; justify-content:space-around; align-items:flex-end; padding:8px 2px 9px;
+  display:flex; justify-content:space-around; align-items:flex-end; padding:8px 2px calc(9px + env(safe-area-inset-bottom, 0px));
 }
 .nav-btn {
   background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px;
@@ -491,7 +530,7 @@ body { position:relative; overscroll-behavior:none; }
 .info-list .il-val { font-weight:600; text-align:right; }
 
 /* ================================================================
-   COMING SOON (Claim - belum tersedia)
+   COMING SOON (Claim)
 ================================================================ */
 .coming-soon-wrap { text-align:center; padding:34px 12px 10px; }
 .coming-soon-icon {
@@ -503,7 +542,7 @@ body { position:relative; overscroll-behavior:none; }
 .coming-soon-text { font-size:12.5px; color:var(--text-muted); line-height:1.6; max-width:280px; margin:0 auto; }
 
 /* ================================================================
-   LOADING SKELETON (dipakai saat fetch dashboard/detail order)
+   LOADING SKELETON
 ================================================================ */
 .skeleton-line { height:14px; border-radius:6px; background:linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; margin-bottom:10px; }
 @keyframes skeletonShine { 0%{background-position:100% 50%;} 100%{background-position:0 50%;} }
@@ -515,10 +554,32 @@ body { position:relative; overscroll-behavior:none; }
 .skeleton-order-item { height:64px; border-radius:14px; margin-bottom:10px; background:linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; }
 
 /* ================================================================
-   SCANNER OVERLAY (Scan QR / SN)
+   SCANNER OVERLAY (Scan SN ONT - Barcode 1D live via ZXing)
 ================================================================ */
-.scanner-hint { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px; background:var(--info-bg); font-size:12.5px; color:var(--info-text); margin-bottom:14px; }
-.scanner-hint i { font-size:18px; color:var(--accent); flex-shrink:0; }
+.scanner-modal {
+  position:fixed; inset:0; z-index:200; background:#000; display:none; flex-direction:column;
+}
+.scanner-modal.show { display:flex; }
+.scanner-video-wrap { flex:1; position:relative; overflow:hidden; }
+.scanner-video-wrap video { width:100%; height:100%; object-fit:cover; }
+.scanner-reticle {
+  position:absolute; left:8%; right:8%; top:42%; height:18%; transform:translateY(-50%);
+  border:2.5px solid #22c55e; border-radius:10px; box-shadow:0 0 0 2000px rgba(0,0,0,0.45);
+}
+.scanner-topbar {
+  position:absolute; top:0; left:0; right:0; padding:calc(14px + env(safe-area-inset-top,0px)) 16px 14px;
+  display:flex; align-items:center; justify-content:space-between; background:linear-gradient(180deg, rgba(0,0,0,0.6), transparent);
+  z-index:2;
+}
+.scanner-topbar .scanner-close {
+  width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.15); color:#fff;
+  display:flex; align-items:center; justify-content:center; cursor:pointer; border:none; font-size:15px;
+}
+.scanner-topbar .scanner-title { color:#fff; font-size:14px; font-weight:700; }
+.scanner-hint-bar {
+  position:absolute; bottom:calc(24px + env(safe-area-inset-bottom,0px)); left:16px; right:16px; z-index:2;
+  background:rgba(0,0,0,0.55); color:#fff; font-size:12.5px; text-align:center; padding:12px 14px; border-radius:12px;
+}
 .scan-canvas-hidden { display:none; }
 </style>
 </head>
@@ -534,13 +595,23 @@ body { position:relative; overscroll-behavior:none; }
      ====================================================== -->
 <script>
   const API_URL = 'https://script.google.com/macros/s/AKfycbxYE8JMrab1cIZQba9HmNM76ikogzjg8XPnvdJERJeBhSwTWD3yAwdb6wWleVDFeE-uHQ/exec';
+  const BOT_REGISTER_URL = 'https://t.me/super_apps_rontbot';
 </script>
 
 <div id="toastWrap"><div class="toast-box" id="toast"><i id="toastIcon" class="ic-check"></i><span id="toastMsg"></span></div></div>
 
-<canvas id="scanDecodeCanvas" class="scan-canvas-hidden"></canvas>
-<input type="file" id="scanOrderInput" accept="image/*" capture="environment" style="display:none;" onchange="handleScanFile(event, 'order')">
-<input type="file" id="scanFieldInput" accept="image/*" capture="environment" style="display:none;" onchange="handleScanFile(event, 'field')">
+<!-- SCANNER OVERLAY - dipakai untuk Scan SN ONT (Barcode 1D live, ZXing) -->
+<div class="scanner-modal" id="scannerModal">
+  <div class="scanner-topbar">
+    <div class="scanner-title">Scan SN ONT</div>
+    <button class="scanner-close" onclick="closeScanner()"><i class="ic-xmark"></i></button>
+  </div>
+  <div class="scanner-video-wrap">
+    <video id="scannerVideo" autoplay playsinline muted></video>
+    <div class="scanner-reticle"></div>
+  </div>
+  <div class="scanner-hint-bar">Arahkan kamera ke barcode SN ONT (1D). Terdeteksi otomatis.</div>
+</div>
 
 <div id="modalOverlay" class="modal-overlay">
   <div class="modal-box">
@@ -556,13 +627,12 @@ body { position:relative; overscroll-behavior:none; }
 
 <div class="app-shell">
 
-  <!-- HEADER TUNGGAL - dinamis, diatur oleh applyHeaderForScreen() di JS -->
   <div class="app-header">
     <div class="header-brand" id="headerBrand">
       <div class="header-icon"><i class="ic-layers"></i></div>
       <div class="header-text">
         <div class="brand-title">Ront Mobile Apps</div>
-        <div class="brand-sub" id="headerSub">Memuat data pengguna...</div>
+        <div class="brand-sub" id="headerSub">Presensi &amp; Order Teknisi ONT</div>
       </div>
     </div>
     <div class="header-titlebar" id="headerTitlebar" style="display:none;">
@@ -617,37 +687,11 @@ body { position:relative; overscroll-behavior:none; }
             <div class="qt-icon qt-orange"><i class="ic-inbox"></i></div>
             <div class="qt-label">Justifikasi</div>
           </div>
-          <div class="quick-tile" onclick="triggerScan('order')">
+          <div class="quick-tile" onclick="openScanner('order')">
             <div class="qt-icon qt-purple"><i class="ic-scan"></i></div>
             <div class="qt-label">Scan SN ONT</div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- REGISTER -->
-    <div id="screen-register" class="screen">
-      <div class="glass-card">
-        <div class="field-wrap">
-          <label class="field-label">NIK Teknisi</label>
-          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="regNik" type="text" placeholder="Masukkan NIK" class="field-input">
-        </div>
-        <div class="field-wrap">
-          <label class="field-label">Nama Lengkap Teknisi</label>
-          <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="regNama" type="text" placeholder="Masukkan Nama Lengkap" class="field-input">
-        </div>
-        <div class="field-wrap">
-          <label class="field-label">Password</label>
-          <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="regPassword" type="password" placeholder="Buat Password (min. 4 karakter)" class="field-input" autocomplete="new-password" name="ront_reg_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
-          <i class="ic-eye field-icon-right" id="regEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('regPassword','regEyeIcon')"></i>
-        </div>
-        <button id="btnRegister" onclick="handleRegister(event)" class="btn-primary" style="margin-top:4px;">
-          <div class="btn-inner"><div class="btn-spinner" id="regSpinner"></div><span id="regBtnText">Submit Register</span></div>
-        </button>
-        <div class="link-btn" style="text-align:center; margin-top:14px;" onclick="goTo('login')">Sudah punya akun? Masuk di sini</div>
       </div>
     </div>
 
@@ -672,34 +716,50 @@ body { position:relative; overscroll-behavior:none; }
         <button id="btnLogin" onclick="handleLogin(event)" class="btn-primary" style="margin-top:4px;">
           <div class="btn-inner"><div class="btn-spinner" id="loginSpinner"></div><span id="loginBtnText">Login</span></div>
         </button>
-        <div style="display:flex; justify-content:space-between; margin-top:14px;">
-          <div class="link-btn" onclick="goTo('register')">Belum punya akun? Daftar</div>
+        <div style="text-align:center; margin-top:14px;">
           <div class="link-btn" onclick="goTo('resetpw')">Lupa Password?</div>
         </div>
+
+        <a class="bot-register-banner" href="https://t.me/super_apps_rontbot" target="_blank" rel="noopener">
+          <div class="brb-icon"><i class="ic-telegram"></i></div>
+          <div>
+            <div class="brb-text-title">Belum punya akun?</div>
+            <div class="brb-text-sub">Daftar melalui Bot Telegram @super_apps_rontbot</div>
+          </div>
+        </a>
       </div>
     </div>
 
-    <!-- RESET PASSWORD -->
+    <!-- RESET PASSWORD (OTP) -->
     <div id="screen-resetpw" class="screen">
       <div class="glass-card">
 
         <div id="resetStep1">
           <div style="text-align:center; margin-bottom:18px;">
             <div class="modal-icon" style="margin:0 auto 12px;"><i class="ic-lock"></i></div>
-            <div style="font-size:13.5px; color:var(--info-text);">Masukkan NIK Anda untuk mereset password</div>
+            <div style="font-size:13.5px; color:var(--info-text);">Masukkan NIK Anda. Kode OTP akan dikirim ke Telegram yang terdaftar.</div>
           </div>
           <div class="field-wrap">
             <label class="field-label">NIK Teknisi</label>
             <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
             <input id="resetNik" type="text" placeholder="Masukkan NIK" class="field-input">
           </div>
-          <button id="btnResetLookup" onclick="handleResetLookup(event)" class="btn-primary" style="margin-top:4px;">
-            <div class="btn-inner"><div class="btn-spinner" id="resetLookupSpinner"></div><span id="resetLookupText">Reset</span></div>
+          <button id="btnResetLookup" onclick="handleRequestOtp(event)" class="btn-primary" style="margin-top:4px;">
+            <div class="btn-inner"><div class="btn-spinner" id="resetLookupSpinner"></div><span id="resetLookupText">Kirim Kode OTP</span></div>
           </button>
         </div>
 
         <div id="resetStep2" style="display:none;">
-          <div class="info-box">Reset password untuk: <strong id="resetNamaDisplay">-</strong></div>
+          <div class="info-box">Kode OTP dikirim ke Telegram akun: <strong id="resetNamaDisplay">-</strong></div>
+
+          <div class="otp-timer" id="otpTimerWrap">
+            Kode berlaku selama <span class="otp-timer-num" id="otpTimerNum">05:00</span>
+          </div>
+
+          <div class="field-wrap">
+            <label class="field-label">Kode OTP</label>
+            <input id="resetOtp" type="text" inputmode="numeric" maxlength="6" placeholder="------" class="field-input otp-input">
+          </div>
           <div class="field-wrap">
             <label class="field-label">Password Baru</label>
             <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
@@ -714,12 +774,13 @@ body { position:relative; overscroll-behavior:none; }
           <button id="btnResetSubmit" onclick="handleResetSubmit(event)" class="btn-primary" style="margin-top:4px;">
             <div class="btn-inner"><div class="btn-spinner" id="resetSubmitSpinner"></div><span id="resetSubmitText">Simpan Password Baru</span></div>
           </button>
-          <div class="link-btn" style="text-align:center; margin-top:14px;" onclick="resetResetForm()">Batal, mulai ulang</div>
+          <div class="link-btn" style="text-align:center; margin-top:14px; display:block;" id="resendOtpLink" onclick="handleRequestOtp(event)">Kirim Ulang OTP</div>
+          <div class="link-btn" style="text-align:center; margin-top:8px;" onclick="resetResetForm()">Batal, mulai ulang</div>
         </div>
       </div>
     </div>
 
-    <!-- PRESENSI -->
+    <!-- PRESENSI (kamera depan live, tanpa galeri) -->
     <div id="screen-presensi" class="screen">
       <div class="glass-card">
         <label class="field-label">Lokasi (GPS)</label>
@@ -737,28 +798,38 @@ body { position:relative; overscroll-behavior:none; }
           </select>
         </div>
 
-        <label class="field-label">Evidence (Foto Selfie)</label>
-        <input type="file" id="presensiPhotoInput" accept="image/*" capture="user" class="hidden" style="display:none;" onchange="handlePresensiPhoto(event)">
-        <div class="upload-box" id="presUploadBox" onclick="document.getElementById('presensiPhotoInput').click()">
-          <div class="upload-icon"><i class="ic-camera"></i></div>
-          <span id="presFotoLabel">Klik untuk Evidence (Kamera)</span>
+        <label class="field-label">Evidence (Foto Selfie - Kamera Depan)</label>
+        <canvas id="presCaptureCanvas" class="scan-canvas-hidden"></canvas>
+
+        <div class="camera-wrap-overlay" id="presCameraWrap">
+          <div class="camera-box" id="presCameraBox">
+            <div class="camera-placeholder" id="presCameraPlaceholder">
+              <i class="ic-camera" style="font-size:28px; display:block; margin:0 auto 8px;"></i>
+              Tap tombol di bawah untuk mengaktifkan kamera depan
+            </div>
+            <video id="presVideo" autoplay playsinline muted style="display:none;"></video>
+          </div>
+          <div class="camera-hint-badge" id="presCameraBadge" style="display:none;"><i class="ic-camera"></i> Kamera Depan</div>
         </div>
+        <button type="button" class="btn-outline" id="btnOpenCamera" style="margin-top:12px;" onclick="startPresensiCamera()"><i class="ic-camera"></i> Aktifkan Kamera</button>
+        <button type="button" class="shutter-btn" id="btnShutter" style="display:none;" onclick="capturePresensiPhoto()"></button>
+
         <div class="photo-preview-wrap" id="presPreviewWrap">
           <img id="presFotoPreview" class="photo-preview" />
-          <button type="button" class="retake-btn" onclick="document.getElementById('presensiPhotoInput').click()"><i class="ic-camera"></i></button>
+          <button type="button" class="retake-btn" onclick="retakePresensiPhoto()"><i class="ic-camera"></i></button>
         </div>
 
         <button id="btnAbsen" onclick="handlePresensi(event)" disabled class="btn-primary btn-danger" style="margin-top:16px;">
           <div class="btn-inner"><div class="btn-spinner" id="absenSpinner"></div><span id="absenBtnText">Simpan Presensi</span></div>
         </button>
-        <p class="field-hint" style="text-align:center; margin-top:8px;">Tombol aktif jika semua data (lokasi, STO, foto) sudah lengkap.</p>
+        <p class="field-hint" style="text-align:center; margin-top:8px;">Tombol aktif jika semua data (lokasi, STO, foto selfie) sudah lengkap. Foto wajib diambil langsung dari kamera depan.</p>
       </div>
     </div>
 
-    <!-- JUSTIFIKASI -->
+    <!-- JUSTIFIKASI (tetap boleh upload dari galeri - bukti nota/transaksi) -->
     <div id="screen-justifikasi" class="screen">
       <div class="glass-card">
-        <label class="field-label">Upload Gambar</label>
+        <label class="field-label">Upload Gambar (Nota/Bukti Transaksi)</label>
         <input type="file" id="justifikasiPhotoInput" accept="image/*" style="display:none;" onchange="handleJustifikasiPhoto(event)">
         <div class="upload-box" id="justUploadBox" onclick="document.getElementById('justifikasiPhotoInput').click()">
           <div class="upload-icon"><i class="ic-image"></i></div>
@@ -804,7 +875,7 @@ body { position:relative; overscroll-behavior:none; }
       </div>
     </div>
 
-    <!-- CLAIM (placeholder - fitur next dev) -->
+    <!-- CLAIM (placeholder) -->
     <div id="screen-claim" class="screen">
       <div class="glass-card">
         <div class="coming-soon-wrap">
@@ -855,7 +926,7 @@ body { position:relative; overscroll-behavior:none; }
           </div>
         </div>
         <button type="button" class="btn-outline" id="btnRefreshDashboard" style="margin-top:2px;" onclick="loadOrderDashboard(true)"><i class="ic-refresh"></i> Refresh Data</button>
-        <button type="button" class="btn-outline" style="margin-bottom:0;" onclick="triggerScan('order')"><i class="ic-scan"></i> Scan QR / SN untuk Cari Order</button>
+        <button type="button" class="btn-outline" style="margin-bottom:0;" onclick="openScanner('order')"><i class="ic-scan"></i> Scan Barcode SN untuk Cari Order</button>
       </div>
     </div>
 
@@ -961,13 +1032,13 @@ body { position:relative; overscroll-behavior:none; }
           <label class="field-label">SN ONT Lama</label>
           <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
           <input id="updSnOntLama" type="text" placeholder="Wajib jika Status Task Close" class="field-input has-scan" oninput="validateUpdateForm()">
-          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="triggerScan('field','updSnOntLama')" title="Scan barcode SN"></i>
+          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openScanner('field','updSnOntLama')" title="Scan barcode SN"></i>
         </div>
         <div class="field-wrap" id="wrapSnOntBaru">
           <label class="field-label">SN ONT Baru</label>
           <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
           <input id="updSnOntBaru" type="text" placeholder="Wajib jika Status Task Close" class="field-input has-scan" oninput="validateUpdateForm()">
-          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="triggerScan('field','updSnOntBaru')" title="Scan barcode SN"></i>
+          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openScanner('field','updSnOntBaru')" title="Scan barcode SN"></i>
         </div>
         <div class="field-wrap">
           <label class="field-label">Valins ID</label>
@@ -997,6 +1068,10 @@ body { position:relative; overscroll-behavior:none; }
         <div class="section-label" style="margin-top:0;">Tampilan</div>
         <button type="button" class="btn-outline" style="margin-bottom:0;" onclick="toggleTheme()"><i class="ic-sun"></i> Ganti Mode Terang / Gelap</button>
       </div>
+      <div class="glass-card" id="installCard" style="display:none;">
+        <div class="section-label" style="margin-top:0;">Aplikasi</div>
+        <button type="button" class="btn-outline" style="margin-bottom:0;" id="btnInstallApp" onclick="triggerInstallApp()"><i class="ic-house"></i> Instal Aplikasi ke Layar Utama</button>
+      </div>
       <button class="btn-primary btn-danger" onclick="logout()"><div class="btn-inner"><i class="ic-logout"></i><span>Keluar</span></div></button>
     </div>
 
@@ -1007,7 +1082,7 @@ body { position:relative; overscroll-behavior:none; }
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
     <button class="nav-btn" data-screen="claim" onclick="goTo('claim')"><i class="ic-receipt"></i>Claim</button>
     <button class="nav-btn nav-fab" data-screen="menu" onclick="goTo('menu')"><div class="fab-circle"><i class="ic-house"></i></div>Home</button>
-    <button class="nav-btn" data-screen="scan" onclick="triggerScan('order')"><i class="ic-scan"></i>Scan SN ONT</button>
+    <button class="nav-btn" data-screen="scan" onclick="openScanner('order')"><i class="ic-scan"></i>Scan SN ONT</button>
     <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Justifikasi</button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-user"></i>Profile</button>
   </div>
@@ -1063,7 +1138,7 @@ body { position:relative; overscroll-behavior:none; }
 })();
 
 /* ============================================================
- *  THEME (default: light, mengikuti gaya mockup)
+ *  THEME
  * ============================================================ */
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
@@ -1078,7 +1153,7 @@ function toggleTheme() {
 applyTheme(localStorage.getItem('ront_theme') || 'light');
 
 /* ============================================================
- *  NOTIFIKASI (placeholder - belum ada backend notifikasi)
+ *  NOTIFIKASI (placeholder)
  * ============================================================ */
 function handleNotifClick() {
   showToast('success', 'Belum ada notifikasi baru.');
@@ -1096,18 +1171,10 @@ function initialsFromName(name) {
 }
 
 /* ============================================================
- *  HEADER TUNGGAL (v6)
- *  Satu <div class="app-header"> dipakai di semua layar. Isinya
- *  ditentukan lewat HEADER_CONFIG per nama layar:
- *  - mode 'brand' -> tampilkan logo + judul app + subtitle + notif
- *    (dipakai di Login & Beranda, layar tanpa konteks "kembali")
- *  - mode 'title' -> tampilkan tombol kembali (jika ada) + judul
- *    layar dalam 1 baris ringkas (dipakai di semua layar lainnya)
- *  Dipanggil dari goTo() setiap kali pindah layar.
+ *  HEADER TUNGGAL
  * ============================================================ */
 const HEADER_CONFIG = {
   login:          { mode:'brand' },
-  register:       { mode:'title', title:'Form Register', back:'login' },
   resetpw:        { mode:'title', title:'Reset Password', back:'login' },
   menu:           { mode:'brand' },
   presensi:       { mode:'title', title:'Presensi', back:'menu' },
@@ -1151,26 +1218,6 @@ function applyHeaderForScreen(screen) {
 }
 
 /* ============================================================
- *  SAFE AREA - hindari header ketutup tombol Close/menu Telegram
- *  saat Mini App dibuka dalam mode Fullscreen
- * ============================================================ */
-function applySafeArea() {
-  let top = 54;
-  try {
-    const csi = Telegram.WebApp.contentSafeAreaInset;
-    if (csi && typeof csi.top === 'number' && csi.top > 0) top = csi.top;
-    const isFullscreen = Telegram.WebApp.isFullscreen;
-    if (isFullscreen === false && (!csi || !csi.top)) top = 0;
-  } catch (e) {}
-
-  const header = document.querySelector('.app-header');
-  header.style.paddingTop = (13 + top) + 'px';
-  requestAnimationFrame(() => {
-    document.querySelector('.app-main').style.paddingTop = (header.offsetHeight + 14) + 'px';
-  });
-}
-
-/* ============================================================
  *  STATE
  * ============================================================ */
 const STO_LIST = [
@@ -1182,11 +1229,14 @@ const STO_LIST = [
   "TANJUNG BUMI","WARU PAMEKASAN"
 ];
 
-let tgUser = { id: null, username: null };
 let presensiState = { koordinat: null, alamat: null, sto: null, photoBase64: null };
 let justifikasiState = { photoBase64: null, tanggal: null, jenisTransaksi: null, keterangan: null };
 let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null };
 let scanTargetFieldId = null; // dipakai saat scan ditujukan ke 1 field spesifik (mis. SN ONT)
+let resetOtpTimerHandle = null;
+let resetOtpExpiryTs = null;
+let presensiCameraStream = null;
+let deferredInstallPrompt = null;
 
 /* ============================================================
  *  API HELPER
@@ -1200,52 +1250,54 @@ function apiPost(data) {
 }
 
 /* ============================================================
+ *  PWA - SERVICE WORKER & INSTALL PROMPT
+ * ============================================================ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const card = document.getElementById('installCard');
+  if (card) card.style.display = 'block';
+});
+function triggerInstallApp() {
+  if (!deferredInstallPrompt) { showToast('error', 'Instalasi tidak tersedia di browser ini.'); return; }
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.finally(() => { deferredInstallPrompt = null; });
+}
+
+/* ============================================================
  *  INIT
  * ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
-  try {
-    Telegram.WebApp.ready();
-    Telegram.WebApp.expand();
-    const u = Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
-    if (u) { tgUser.id = u.id; tgUser.username = u.username || u.first_name || ('user' + u.id); }
-  } catch (e) {}
-
-  applySafeArea();
-  try { Telegram.WebApp.onEvent('fullscreenChanged', applySafeArea); } catch (e) {}
-  try { Telegram.WebApp.onEvent('viewportChanged', applySafeArea); } catch (e) {}
-
-  document.getElementById('headerSub').textContent = tgUser.id ? ('Telegram ID: ' + tgUser.id) : 'Dibuka di luar Telegram (mode uji)';
-
   const sel = document.getElementById('presSto');
   STO_LIST.forEach(sto => { const opt = document.createElement('option'); opt.value = sto; opt.textContent = sto; sel.appendChild(opt); });
 
-  if (tgUser.id) {
-    apiGet({ action:'checkUser', telegramId: tgUser.id }).then(res => {
-      if (res.registered) {
-        document.getElementById('menuNamaOnly').textContent = res.nama;
-        document.getElementById('menuNikOnly').textContent = 'NIK ' + res.nik;
-        document.getElementById('menuAvatar').textContent = initialsFromName(res.nama);
-      }
-    });
-  }
   const savedNik = localStorage.getItem('ront_nik');
   if (savedNik) document.getElementById('loginNik').value = savedNik;
   document.getElementById('rememberMeBox').checked = localStorage.getItem('ront_remember') !== '0';
 
   const session = getSession();
   if (session) {
-    document.getElementById('menuNamaOnly').textContent = session.nama;
-    document.getElementById('menuNikOnly').textContent = 'NIK ' + session.nik;
-    document.getElementById('menuAvatar').textContent = initialsFromName(session.nama);
-    document.getElementById('akunNama').textContent = session.nama;
-    document.getElementById('akunNik').textContent = 'NIK ' + session.nik;
-    document.getElementById('akunAvatar').textContent = initialsFromName(session.nama);
+    applySessionToUi(session);
     goTo('menu');
     loadMenuSummary();
   } else {
     goTo('login');
   }
 });
+
+function applySessionToUi(session) {
+  document.getElementById('menuNamaOnly').textContent = session.nama;
+  document.getElementById('menuNikOnly').textContent = 'NIK ' + session.nik;
+  document.getElementById('menuAvatar').textContent = initialsFromName(session.nama);
+  document.getElementById('akunNama').textContent = session.nama;
+  document.getElementById('akunNik').textContent = 'NIK ' + session.nik;
+  document.getElementById('akunAvatar').textContent = initialsFromName(session.nama);
+}
 
 /* ============================================================
  *  NAVIGASI & SESSION
@@ -1262,7 +1314,10 @@ function goTo(screen) {
   window.scrollTo({ top:0, behavior:'instant' });
 
   const nav = document.querySelector('.bottom-nav');
-  nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'register' || screen === 'resetpw');
+  nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'resetpw');
+
+  // Matikan kamera presensi kalau pindah dari layar presensi
+  if (screen !== 'presensi') stopPresensiCamera();
 
   const needsLogin = screen === 'presensi' || screen === 'justifikasi' || screen === 'menu' || screen === 'akun' || screen === 'claim' || ORDER_SCREENS.indexOf(screen) !== -1;
   if (needsLogin && !getSession()) {
@@ -1320,7 +1375,7 @@ function shakeEl(el) {
 }
 
 /* ============================================================
- *  PASSWORD TOGGLE (generic, dipakai di semua field password)
+ *  PASSWORD TOGGLE
  * ============================================================ */
 function togglePwd(inputId, iconId) {
   const inp = document.getElementById(inputId);
@@ -1337,33 +1392,6 @@ function toggleRemember() {
   box.checked = !box.checked;
   localStorage.setItem('ront_remember', box.checked ? '1' : '0');
   if (!box.checked) localStorage.removeItem('ront_nik');
-}
-
-/* ============================================================
- *  REGISTER
- * ============================================================ */
-function handleRegister(e) {
-  const btn = document.getElementById('btnRegister');
-  if (e) addRipple(btn, e);
-  const nik = document.getElementById('regNik').value.trim();
-  const nama = document.getElementById('regNama').value.trim();
-  const password = document.getElementById('regPassword').value.trim();
-  if (!nik || !nama || !password) { showToast('error', 'NIK, Nama Lengkap, dan Password wajib diisi.'); shakeEl(btn.closest('.glass-card')); return; }
-  if (password.length < 4) { showToast('error', 'Password minimal 4 karakter.'); shakeEl(btn.closest('.glass-card')); return; }
-  if (!tgUser.id) { showToast('error', 'Gagal membaca data Telegram. Buka melalui Bot Telegram.'); return; }
-
-  setLoading('btnRegister', 'regSpinner', 'regBtnText', 'Mengirim...');
-  apiPost({ action:'register', telegramId: tgUser.id, username: tgUser.username, nik, namaTeknisi: nama, password })
-    .then(res => {
-      resetLoading('btnRegister', 'regSpinner', 'regBtnText', 'Submit Register');
-      if (res.success) {
-        showToast('success', res.message + ' Silakan login.');
-        document.getElementById('loginNik').value = nik;
-        document.getElementById('regNik').value = ''; document.getElementById('regNama').value = ''; document.getElementById('regPassword').value = '';
-        goTo('login');
-      } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
-    })
-    .catch(err => { resetLoading('btnRegister', 'regSpinner', 'regBtnText', 'Submit Register'); showToast('error', 'Error: ' + err.message); });
 }
 
 /* ============================================================
@@ -1384,12 +1412,7 @@ function handleLogin(e) {
         setSession(res);
         const remember = document.getElementById('rememberMeBox').checked;
         if (remember) localStorage.setItem('ront_nik', res.nik); else localStorage.removeItem('ront_nik');
-        document.getElementById('menuNamaOnly').textContent = res.nama;
-        document.getElementById('menuNikOnly').textContent = 'NIK ' + res.nik;
-        document.getElementById('menuAvatar').textContent = initialsFromName(res.nama);
-        document.getElementById('akunNama').textContent = res.nama;
-        document.getElementById('akunNik').textContent = 'NIK ' + res.nik;
-        document.getElementById('akunAvatar').textContent = initialsFromName(res.nama);
+        applySessionToUi(res);
         showToast('success', 'Login berhasil.');
         goTo('menu');
       } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
@@ -1398,7 +1421,7 @@ function handleLogin(e) {
 }
 
 /* ============================================================
- *  MODAL KONFIRMASI (generic)
+ *  MODAL KONFIRMASI (generic - masih dipakai di tempat lain jika perlu)
  * ============================================================ */
 let _modalResolve = null;
 function showModal(text) {
@@ -1412,51 +1435,84 @@ function closeModal(result) {
 }
 
 /* ============================================================
- *  RESET PASSWORD
+ *  RESET PASSWORD - OTP (v6)
  * ============================================================ */
-let resetState = { nik: null, nama: null };
+let resetState = { nik: null };
 
-function handleResetLookup(e) {
-  const btn = document.getElementById('btnResetLookup');
-  if (e) addRipple(btn, e);
-  const nik = document.getElementById('resetNik').value.trim();
-  if (!nik) { showToast('error', 'NIK wajib diisi.'); shakeEl(btn.closest('.glass-card')); return; }
-  if (!tgUser.id) { showToast('error', 'Gagal membaca data Telegram. Buka melalui Bot Telegram.'); return; }
+function handleRequestOtp(e) {
+  const btnId = document.getElementById('resetStep2').style.display === 'block' ? null : 'btnResetLookup';
+  if (e) addRipple(e.currentTarget || e.target, e);
+  const nik = document.getElementById('resetNik').value.trim() || resetState.nik;
+  if (!nik) { showToast('error', 'NIK wajib diisi.'); return; }
+  resetState.nik = nik;
 
-  setLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Memeriksa...');
-  apiPost({ action:'checkReset', telegramId: tgUser.id, nik })
-    .then(async res => {
-      resetLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Kirim Instruksi');
+  if (btnId) setLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Mengirim...');
+  apiPost({ action:'requestResetOtp', nik })
+    .then(res => {
+      if (btnId) resetLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Kirim Kode OTP');
       if (res.success) {
-        resetState.nik = nik; resetState.nama = res.nama;
-        const confirmed = await showModal('Apakah nama Anda "' + res.nama + '" benar?');
-        if (confirmed) {
-          document.getElementById('resetStep1').style.display = 'none';
-          document.getElementById('resetStep2').style.display = 'block';
-          document.getElementById('resetNamaDisplay').textContent = res.nama;
-        }
+        document.getElementById('resetStep1').style.display = 'none';
+        document.getElementById('resetStep2').style.display = 'block';
+        document.getElementById('resetNamaDisplay').textContent = res.nama;
+        document.getElementById('resetOtp').value = '';
+        startOtpTimer(300);
+        showToast('success', 'Kode OTP telah dikirim.');
       } else {
-        showToast('error', res.message); shakeEl(btn.closest('.glass-card'));
+        showToast('error', res.message);
       }
     })
-    .catch(err => { resetLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Kirim Instruksi'); showToast('error', 'Error: ' + err.message); });
+    .catch(err => {
+      if (btnId) resetLoading('btnResetLookup', 'resetLookupSpinner', 'resetLookupText', 'Kirim Kode OTP');
+      showToast('error', 'Error: ' + err.message);
+    });
+}
+
+function startOtpTimer(seconds) {
+  clearInterval(resetOtpTimerHandle);
+  resetOtpExpiryTs = Date.now() + seconds * 1000;
+  const numEl = document.getElementById('otpTimerNum');
+  const resendLink = document.getElementById('resendOtpLink');
+  resendLink.style.opacity = '0.4'; resendLink.style.pointerEvents = 'none';
+
+  function tick() {
+    const remainMs = resetOtpExpiryTs - Date.now();
+    if (remainMs <= 0) {
+      numEl.textContent = 'Kedaluwarsa';
+      numEl.classList.add('otp-expired');
+      resendLink.style.opacity = '1'; resendLink.style.pointerEvents = 'auto';
+      clearInterval(resetOtpTimerHandle);
+      return;
+    }
+    const totalSec = Math.ceil(remainMs / 1000);
+    const mm = String(Math.floor(totalSec / 60)).padStart(2, '0');
+    const ss = String(totalSec % 60).padStart(2, '0');
+    numEl.textContent = mm + ':' + ss;
+    numEl.classList.remove('otp-expired');
+  }
+  tick();
+  resetOtpTimerHandle = setInterval(tick, 1000);
 }
 
 function handleResetSubmit(e) {
   const btn = document.getElementById('btnResetSubmit');
   if (e) addRipple(btn, e);
+  const otp = document.getElementById('resetOtp').value.trim();
   const pw1 = document.getElementById('resetPasswordNew').value.trim();
   const pw2 = document.getElementById('resetPasswordConfirm').value.trim();
+
+  if (!otp || otp.length !== 6) { showToast('error', 'Kode OTP harus 6 digit.'); shakeEl(btn.closest('.glass-card')); return; }
+  if (!resetOtpExpiryTs || Date.now() > resetOtpExpiryTs) { showToast('error', 'Kode OTP sudah kedaluwarsa. Silakan kirim ulang.'); return; }
   if (!pw1 || pw1.length < 4) { showToast('error', 'Password baru minimal 4 karakter.'); shakeEl(btn.closest('.glass-card')); return; }
   if (pw1 !== pw2) { showToast('error', 'Konfirmasi password tidak cocok.'); shakeEl(btn.closest('.glass-card')); return; }
 
   setLoading('btnResetSubmit', 'resetSubmitSpinner', 'resetSubmitText', 'Menyimpan...');
-  apiPost({ action:'resetPassword', telegramId: tgUser.id, nik: resetState.nik, newPassword: pw1 })
+  apiPost({ action:'resetPasswordOtp', nik: resetState.nik, otp, newPassword: pw1 })
     .then(res => {
       resetLoading('btnResetSubmit', 'resetSubmitSpinner', 'resetSubmitText', 'Simpan Password Baru');
       if (res.success) {
         showToast('success', res.message);
         document.getElementById('loginNik').value = resetState.nik;
+        clearInterval(resetOtpTimerHandle);
         resetResetForm();
         goTo('login');
       } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
@@ -1465,8 +1521,11 @@ function handleResetSubmit(e) {
 }
 
 function resetResetForm() {
-  resetState = { nik: null, nama: null };
+  clearInterval(resetOtpTimerHandle);
+  resetState = { nik: null };
+  resetOtpExpiryTs = null;
   document.getElementById('resetNik').value = '';
+  document.getElementById('resetOtp').value = '';
   document.getElementById('resetPasswordNew').value = '';
   document.getElementById('resetPasswordConfirm').value = '';
   document.getElementById('resetStep1').style.display = 'block';
@@ -1502,20 +1561,75 @@ function ambilLokasi() {
 }
 
 /* ============================================================
- *  PRESENSI - FOTO (input capture, getUserMedia black-screen di Telegram WebView)
+ *  PRESENSI - KAMERA DEPAN LIVE (getUserMedia, TANPA akses galeri)
+ *
+ *  CATATAN: bug black-screen sebelumnya spesifik pada in-app WebView
+ *  Telegram. Karena sekarang berjalan sebagai PWA di browser murni,
+ *  getUserMedia dengan facingMode 'user' bisa dipakai langsung untuk
+ *  preview kamera live + capture still frame, tanpa perlu buka galeri.
  * ============================================================ */
-function handlePresensiPhoto(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    presensiState.photoBase64 = e.target.result;
-    document.getElementById('presFotoPreview').src = e.target.result;
-    document.getElementById('presPreviewWrap').classList.add('show');
-    document.getElementById('presUploadBox').style.display = 'none';
-    cekRequirement();
-  };
-  reader.readAsDataURL(file);
+function startPresensiCamera() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showToast('error', 'Perangkat/browser tidak mendukung akses kamera.');
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+    .then(stream => {
+      presensiCameraStream = stream;
+      const video = document.getElementById('presVideo');
+      video.srcObject = stream;
+      video.style.display = 'block';
+      document.getElementById('presCameraPlaceholder').style.display = 'none';
+      document.getElementById('presCameraBadge').style.display = 'flex';
+      document.getElementById('btnOpenCamera').style.display = 'none';
+      document.getElementById('btnShutter').style.display = 'block';
+      document.getElementById('presPreviewWrap').classList.remove('show');
+    })
+    .catch(err => {
+      showToast('error', 'Gagal mengakses kamera depan: ' + err.message);
+    });
+}
+
+function stopPresensiCamera() {
+  if (presensiCameraStream) {
+    presensiCameraStream.getTracks().forEach(t => t.stop());
+    presensiCameraStream = null;
+  }
+  const video = document.getElementById('presVideo');
+  if (video) { video.srcObject = null; video.style.display = 'none'; }
+  const badge = document.getElementById('presCameraBadge');
+  if (badge) badge.style.display = 'none';
+  const shutter = document.getElementById('btnShutter');
+  if (shutter) shutter.style.display = 'none';
+}
+
+function capturePresensiPhoto() {
+  const video = document.getElementById('presVideo');
+  if (!video || !video.videoWidth) { showToast('error', 'Kamera belum siap, coba lagi.'); return; }
+  const canvas = document.getElementById('presCaptureCanvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  // mirror horizontal supaya hasil foto sesuai orientasi natural (bukan terbalik seperti preview)
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+
+  presensiState.photoBase64 = dataUrl;
+  document.getElementById('presFotoPreview').src = dataUrl;
+  document.getElementById('presPreviewWrap').classList.add('show');
+  stopPresensiCamera();
+  document.getElementById('btnOpenCamera').style.display = 'flex';
+  document.getElementById('btnOpenCamera').innerHTML = '<i class="ic-camera"></i> Aktifkan Kamera Lagi';
+  cekRequirement();
+}
+
+function retakePresensiPhoto() {
+  presensiState.photoBase64 = null;
+  document.getElementById('presPreviewWrap').classList.remove('show');
+  cekRequirement();
+  startPresensiCamera();
 }
 
 function cekRequirement() {
@@ -1532,7 +1646,7 @@ function handlePresensi(e) {
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
   if (!presensiState.koordinat || !presensiState.sto || !presensiState.photoBase64) {
-    showToast('error', 'Lengkapi lokasi, STO, dan foto evidence terlebih dahulu.'); return;
+    showToast('error', 'Lengkapi lokasi, STO, dan foto selfie terlebih dahulu.'); return;
   }
 
   setLoading('btnAbsen', 'absenSpinner', 'absenBtnText', 'Mengirim...');
@@ -1552,14 +1666,15 @@ function resetPresensiForm() {
   document.getElementById('presAlamat').textContent = '-';
   document.getElementById('presSto').value = '';
   document.getElementById('presPreviewWrap').classList.remove('show');
-  document.getElementById('presUploadBox').style.display = 'flex';
-  document.getElementById('presFotoLabel').textContent = 'Klik untuk Evidence (Kamera)';
-  document.getElementById('presensiPhotoInput').value = '';
+  document.getElementById('btnOpenCamera').style.display = 'flex';
+  document.getElementById('btnOpenCamera').innerHTML = '<i class="ic-camera"></i> Aktifkan Kamera';
+  stopPresensiCamera();
   cekRequirement();
 }
 
 /* ============================================================
- *  JUSTIFIKASI
+ *  JUSTIFIKASI (tidak berubah - masih boleh dari galeri, karena
+ *  ini bukti nota/transaksi, bukan verifikasi kehadiran)
  * ============================================================ */
 function handleJustifikasiPhoto(event) {
   const file = event.target.files[0];
@@ -1635,7 +1750,7 @@ function resetJustifikasiForm() {
 }
 
 /* ============================================================
- *  MENU - RINGKASAN HARI INI (memakai getOrderDashboard yang sudah cache)
+ *  MENU - RINGKASAN
  * ============================================================ */
 function loadMenuSummary() {
   const session = getSession();
@@ -1651,7 +1766,7 @@ function loadMenuSummary() {
 }
 
 /* ============================================================
- *  ORDER - DASHBOARD (dengan loading skeleton)
+ *  ORDER - DASHBOARD
  * ============================================================ */
 function normStatus(s) { return String(s || '').trim().toUpperCase(); }
 
@@ -1705,7 +1820,7 @@ function loadOrderDashboard(forceRefresh) {
 }
 
 /* ============================================================
- *  ORDER - DETAIL LIST (dengan loading skeleton, judul di header)
+ *  ORDER - DETAIL LIST
  * ============================================================ */
 const ORDER_STATUS_TITLES = {
   TOTAL: 'Semua Order', UNPICKED: 'Unpicked', 'PICKED UP': 'Picked Up',
@@ -1929,74 +2044,96 @@ function ambilAlamatOrderUpdate() {
 }
 
 /* ============================================================
- *  SCAN QR / SN
+ *  SCAN SN ONT - BARCODE SCANNER 1D LIVE (ZXing)
  *
- *  CATATAN: live camera preview lewat getUserMedia black-screen di
- *  Telegram in-app WebView, jadi fitur ini memakai pola sama seperti
- *  foto Presensi: buka kamera lewat <input type=file capture>, ambil
- *  1 foto barcode/QR, lalu decode dari gambar diam via jsQR.
+ *  Hanya membaca simbologi barcode 1D (CODE128/39/93, EAN, UPC,
+ *  ITF, CODABAR) - QR code TIDAK termasuk dalam daftar format ini,
+ *  sesuai kebutuhan SN ONT yang berbasis barcode 1D.
  *
- *  mode 'order' -> hasil decode dipakai sebagai No Inet, langsung
+ *  mode 'order' -> hasil scan dipakai sebagai No Inet/SN, langsung
  *  cari & buka layar Pickup/Update order tsb.
- *  mode 'field'  -> hasil decode ditulis ke satu input tertentu
+ *  mode 'field'  -> hasil scan ditulis ke satu input tertentu
  *  (tombol scan kecil di sebelah SN ONT Lama/Baru).
  * ============================================================ */
-function triggerScan(mode, fieldId) {
-  const session = getSession();
-  if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
-  if (mode === 'field') {
-    scanTargetFieldId = fieldId;
-    document.getElementById('scanFieldInput').click();
-  } else {
-    document.getElementById('scanOrderInput').click();
-  }
+let zxingCodeReader = null;
+let scannerActiveMode = null;
+
+function _buildZxingHints() {
+  const hints = new Map();
+  const formats = [
+    ZXing.BarcodeFormat.CODE_128,
+    ZXing.BarcodeFormat.CODE_39,
+    ZXing.BarcodeFormat.CODE_93,
+    ZXing.BarcodeFormat.EAN_13,
+    ZXing.BarcodeFormat.EAN_8,
+    ZXing.BarcodeFormat.UPC_A,
+    ZXing.BarcodeFormat.UPC_E,
+    ZXing.BarcodeFormat.ITF,
+    ZXing.BarcodeFormat.CODABAR
+  ];
+  hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
+  hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+  return hints;
 }
 
-function handleScanFile(event, mode) {
-  const file = event.target.files[0];
-  event.target.value = '';
-  if (!file) return;
+function openScanner(mode, fieldId) {
+  const session = getSession();
+  if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
+  if (typeof ZXing === 'undefined') { showToast('error', 'Modul barcode scanner gagal dimuat. Periksa koneksi internet.'); return; }
 
-  showToast('success', 'Membaca barcode/QR...');
-  const img = new Image();
-  const reader = new FileReader();
-  reader.onload = e => {
-    img.onload = () => {
-      const canvas = document.getElementById('scanDecodeCanvas');
-      const maxDim = 1000;
-      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const code = (typeof jsQR === 'function') ? jsQR(imageData.data, imageData.width, imageData.height) : null;
+  scannerActiveMode = mode;
+  scanTargetFieldId = mode === 'field' ? fieldId : null;
 
-      if (!code || !code.data) {
-        showToast('error', 'QR/Barcode tidak terbaca. Coba foto ulang lebih dekat & fokus.');
-        return;
-      }
-      const value = code.data.trim();
+  document.getElementById('scannerModal').classList.add('show');
 
-      if (mode === 'field') {
-        if (scanTargetFieldId) {
-          const el = document.getElementById(scanTargetFieldId);
-          if (el) { el.value = value; validateUpdateForm(); }
-        }
-        showToast('success', 'Berhasil scan: ' + value);
-      } else {
-        scanAndOpenOrder(value);
-      }
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+  try {
+    zxingCodeReader = new ZXing.BrowserMultiFormatReader(_buildZxingHints());
+  } catch (e) {
+    zxingCodeReader = new ZXing.BrowserMultiFormatReader();
+  }
+
+  const constraints = { video: { facingMode: { ideal: 'environment' } }, audio: false };
+
+  zxingCodeReader.decodeFromConstraints(constraints, 'scannerVideo', (result, err) => {
+    if (result && result.getText) {
+      const value = result.getText().trim();
+      handleScanResult(value);
+    }
+    // NotFoundException muncul terus-menerus selama belum ada barcode terdeteksi - abaikan.
+  }).catch(err => {
+    showToast('error', 'Gagal mengakses kamera: ' + err.message);
+    closeScanner();
+  });
+}
+
+function closeScanner() {
+  document.getElementById('scannerModal').classList.remove('show');
+  if (zxingCodeReader) {
+    try { zxingCodeReader.reset(); } catch (e) {}
+    zxingCodeReader = null;
+  }
+  scannerActiveMode = null;
+}
+
+function handleScanResult(value) {
+  if (!value) return;
+  closeScanner();
+
+  if (scannerActiveMode === 'field') {
+    if (scanTargetFieldId) {
+      const el = document.getElementById(scanTargetFieldId);
+      if (el) { el.value = value; validateUpdateForm(); }
+    }
+    showToast('success', 'Berhasil scan: ' + value);
+  } else {
+    scanAndOpenOrder(value);
+  }
 }
 
 function scanAndOpenOrder(noInet) {
   const session = getSession();
   apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
-    if (!res.success) { showToast('error', res.message || 'Order dengan No Inet "' + noInet + '" tidak ditemukan.'); return; }
+    if (!res.success) { showToast('error', res.message || 'Order dengan SN/No Inet "' + noInet + '" tidak ditemukan.'); return; }
     const st = normStatus(res.data.statusTask);
     showToast('success', 'Order ditemukan: ' + noInet);
     if (st === 'UNPICKED') openPickup(noInet); else openUpdate(noInet);
