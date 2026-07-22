@@ -367,7 +367,8 @@ body { position:relative; overscroll-behavior:none; }
 .scanner-video-wrap video { width:100%; height:240px; object-fit:cover; display:block; }
 .scanner-guide { position:absolute; left:8%; right:8%; top:38%; height:60px; border:2px solid #22c55e; border-radius:8px; box-shadow:0 0 0 2000px rgba(0,0,0,0.35); pointer-events:none; }
 .scanner-title { color:#fff; font-size:14px; font-weight:700; margin:16px 0 4px; }
-.scanner-hint { color:#cbd5e1; font-size:12px; margin-bottom:16px; }
+.scanner-hint { color:#cbd5e1; font-size:12px; margin-bottom:4px; }
+.scanner-status { color:#7dd3fc; font-size:11.5px; font-weight:600; margin-bottom:16px; min-height:15px; }
 .scanner-cancel-btn {
   width:auto; margin:0 auto; padding:11px 24px; border-radius:24px; border:1px solid rgba(255,255,255,0.25);
   background:rgba(255,255,255,0.08); color:#fff; font-size:13px; font-weight:600; cursor:pointer;
@@ -570,6 +571,7 @@ body { position:relative; overscroll-behavior:none; }
     </div>
     <div class="scanner-title">Scan Barcode SN ONT</div>
     <div class="scanner-hint">Arahkan kamera ke barcode 1D pada label SN ONT</div>
+    <div class="scanner-status" id="scannerStatus">Menyalakan kamera...</div>
     <button type="button" class="scanner-cancel-btn" onclick="closeBarcodeScanner()"><i class="ic-xmark"></i> Batal</button>
   </div>
 </div>
@@ -1981,6 +1983,9 @@ function ambilAlamatOrderUpdate() {
  * ============================================================ */
 let zxingReader = null;
 
+let scanAttemptCount = 0;
+let scanStatusTimer = null;
+
 function openBarcodeScanner(mode, fieldId) {
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
@@ -1988,6 +1993,8 @@ function openBarcodeScanner(mode, fieldId) {
 
   scanTargetFieldId = fieldId || null;
   scannerMode = mode;
+  scanAttemptCount = 0;
+  _setScannerStatus('Menyalakan kamera...');
   document.getElementById('scannerOverlay').classList.add('show');
   startBarcodeScan();
 }
@@ -1995,6 +2002,11 @@ function openBarcodeScanner(mode, fieldId) {
 function closeBarcodeScanner() {
   document.getElementById('scannerOverlay').classList.remove('show');
   stopBarcodeScan();
+}
+
+function _setScannerStatus(text) {
+  const el = document.getElementById('scannerStatus');
+  if (el) el.textContent = text;
 }
 
 function startBarcodeScan() {
@@ -2023,17 +2035,46 @@ function startBarcodeScan() {
     return;
   }
 
+  // advanced: { focusMode:'continuous' } membantu autofocus kamera belakang
+  // tetap fokus dekat ke label barcode (bukan fokus jauh ke background),
+  // browser yang tidak mendukung constraint ini akan mengabaikannya otomatis.
   zxingReader.decodeFromConstraints(
-    { video: { facingMode: { ideal: 'environment' } } },
+    {
+      video: {
+        facingMode: { ideal: 'environment' },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        advanced: [{ focusMode: 'continuous' }]
+      }
+    },
     'scannerVideo',
     (result, err) => {
       if (result) {
         const value = result.getText().trim();
         onBarcodeDecoded(value);
+        return;
       }
-      // err (NotFoundException) normal terjadi terus-menerus selama belum ketemu barcode, diabaikan
+      if (err) {
+        const name = err.name || '';
+        // NotFoundException/ChecksumException/FormatException normal terjadi
+        // terus-menerus tiap frame selama barcode belum ketemu/terbaca sempurna
+        // - diabaikan, cuma dipakai untuk indikator "scanner masih hidup".
+        if (name === 'NotFoundException' || name === 'ChecksumException' || name === 'FormatException') {
+          scanAttemptCount++;
+          if (scanAttemptCount === 25) {
+            _setScannerStatus('Belum terbaca - dekatkan & pastikan barcode fokus/tidak buram');
+          }
+          return;
+        }
+        // Error di luar itu (izin kamera dicabut, device error, dsb) BUKAN hal
+        // normal - tampilkan supaya kelihatan, jangan didiamkan.
+        console.error('Scanner error:', err);
+        showToast('error', 'Scanner error: ' + (err.message || name));
+      }
     }
-  ).catch(err => {
+  ).then(() => {
+    _setScannerStatus('Mencari barcode...');
+  }).catch(err => {
     showToast('error', 'Gagal membuka kamera belakang: ' + err.message);
     closeBarcodeScanner();
   });
@@ -2044,6 +2085,7 @@ function stopBarcodeScan() {
     try { zxingReader.reset(); } catch (e) {}
     zxingReader = null;
   }
+  if (scanStatusTimer) { clearTimeout(scanStatusTimer); scanStatusTimer = null; }
 }
 
 function onBarcodeDecoded(value) {
