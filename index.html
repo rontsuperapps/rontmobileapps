@@ -2055,21 +2055,27 @@ function startBarcodeScan() {
         return;
       }
       if (err) {
-        const name = err.name || '';
-        // NotFoundException/ChecksumException/FormatException normal terjadi
-        // terus-menerus tiap frame selama barcode belum ketemu/terbaca sempurna
-        // - diabaikan, cuma dipakai untuk indikator "scanner masih hidup".
-        if (name === 'NotFoundException' || name === 'ChecksumException' || name === 'FormatException') {
+        // Pakai instanceof, BUKAN err.name - exception dari ZXing tidak
+        // selalu punya properti .name yang persis cocok dengan nama
+        // class-nya, jadi cocok-cocokan string gampang meleset (ini yang
+        // bikin "No MultiFormat Readers were able to detect the code"
+        // kemarin lolos filter dan muncul sebagai toast error padahal
+        // itu normal - cuma berarti frame ini belum ketemu barcode).
+        if (err instanceof ZXing.NotFoundException) {
           scanAttemptCount++;
           if (scanAttemptCount === 25) {
             _setScannerStatus('Belum terbaca - dekatkan & pastikan barcode fokus/tidak buram');
           }
           return;
         }
+        if (err instanceof ZXing.ChecksumException || err instanceof ZXing.FormatException) {
+          // barcode kebaca sebagian/rusak di frame ini - juga normal, biarkan lanjut coba frame berikutnya
+          return;
+        }
         // Error di luar itu (izin kamera dicabut, device error, dsb) BUKAN hal
         // normal - tampilkan supaya kelihatan, jangan didiamkan.
         console.error('Scanner error:', err);
-        showToast('error', 'Scanner error: ' + (err.message || name));
+        showToast('error', 'Scanner error: ' + (err.message || err.name || 'unknown'));
       }
     }
   ).then(() => {
