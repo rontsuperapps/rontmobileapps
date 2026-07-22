@@ -12,8 +12,12 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- ZXing: dipakai untuk Barcode Scanner 1D (Code128/Code39/EAN/UPC/ITF/Codabar). TIDAK dipakai untuk QR. -->
-<script src="https://unpkg.com/@zxing/library@0.20.0/umd/index.min.js"></script>
+<!-- ZXing: dipakai untuk Barcode Scanner 1D (Code128/Code39/EAN/UPC/ITF/Codabar). TIDAK dipakai untuk QR.
+     PENTING: sejak @zxing/library v0.20, class BrowserMultiFormatReader/decodeFromConstraints
+     DIPINDAH ke paket terpisah @zxing/browser (global ZXingBrowser). @zxing/library (global ZXing)
+     sekarang cuma menyediakan BarcodeFormat & DecodeHintType. Keduanya wajib dimuat berurutan. -->
+<script src="https://unpkg.com/@zxing/library@0.21.3"></script>
+<script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 <style>
 /* ================================================================
    ICON SET - SVG inline via CSS mask (tanpa dependency font/CDN icon)
@@ -1980,7 +1984,7 @@ let zxingReader = null;
 function openBarcodeScanner(mode, fieldId) {
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
-  if (typeof ZXing === 'undefined') { showToast('error', 'Modul scanner gagal dimuat. Cek koneksi internet.'); return; }
+  if (typeof ZXing === 'undefined' || typeof ZXingBrowser === 'undefined') { showToast('error', 'Modul scanner gagal dimuat. Cek koneksi internet.'); return; }
 
   scanTargetFieldId = fieldId || null;
   scannerMode = mode;
@@ -2009,7 +2013,15 @@ function startBarcodeScan() {
   hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
   hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
 
-  zxingReader = new ZXing.BrowserMultiFormatReader(hints);
+  // BrowserMultiFormatReader ada di paket @zxing/browser (global ZXingBrowser),
+  // BUKAN di @zxing/library (global ZXing) - lihat catatan di <script> tag.
+  try {
+    zxingReader = new ZXingBrowser.BrowserMultiFormatReader(hints);
+  } catch (err) {
+    showToast('error', 'Gagal menyiapkan scanner: ' + err.message);
+    closeBarcodeScanner();
+    return;
+  }
 
   zxingReader.decodeFromConstraints(
     { video: { facingMode: { ideal: 'environment' } } },
