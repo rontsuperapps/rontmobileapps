@@ -378,8 +378,8 @@ body { position:relative; overscroll-behavior:none; }
 .scanner-result { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:18px 16px; margin-bottom:6px; }
 .scanner-result-label { color:#94a3b8; font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; font-weight:700; }
 .scanner-result-value { color:#fff; font-size:20px; font-weight:800; font-family:'Courier New',monospace; letter-spacing:.5px; margin:8px 0 16px; word-break:break-all; }
-.scanner-result-actions { display:flex; gap:10px; }
-.scanner-result-actions .btn-outline { flex:1; color:#fff; border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); }
+.scanner-result-actions { display:flex; flex-direction:column; gap:10px; }
+.scanner-result-actions .btn-outline { color:#fff; border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); margin-bottom:0; }
 .scanner-result-actions .btn-outline:hover { background:rgba(255,255,255,0.15); }
 
 /* ================================================================
@@ -2021,6 +2021,8 @@ function openBarcodeScanner(mode, fieldId) {
 
   document.getElementById('scannerResult').style.display = 'none';
   document.getElementById('scannerVideoWrap').style.display = 'block';
+  document.getElementById('scannerHint').style.display = 'block';
+  document.getElementById('scannerStatus').style.display = 'block';
 
   _setScannerStatus('Menyalakan kamera...');
   document.getElementById('scannerOverlay').classList.add('show');
@@ -2143,6 +2145,9 @@ function onBarcodeDecoded(value) {
   document.getElementById('scannerVideoWrap').style.display = 'none';
   document.getElementById('scannerResultValue').textContent = value;
   document.getElementById('scannerResult').style.display = 'block';
+  document.getElementById('scannerTitle').textContent = 'SN ONT Berhasil Dibaca';
+  document.getElementById('scannerHint').style.display = 'none';
+  document.getElementById('scannerStatus').style.display = 'none';
   _setScannerStatus('');
 }
 
@@ -2176,6 +2181,10 @@ function rescanBarcode(e) {
   if (e) addRipple(e.currentTarget, e);
   document.getElementById('scannerResult').style.display = 'none';
   document.getElementById('scannerVideoWrap').style.display = 'block';
+  const txt = SCANNER_MODE_TEXT[scannerMode] || SCANNER_MODE_TEXT.field;
+  document.getElementById('scannerTitle').textContent = txt.title;
+  document.getElementById('scannerHint').style.display = 'block';
+  document.getElementById('scannerStatus').style.display = 'block';
   scanAttemptCount = 0;
   _setScannerStatus('Menyalakan kamera...');
   startBarcodeScan();
