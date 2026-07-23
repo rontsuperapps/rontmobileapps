@@ -359,6 +359,32 @@ body { position:relative; overscroll-behavior:none; }
 .upload-box .upload-icon { width:42px; height:42px; border-radius:50%; background:rgba(37,99,235,0.12); display:flex; align-items:center; justify-content:center; font-size:18px; color:#2563eb; }
 
 /* ================================================================
+   PRESENSI - PEMILIH JENIS (Masuk/Libur/Cuti/Sakit) & KARTU STATUS
+   DI MENU UTAMA
+================================================================ */
+.presensi-status-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:18px; }
+.presensi-status-btn {
+  border:1.5px solid var(--field-border); border-radius:12px; background:var(--field-bg); color:var(--text-white);
+  font-size:13px; font-weight:700; padding:12px 8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;
+  transition:transform .15s, border-color .2s, background .2s, color .2s;
+}
+.presensi-status-btn:active { transform:scale(0.96); }
+.presensi-status-btn.active.ps-masuk { background:rgba(16,185,129,0.15); border-color:#10b981; color:#059669; }
+.presensi-status-btn.active.ps-libur { background:rgba(37,99,235,0.15); border-color:#2563eb; color:#2563eb; }
+.presensi-status-btn.active.ps-cuti { background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#7c3aed; }
+.presensi-status-btn.active.ps-sakit { background:rgba(239,68,68,0.15); border-color:#ef4444; color:#dc2626; }
+
+.presensi-home-card { padding:16px 18px; }
+.presensi-home-label { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; margin-bottom:9px; }
+.presensi-home-badge { display:inline-flex; align-items:center; gap:7px; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:800; }
+.presensi-home-badge.pb-masuk { background:rgba(16,185,129,0.15); color:#059669; }
+.presensi-home-badge.pb-libur { background:rgba(37,99,235,0.15); color:#2563eb; }
+.presensi-home-badge.pb-cuti { background:rgba(124,58,237,0.15); color:#7c3aed; }
+.presensi-home-badge.pb-sakit { background:rgba(239,68,68,0.15); color:#dc2626; }
+.presensi-home-time { font-size:11.5px; color:var(--text-muted); margin-top:8px; }
+.presensi-home-empty-text { font-size:13px; color:var(--info-text); margin-bottom:12px; }
+
+/* ================================================================
    BARCODE SCANNER OVERLAY (1D - SN ONT)
 ================================================================ */
 .scanner-overlay { z-index:200; background:rgba(5,10,24,0.88); }
@@ -625,6 +651,10 @@ body { position:relative; overscroll-behavior:none; }
         </div>
       </div>
 
+      <div class="glass-card presensi-home-card" id="presensiStatusCard">
+        <div class="skeleton-line" style="width:60%;"></div>
+      </div>
+
       <div class="glass-card total-order-card" id="menuSummaryRow" style="display:none;">
         <div class="total-order-head">
           <div class="total-order-label">Total Order</div>
@@ -756,24 +786,49 @@ body { position:relative; overscroll-behavior:none; }
           </select>
         </div>
 
-        <label class="field-label">Evidence (Foto Selfie - Kamera Depan)</label>
-        <div class="camera-box" id="presCameraBox">
-          <video id="presVideo" autoplay playsinline muted></video>
-          <div class="camera-status" id="presCameraStatus">Menyalakan kamera depan...</div>
-          <div class="camera-controls">
-            <button type="button" onclick="capturePresensiPhoto()"><i class="ic-camera"></i> Ambil Foto</button>
+        <label class="field-label">Jenis Presensi</label>
+        <div class="presensi-status-grid">
+          <button type="button" class="presensi-status-btn ps-masuk" id="psBtnMASUK" onclick="selectPresensiStatus('MASUK')"><i class="ic-check"></i> Masuk</button>
+          <button type="button" class="presensi-status-btn ps-libur" id="psBtnLIBUR" onclick="selectPresensiStatus('LIBUR')"><i class="ic-sun"></i> Libur</button>
+          <button type="button" class="presensi-status-btn ps-cuti" id="psBtnCUTI" onclick="selectPresensiStatus('CUTI')"><i class="ic-calendar"></i> Cuti</button>
+          <button type="button" class="presensi-status-btn ps-sakit" id="psBtnSAKIT" onclick="selectPresensiStatus('SAKIT')"><i class="ic-alert"></i> Sakit</button>
+        </div>
+
+        <!-- SELFIE - khusus jenis Masuk (kamera depan, TANPA galeri) -->
+        <div id="presSelfieSection" style="display:none;">
+          <label class="field-label">Evidence (Foto Selfie - Kamera Depan)</label>
+          <div class="camera-box" id="presCameraBox">
+            <video id="presVideo" autoplay playsinline muted></video>
+            <div class="camera-status" id="presCameraStatus">Menyalakan kamera depan...</div>
+            <div class="camera-controls">
+              <button type="button" onclick="capturePresensiPhoto()"><i class="ic-camera"></i> Ambil Foto</button>
+            </div>
+          </div>
+          <canvas id="presCanvas" style="display:none;"></canvas>
+          <div class="photo-preview-wrap" id="presPreviewWrap">
+            <img id="presFotoPreview" class="photo-preview" />
+            <button type="button" class="retake-btn" onclick="retakePresensiPhoto()"><i class="ic-camera"></i></button>
           </div>
         </div>
-        <canvas id="presCanvas" style="display:none;"></canvas>
-        <div class="photo-preview-wrap" id="presPreviewWrap">
-          <img id="presFotoPreview" class="photo-preview" />
-          <button type="button" class="retake-btn" onclick="retakePresensiPhoto()"><i class="ic-camera"></i></button>
+
+        <!-- SURAT KETERANGAN SAKIT - khusus jenis Sakit (boleh kamera belakang ATAU galeri) -->
+        <div id="presSuratSection" style="display:none;">
+          <label class="field-label">Surat Keterangan Sakit (Foto/Scan)</label>
+          <input type="file" id="suratSakitInput" accept="image/*" capture="environment" style="display:none;" onchange="handleSuratSakitPhoto(event)">
+          <div class="upload-box" id="suratUploadBox" onclick="document.getElementById('suratSakitInput').click()">
+            <div class="upload-icon"><i class="ic-image"></i></div>
+            <span id="suratFotoLabel">Tap untuk ambil foto / upload surat keterangan sakit</span>
+          </div>
+          <div class="photo-preview-wrap" id="suratPreviewWrap">
+            <img id="suratFotoPreview" class="photo-preview" />
+            <button type="button" class="retake-btn" onclick="document.getElementById('suratSakitInput').click()"><i class="ic-image"></i></button>
+          </div>
         </div>
 
         <button id="btnAbsen" onclick="handlePresensi(event)" disabled class="btn-primary btn-danger" style="margin-top:16px;">
-          <div class="btn-inner"><div class="btn-spinner" id="absenSpinner"></div><span id="absenBtnText">Simpan Presensi</span></div>
+          <div class="btn-inner"><div class="btn-spinner" id="absenSpinner"></div><span id="absenBtnText">Pilih Jenis Presensi</span></div>
         </button>
-        <p class="field-hint" style="text-align:center; margin-top:8px;">Tombol aktif jika semua data (lokasi, STO, foto selfie) sudah lengkap. Foto hanya bisa diambil langsung dari kamera depan.</p>
+        <p class="field-hint" style="text-align:center; margin-top:8px;" id="presRequirementHint">Pilih jenis presensi, lalu lengkapi lokasi &amp; STO.</p>
       </div>
     </div>
 
@@ -1169,7 +1224,7 @@ const STO_LIST = [
   "TANJUNG BUMI","WARU PAMEKASAN"
 ];
 
-let presensiState = { koordinat: null, alamat: null, sto: null, photoBase64: null };
+let presensiState = { koordinat: null, alamat: null, sto: null, statusPresensi: null, photoBase64: null, suratBase64: null };
 let justifikasiState = { photoBase64: null, tanggal: null, jenisTransaksi: null, keterangan: null };
 let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null };
 let scanTargetFieldId = null;
@@ -1257,8 +1312,7 @@ function goTo(screen) {
   applyHeaderForScreen(screen);
 
   if (screen === 'orderDashboard') loadOrderDashboard();
-  if (screen === 'menu') loadMenuSummary();
-  if (screen === 'presensi') startPresensiCamera();
+  if (screen === 'menu') { loadMenuSummary(); loadPresensiStatusHome(); }
 }
 function getSession() { try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; } }
 function setSession(data) { sessionStorage.setItem('rontSession', JSON.stringify(data)); }
@@ -1574,10 +1628,75 @@ function retakePresensiPhoto() {
   startPresensiCamera();
 }
 
+/* ============================================================
+ *  PRESENSI - PILIH JENIS (Masuk/Libur/Cuti/Sakit)
+ *  Menentukan section tambahan mana yang wajib diisi:
+ *  - MASUK: selfie kamera depan (live, tanpa galeri)
+ *  - SAKIT: foto surat keterangan sakit (kamera belakang ATAU galeri)
+ *  - LIBUR/CUTI: tidak ada tambahan, cukup lokasi + STO
+ * ============================================================ */
+const PRESENSI_STATUS_LABEL = { MASUK: 'Masuk', LIBUR: 'Libur', CUTI: 'Cuti', SAKIT: 'Sakit' };
+
+function selectPresensiStatus(status) {
+  const wasMasuk = presensiState.statusPresensi === 'MASUK';
+  presensiState.statusPresensi = status;
+
+  ['MASUK', 'LIBUR', 'CUTI', 'SAKIT'].forEach(s => {
+    const btn = document.getElementById('psBtn' + s);
+    if (btn) btn.classList.toggle('active', s === status);
+  });
+
+  document.getElementById('presSelfieSection').style.display = (status === 'MASUK') ? 'block' : 'none';
+  document.getElementById('presSuratSection').style.display = (status === 'SAKIT') ? 'block' : 'none';
+
+  if (status === 'MASUK' && !wasMasuk) {
+    startPresensiCamera();
+  } else if (status !== 'MASUK' && wasMasuk) {
+    stopPresensiCamera();
+  }
+
+  document.getElementById('absenBtnText').textContent = 'Kirim Presensi - ' + (PRESENSI_STATUS_LABEL[status] || status);
+  cekRequirement();
+}
+
+/* ============================================================
+ *  PRESENSI - SURAT KETERANGAN SAKIT (boleh kamera belakang ATAU
+ *  galeri, TIDAK seperti selfie Masuk yang harus live kamera depan)
+ * ============================================================ */
+function handleSuratSakitPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    presensiState.suratBase64 = e.target.result;
+    document.getElementById('suratFotoPreview').src = e.target.result;
+    document.getElementById('suratPreviewWrap').classList.add('show');
+    document.getElementById('suratUploadBox').style.display = 'none';
+    cekRequirement();
+  };
+  reader.readAsDataURL(file);
+}
+
 function cekRequirement() {
   presensiState.sto = document.getElementById('presSto').value || null;
   const btn = document.getElementById('btnAbsen');
-  const memenuhi = presensiState.koordinat && presensiState.sto && presensiState.photoBase64;
+  const hint = document.getElementById('presRequirementHint');
+  const status = presensiState.statusPresensi;
+
+  let memenuhi = false;
+  if (!status) {
+    hint.textContent = 'Pilih jenis presensi, lalu lengkapi lokasi & STO.';
+  } else if (status === 'MASUK') {
+    memenuhi = !!(presensiState.koordinat && presensiState.sto && presensiState.photoBase64);
+    hint.textContent = 'Tombol aktif jika lokasi, STO, dan foto selfie sudah lengkap.';
+  } else if (status === 'SAKIT') {
+    memenuhi = !!(presensiState.koordinat && presensiState.sto && presensiState.suratBase64);
+    hint.textContent = 'Tombol aktif jika lokasi, STO, dan foto surat keterangan sakit sudah lengkap.';
+  } else {
+    memenuhi = !!(presensiState.koordinat && presensiState.sto);
+    hint.textContent = 'Tombol aktif jika lokasi dan STO sudah lengkap.';
+  }
+
   btn.disabled = !memenuhi;
   btn.classList.toggle('btn-danger', !memenuhi);
 }
@@ -1587,30 +1706,85 @@ function handlePresensi(e) {
   if (e) addRipple(btn, e);
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
-  if (!presensiState.koordinat || !presensiState.sto || !presensiState.photoBase64) {
-    showToast('error', 'Lengkapi lokasi, STO, dan foto selfie terlebih dahulu.'); return;
+
+  const status = presensiState.statusPresensi;
+  const btnLabel = 'Kirim Presensi - ' + (PRESENSI_STATUS_LABEL[status] || status || '');
+
+  if (!status) { showToast('error', 'Pilih jenis presensi terlebih dahulu.'); return; }
+  if (!presensiState.koordinat || !presensiState.sto) {
+    showToast('error', 'Lengkapi lokasi dan STO terlebih dahulu.'); return;
   }
+  if (status === 'MASUK' && !presensiState.photoBase64) {
+    showToast('error', 'Ambil foto selfie terlebih dahulu.'); return;
+  }
+  if (status === 'SAKIT' && !presensiState.suratBase64) {
+    showToast('error', 'Upload foto surat keterangan sakit terlebih dahulu.'); return;
+  }
+
+  const photoToSend = status === 'MASUK' ? presensiState.photoBase64 : (status === 'SAKIT' ? presensiState.suratBase64 : '');
 
   setLoading('btnAbsen', 'absenSpinner', 'absenBtnText', 'Mengirim...');
   apiPost({
     action:'presensi', telegramId: session.telegramId, username: session.username,
-    koordinat: presensiState.koordinat, alamat: presensiState.alamat, sto: presensiState.sto, photoBase64: presensiState.photoBase64
+    koordinat: presensiState.koordinat, alamat: presensiState.alamat, sto: presensiState.sto,
+    statusPresensi: status, photoBase64: photoToSend
   }).then(res => {
-    resetLoading('btnAbsen', 'absenSpinner', 'absenBtnText', 'Simpan Presensi');
+    resetLoading('btnAbsen', 'absenSpinner', 'absenBtnText', btnLabel);
     if (res.success) { showToast('success', res.message); resetPresensiForm(); goTo('menu'); }
     else { showToast('error', res.message); }
-  }).catch(err => { resetLoading('btnAbsen', 'absenSpinner', 'absenBtnText', 'Simpan Presensi'); showToast('error', 'Error: ' + err.message); });
+  }).catch(err => { resetLoading('btnAbsen', 'absenSpinner', 'absenBtnText', btnLabel); showToast('error', 'Error: ' + err.message); });
 }
 
 function resetPresensiForm() {
   stopPresensiCamera();
-  presensiState = { koordinat:null, alamat:null, sto:null, photoBase64:null };
+  presensiState = { koordinat:null, alamat:null, sto:null, statusPresensi:null, photoBase64:null, suratBase64:null };
   document.getElementById('presKoordinat').textContent = 'Belum diambil';
   document.getElementById('presAlamat').textContent = '-';
   document.getElementById('presSto').value = '';
   document.getElementById('presPreviewWrap').classList.remove('show');
   document.getElementById('presCameraBox').style.display = 'block';
+  document.getElementById('presSelfieSection').style.display = 'none';
+  document.getElementById('presSuratSection').style.display = 'none';
+  document.getElementById('suratPreviewWrap').classList.remove('show');
+  document.getElementById('suratUploadBox').style.display = 'flex';
+  document.getElementById('suratFotoPreview').src = '';
+  document.getElementById('suratSakitInput').value = '';
+  ['MASUK', 'LIBUR', 'CUTI', 'SAKIT'].forEach(s => {
+    const b = document.getElementById('psBtn' + s);
+    if (b) b.classList.remove('active');
+  });
+  document.getElementById('absenBtnText').textContent = 'Pilih Jenis Presensi';
   cekRequirement();
+}
+
+/* ============================================================
+ *  PRESENSI - STATUS HARI INI (ditampilkan di Menu Utama)
+ * ============================================================ */
+const PRESENSI_HOME_BADGE_CLASS = { MASUK: 'pb-masuk', LIBUR: 'pb-libur', CUTI: 'pb-cuti', SAKIT: 'pb-sakit' };
+
+function loadPresensiStatusHome() {
+  const session = getSession();
+  if (!session) return;
+  const card = document.getElementById('presensiStatusCard');
+  card.innerHTML = '<div class="skeleton-line" style="width:60%;"></div>';
+
+  apiGet({ action:'presensiStatus', telegramId: session.telegramId }).then(res => {
+    if (!res.success) { card.innerHTML = ''; return; }
+    if (res.done) {
+      const badgeClass = PRESENSI_HOME_BADGE_CLASS[res.status] || 'pb-masuk';
+      const label = PRESENSI_STATUS_LABEL[res.status] || res.status;
+      card.innerHTML =
+        '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
+        '<div class="presensi-home-badge ' + badgeClass + '"><i class="ic-check"></i> ' + label + '</div>' +
+        '<div class="presensi-home-time">Pukul ' + (res.waktu || '-') + '</div>';
+    } else {
+      card.innerHTML =
+        '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
+        '<div class="presensi-home-empty-text">Anda belum melakukan presensi hari ini.</div>' +
+        '<button type="button" class="btn-primary" style="margin-top:0;" onclick="goTo(\'presensi\')">' +
+        '<div class="btn-inner"><i class="ic-location"></i><span>Presensi Sekarang</span></div></button>';
+    }
+  }).catch(() => { card.innerHTML = ''; });
 }
 
 /* ============================================================
