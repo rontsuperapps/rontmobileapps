@@ -375,6 +375,12 @@ body { position:relative; overscroll-behavior:none; }
   display:flex; align-items:center; gap:7px;
 }
 .scanner-cancel-btn:active { transform:scale(0.96); }
+.scanner-result { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:16px; padding:18px 16px; margin-bottom:6px; }
+.scanner-result-label { color:#94a3b8; font-size:10.5px; text-transform:uppercase; letter-spacing:.4px; font-weight:700; }
+.scanner-result-value { color:#fff; font-size:20px; font-weight:800; font-family:'Courier New',monospace; letter-spacing:.5px; margin:8px 0 16px; word-break:break-all; }
+.scanner-result-actions { display:flex; gap:10px; }
+.scanner-result-actions .btn-outline { flex:1; color:#fff; border-color:rgba(255,255,255,0.25); background:rgba(255,255,255,0.08); }
+.scanner-result-actions .btn-outline:hover { background:rgba(255,255,255,0.15); }
 
 /* ================================================================
    BUTTONS
@@ -565,12 +571,20 @@ body { position:relative; overscroll-behavior:none; }
 <!-- OVERLAY BARCODE SCANNER 1D (SN ONT) -->
 <div id="scannerOverlay" class="modal-overlay scanner-overlay">
   <div class="scanner-box">
-    <div class="scanner-video-wrap">
+    <div class="scanner-video-wrap" id="scannerVideoWrap">
       <video id="scannerVideo" autoplay playsinline muted></video>
       <div class="scanner-guide"></div>
     </div>
-    <div class="scanner-title">Scan Barcode SN ONT</div>
-    <div class="scanner-hint">Arahkan kamera ke barcode 1D pada label SN ONT</div>
+    <div class="scanner-result" id="scannerResult" style="display:none;">
+      <div class="scanner-result-label">SN ONT Terbaca</div>
+      <div class="scanner-result-value" id="scannerResultValue">-</div>
+      <div class="scanner-result-actions">
+        <button type="button" class="btn-outline" style="margin-bottom:0;" onclick="copyScannerResult(event)"><i class="ic-clipboard"></i> Copy</button>
+        <button type="button" class="btn-outline" style="margin-bottom:0;" onclick="rescanBarcode(event)"><i class="ic-refresh"></i> Scan Lagi</button>
+      </div>
+    </div>
+    <div class="scanner-title" id="scannerTitle">Scan Barcode SN ONT</div>
+    <div class="scanner-hint" id="scannerHint">Arahkan kamera ke barcode 1D pada label SN ONT</div>
     <div class="scanner-status" id="scannerStatus">Menyalakan kamera...</div>
     <button type="button" class="scanner-cancel-btn" onclick="closeBarcodeScanner()"><i class="ic-xmark"></i> Batal</button>
   </div>
@@ -638,7 +652,7 @@ body { position:relative; overscroll-behavior:none; }
             <div class="qt-icon qt-orange"><i class="ic-inbox"></i></div>
             <div class="qt-label">Justifikasi</div>
           </div>
-          <div class="quick-tile" onclick="openBarcodeScanner('order')">
+          <div class="quick-tile" onclick="openBarcodeScanner('display')">
             <div class="qt-icon qt-purple"><i class="ic-scan"></i></div>
             <div class="qt-label">Scan SN ONT</div>
           </div>
@@ -1014,7 +1028,7 @@ body { position:relative; overscroll-behavior:none; }
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
     <button class="nav-btn" data-screen="claim" onclick="goTo('claim')"><i class="ic-receipt"></i>Claim</button>
     <button class="nav-btn nav-fab" data-screen="menu" onclick="goTo('menu')"><div class="fab-circle"><i class="ic-house"></i></div>Home</button>
-    <button class="nav-btn" data-screen="scan" onclick="openBarcodeScanner('order')"><i class="ic-scan"></i>Scan SN ONT</button>
+    <button class="nav-btn" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN ONT</button>
     <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Justifikasi</button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-user"></i>Profile</button>
   </div>
@@ -1986,6 +2000,12 @@ let zxingReader = null;
 let scanAttemptCount = 0;
 let scanStatusTimer = null;
 
+const SCANNER_MODE_TEXT = {
+  display: { title: 'Scan SN ONT', hint: 'Arahkan kamera ke barcode 1D pada label SN ONT' },
+  field:   { title: 'Scan Barcode SN ONT', hint: 'Arahkan kamera ke barcode 1D pada label SN ONT' },
+  order:   { title: 'Scan untuk Cari Order', hint: 'Arahkan kamera ke barcode No Inet pada order' }
+};
+
 function openBarcodeScanner(mode, fieldId) {
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
@@ -1994,6 +2014,14 @@ function openBarcodeScanner(mode, fieldId) {
   scanTargetFieldId = fieldId || null;
   scannerMode = mode;
   scanAttemptCount = 0;
+
+  const txt = SCANNER_MODE_TEXT[mode] || SCANNER_MODE_TEXT.field;
+  document.getElementById('scannerTitle').textContent = txt.title;
+  document.getElementById('scannerHint').textContent = txt.hint;
+
+  document.getElementById('scannerResult').style.display = 'none';
+  document.getElementById('scannerVideoWrap').style.display = 'block';
+
   _setScannerStatus('Menyalakan kamera...');
   document.getElementById('scannerOverlay').classList.add('show');
   startBarcodeScan();
@@ -2095,18 +2123,66 @@ function stopBarcodeScan() {
 }
 
 function onBarcodeDecoded(value) {
-  stopBarcodeScan();
-  document.getElementById('scannerOverlay').classList.remove('show');
-
   if (scannerMode === 'field') {
+    stopBarcodeScan();
+    document.getElementById('scannerOverlay').classList.remove('show');
     if (scanTargetFieldId) {
       const el = document.getElementById(scanTargetFieldId);
       if (el) { el.value = value; validateUpdateForm(); }
     }
     showToast('success', 'Berhasil scan SN: ' + value);
-  } else {
-    scanAndOpenOrder(value);
+    return;
   }
+
+  if (scannerMode === 'order') {
+    stopBarcodeScan();
+    document.getElementById('scannerOverlay').classList.remove('show');
+    scanAndOpenOrder(value);
+    return;
+  }
+
+  // mode 'display' (Scan SN ONT dari menu utama/bottom nav): TIDAK dicari
+  // sebagai No Inet, cuma ditampilkan supaya user bisa lihat & copy nilainya.
+  stopBarcodeScan();
+  document.getElementById('scannerVideoWrap').style.display = 'none';
+  document.getElementById('scannerResultValue').textContent = value;
+  document.getElementById('scannerResult').style.display = 'block';
+  _setScannerStatus('');
+}
+
+function copyScannerResult(e) {
+  if (e) addRipple(e.currentTarget, e);
+  const value = document.getElementById('scannerResultValue').textContent;
+  if (!value || value === '-') return;
+
+  const doFallbackCopy = () => {
+    const ta = document.createElement('textarea');
+    ta.value = value;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); showToast('success', 'SN disalin: ' + value); }
+    catch (err) { showToast('error', 'Gagal menyalin. Salin manual: ' + value); }
+    document.body.removeChild(ta);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(value)
+      .then(() => showToast('success', 'SN disalin: ' + value))
+      .catch(doFallbackCopy);
+  } else {
+    doFallbackCopy();
+  }
+}
+
+function rescanBarcode(e) {
+  if (e) addRipple(e.currentTarget, e);
+  document.getElementById('scannerResult').style.display = 'none';
+  document.getElementById('scannerVideoWrap').style.display = 'block';
+  scanAttemptCount = 0;
+  _setScannerStatus('Menyalakan kamera...');
+  startBarcodeScan();
 }
 
 function scanAndOpenOrder(noInet) {
