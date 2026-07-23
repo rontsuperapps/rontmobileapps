@@ -2082,28 +2082,24 @@ function startBarcodeScan() {
         onBarcodeDecoded(value);
         return;
       }
-      if (err) {
-        // Pakai instanceof, BUKAN err.name - exception dari ZXing tidak
-        // selalu punya properti .name yang persis cocok dengan nama
-        // class-nya, jadi cocok-cocokan string gampang meleset (ini yang
-        // bikin "No MultiFormat Readers were able to detect the code"
-        // kemarin lolos filter dan muncul sebagai toast error padahal
-        // itu normal - cuma berarti frame ini belum ketemu barcode).
-        if (err instanceof ZXing.NotFoundException) {
-          scanAttemptCount++;
-          if (scanAttemptCount === 25) {
-            _setScannerStatus('Belum terbaca - dekatkan & pastikan barcode fokus/tidak buram');
-          }
-          return;
-        }
-        if (err instanceof ZXing.ChecksumException || err instanceof ZXing.FormatException) {
-          // barcode kebaca sebagian/rusak di frame ini - juga normal, biarkan lanjut coba frame berikutnya
-          return;
-        }
-        // Error di luar itu (izin kamera dicabut, device error, dsb) BUKAN hal
-        // normal - tampilkan supaya kelihatan, jangan didiamkan.
-        console.error('Scanner error:', err);
-        showToast('error', 'Scanner error: ' + (err.message || err.name || 'unknown'));
+      // PENTING: callback per-frame dari decodeFromConstraints ini memang
+      // didesain untuk terus-menerus melempar "error" tiap kali 1 frame
+      // belum ketemu barcode (puluhan kali per detik) - ini SEPENUHNYA
+      // normal selama proses scanning berjalan, jadi TIDAK PERNAH
+      // ditampilkan sebagai toast ke user, apapun bentuk error-nya.
+      // (Sempat dicoba filter pakai instanceof ZXing.NotFoundException,
+      // tapi @zxing/library & @zxing/browser dimuat sebagai 2 bundle UMD
+      // terpisah dari unpkg - masing-masing bawa salinan class exception
+      // sendiri-sendiri, jadi instanceof-nya tidak pernah cocok walau
+      // errornya memang persis itu. Makanya di sini errornya diabaikan
+      // total, bukan dicocokkan by identity/name.)
+      // Error yang BENERAN fatal (izin kamera ditolak, kamera tidak ada,
+      // dsb) munculnya lewat .catch() di bawah saat scanner PERTAMA KALI
+      // dibuka, bukan lewat callback per-frame ini.
+      if (err) console.debug('scan frame miss:', err.message || err);
+      scanAttemptCount++;
+      if (scanAttemptCount === 25) {
+        _setScannerStatus('Belum terbaca - dekatkan & pastikan barcode fokus/tidak buram');
       }
     }
   ).then(() => {
