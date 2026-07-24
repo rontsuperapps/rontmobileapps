@@ -236,7 +236,10 @@ body { position:relative; overscroll-behavior:none; }
 .total-order-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
 .total-order-label { font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; }
 .summary-row { display:flex; justify-content:space-between; margin-top:0; gap:8px; }
-.summary-chip { flex:1; text-align:center; padding:10px 4px; border-radius:12px; background:var(--info-bg); }
+.summary-chip { flex:1; text-align:center; padding:10px 4px; border-radius:12px; background:var(--info-bg); cursor:pointer; transition:transform .15s; }
+.summary-chip:active { transform:scale(0.95); }
+.total-order-head.clickable-total { cursor:pointer; }
+.total-order-head.clickable-total:active { opacity:0.7; }
 .summary-chip .sc-num { font-size:18px; font-weight:800; line-height:1.1; }
 .summary-chip .sc-label { font-size:9.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.2px; margin-top:3px; }
 .summary-chip.sc-total .sc-num { color:var(--accent); }
@@ -665,14 +668,14 @@ body { position:relative; overscroll-behavior:none; }
       </div>
 
       <div class="glass-card total-order-card" id="menuSummaryRow" style="display:none;">
-        <div class="total-order-head">
+        <div class="total-order-head clickable-total" onclick="goTo('orderDashboard')">
           <div class="total-order-label">Total Order</div>
           <div style="font-size:20px; font-weight:800; color:var(--accent);" id="sumTotal">0</div>
         </div>
         <div class="summary-row">
-          <div class="summary-chip sc-unpicked"><div class="sc-num" id="sumUnpicked">0</div><div class="sc-label">Open</div></div>
-          <div class="summary-chip sc-progress"><div class="sc-num" id="sumProgress">0</div><div class="sc-label">Proses</div></div>
-          <div class="summary-chip sc-close"><div class="sc-num" id="sumClose">0</div><div class="sc-label">Selesai</div></div>
+          <div class="summary-chip sc-unpicked" onclick="goTo('orderDashboard')"><div class="sc-num" id="sumOpen">0</div><div class="sc-label">Open</div></div>
+          <div class="summary-chip sc-progress" onclick="goTo('orderDashboard')"><div class="sc-num" id="sumInProgress">0</div><div class="sc-label">In Progress</div></div>
+          <div class="summary-chip sc-close" onclick="goTo('orderDashboard')"><div class="sc-num" id="sumCompleted">0</div><div class="sc-label">Completed</div></div>
         </div>
       </div>
 
@@ -1926,9 +1929,9 @@ function loadMenuSummary() {
     if (!res.success) return;
     document.getElementById('menuSummaryRow').style.display = 'block';
     document.getElementById('sumTotal').textContent = res.total;
-    document.getElementById('sumUnpicked').textContent = res.counts.UNPICKED;
-    document.getElementById('sumProgress').textContent = res.counts['PICKED UP'] + res.counts.MANJA;
-    document.getElementById('sumClose').textContent = res.counts.CLOSE;
+    document.getElementById('sumOpen').textContent = res.orderStatusCounts.OPEN;
+    document.getElementById('sumInProgress').textContent = res.orderStatusCounts['IN PROGRESS'];
+    document.getElementById('sumCompleted').textContent = res.orderStatusCounts.COMPLETED;
   }).catch(() => {});
 }
 
