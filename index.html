@@ -384,6 +384,15 @@ body { position:relative; overscroll-behavior:none; }
 .presensi-home-time { font-size:11.5px; color:var(--text-muted); margin-top:8px; }
 .presensi-home-empty-text { font-size:13px; color:var(--info-text); margin-bottom:12px; }
 
+.presensi-done-card { text-align:center; padding:30px 20px 24px; }
+.presensi-done-icon {
+  width:56px; height:56px; border-radius:50%; margin:0 auto 14px;
+  background:rgba(16,185,129,0.15); color:#059669;
+  display:flex; align-items:center; justify-content:center; font-size:24px;
+}
+.presensi-done-title { font-size:17px; font-weight:800; margin-bottom:8px; }
+.presensi-done-text { font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:6px; }
+
 /* ================================================================
    BARCODE SCANNER OVERLAY (1D - SN ONT)
 ================================================================ */
@@ -770,6 +779,16 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- PRESENSI -->
     <div id="screen-presensi" class="screen">
+      <!-- Tampil kalau user SUDAH presensi hari ini - form disembunyikan total -->
+      <div class="glass-card presensi-done-card" id="presensiAlreadyDone" style="display:none;">
+        <div class="presensi-done-icon"><i class="ic-check"></i></div>
+        <div class="presensi-done-title">Terima Kasih!</div>
+        <div class="presensi-done-text" id="presensiAlreadyDoneText">Anda sudah presensi hari ini.</div>
+        <button type="button" class="btn-outline" style="margin-bottom:0; margin-top:6px;" onclick="goTo('menu')"><i class="ic-house"></i> Kembali ke Menu Utama</button>
+      </div>
+
+      <!-- Tampil kalau user BELUM presensi hari ini -->
+      <div id="presensiFormWrap" style="display:none;">
       <div class="glass-card">
         <label class="field-label">Lokasi (GPS)</label>
         <div class="info-box">
@@ -829,6 +848,7 @@ body { position:relative; overscroll-behavior:none; }
           <div class="btn-inner"><div class="btn-spinner" id="absenSpinner"></div><span id="absenBtnText">Pilih Jenis Presensi</span></div>
         </button>
         <p class="field-hint" style="text-align:center; margin-top:8px;" id="presRequirementHint">Pilih jenis presensi, lalu lengkapi lokasi &amp; STO.</p>
+      </div>
       </div>
     </div>
 
@@ -1313,6 +1333,7 @@ function goTo(screen) {
 
   if (screen === 'orderDashboard') loadOrderDashboard();
   if (screen === 'menu') { loadMenuSummary(); loadPresensiStatusHome(); }
+  if (screen === 'presensi') checkPresensiGate();
 }
 function getSession() { try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; } }
 function setSession(data) { sessionStorage.setItem('rontSession', JSON.stringify(data)); }
@@ -1785,6 +1806,38 @@ function loadPresensiStatusHome() {
         '<div class="btn-inner"><i class="ic-location"></i><span>Presensi Sekarang</span></div></button>';
     }
   }).catch(() => { card.innerHTML = ''; });
+}
+
+/* ============================================================
+ *  PRESENSI - GATE (dicek tiap masuk layar Presensi)
+ *  Kalau user SUDAH presensi hari ini, form disembunyikan total
+ *  dan diganti kartu "Terima Kasih" - mencegah presensi dobel/
+ *  update data presensi yang sudah terkirim dari sisi UI.
+ *  (Validasi final tetap ada di backend lewat submitPresensi kalau
+ *  suatu saat ada jalur lain yang mencoba submit lagi.)
+ * ============================================================ */
+function checkPresensiGate() {
+  const session = getSession();
+  if (!session) return;
+
+  document.getElementById('presensiAlreadyDone').style.display = 'none';
+  document.getElementById('presensiFormWrap').style.display = 'none';
+
+  apiGet({ action:'presensiStatus', telegramId: session.telegramId }).then(res => {
+    if (res.success && res.done) {
+      const label = PRESENSI_STATUS_LABEL[res.status] || res.status;
+      document.getElementById('presensiAlreadyDoneText').textContent =
+        'Terima kasih, Anda sudah presensi ' + label + ' hari ini pukul ' + (res.waktu || '-') + '.';
+      document.getElementById('presensiAlreadyDone').style.display = 'block';
+    } else {
+      document.getElementById('presensiFormWrap').style.display = 'block';
+    }
+  }).catch(() => {
+    // Kalau pengecekan gagal (mis. koneksi bermasalah), tampilkan form
+    // seperti biasa supaya user tetap bisa presensi - validasi akhir
+    // tetap ada di backend.
+    document.getElementById('presensiFormWrap').style.display = 'block';
+  });
 }
 
 /* ============================================================
