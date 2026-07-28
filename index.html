@@ -233,19 +233,35 @@ body { position:relative; overscroll-behavior:none; }
 /* ================================================================
    TOTAL ORDER SUMMARY (Beranda)
 ================================================================ */
-.total-order-card { padding:16px 18px; }
-.total-order-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.total-order-label { font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; }
+.total-order-card { padding:18px 18px 16px; }
+.total-order-head { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.total-order-head .toh-icon {
+  width:42px; height:42px; border-radius:13px; flex-shrink:0;
+  background:linear-gradient(135deg, rgba(37,99,235,0.16), rgba(124,58,237,0.14)); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+}
+.total-order-head .toh-text { flex:1; min-width:0; }
+.total-order-label { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.4px; }
+.total-order-head .toh-num { font-size:24px; font-weight:800; color:var(--text-white); line-height:1.15; margin-top:1px; }
+.total-order-head .toh-chevron { color:var(--text-muted); font-size:13px; flex-shrink:0; transform:rotate(180deg); opacity:.7; }
 .summary-row { display:flex; justify-content:space-between; margin-top:0; gap:8px; }
-.summary-chip { flex:1; text-align:center; padding:10px 4px; border-radius:12px; background:var(--info-bg); cursor:pointer; transition:transform .15s; }
+.summary-chip {
+  flex:1; text-align:center; padding:12px 4px 11px; border-radius:14px; background:var(--info-bg); cursor:pointer;
+  border:1px solid transparent; transition:transform .15s, border-color .2s;
+}
 .summary-chip:active { transform:scale(0.95); }
 .total-order-head.clickable-total { cursor:pointer; }
 .total-order-head.clickable-total:active { opacity:0.7; }
-.summary-chip .sc-num { font-size:18px; font-weight:800; line-height:1.1; }
-.summary-chip .sc-label { font-size:9.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.2px; margin-top:3px; }
-.summary-chip.sc-total .sc-num { color:var(--accent); }
+.summary-chip .sc-icon {
+  width:26px; height:26px; border-radius:9px; margin:0 auto 6px; display:flex; align-items:center; justify-content:center; font-size:12.5px;
+}
+.summary-chip .sc-num { font-size:19px; font-weight:800; line-height:1.1; }
+.summary-chip .sc-label { font-size:9.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.3px; margin-top:4px; font-weight:600; }
+.summary-chip.sc-unpicked .sc-icon { background:rgba(245,158,11,0.15); color:#d97706; }
 .summary-chip.sc-unpicked .sc-num { color:#f59e0b; }
+.summary-chip.sc-progress .sc-icon { background:rgba(168,85,247,0.15); color:#7c3aed; }
 .summary-chip.sc-progress .sc-num { color:#a855f7; }
+.summary-chip.sc-close .sc-icon { background:rgba(16,185,129,0.15); color:#059669; }
 .summary-chip.sc-close .sc-num { color:#10b981; }
 
 /* ================================================================
@@ -502,23 +518,30 @@ body { position:relative; overscroll-behavior:none; }
   width:100%; max-width:480px; z-index:40;
   background:var(--nav-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-top:1px solid var(--glass-border);
-  display:flex; justify-content:space-around; align-items:flex-end; padding:8px 2px calc(9px + env(safe-area-inset-bottom));
+  display:flex; justify-content:space-around; align-items:flex-end; padding:7px 0 calc(8px + env(safe-area-inset-bottom));
+  box-shadow:0 -6px 20px var(--shadow-soft);
 }
 .nav-btn {
-  background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px;
-  font-size:9.3px; color:var(--text-muted); padding:4px 3px; cursor:pointer; transition:color 0.2s; flex:1; min-width:0;
+  background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:4px;
+  font-size:9px; font-weight:600; letter-spacing:-0.1px; color:var(--text-muted); padding:4px 1px; cursor:pointer;
+  transition:color 0.2s; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .nav-btn i { font-size:16px; }
 .nav-btn.active-nav { color:var(--accent); }
 .nav-btn.active-nav i { filter:drop-shadow(0 0 6px rgba(37,99,235,0.55)); }
-.nav-btn.nav-fab { position:relative; top:-16px; }
+.nav-btn.nav-fab { position:relative; top:-20px; overflow:visible; z-index:1; }
+.nav-btn.nav-fab::before {
+  content:''; position:absolute; top:-8px; left:50%; transform:translateX(-50%);
+  width:64px; height:64px; border-radius:50%; background:var(--nav-bg); z-index:-1;
+}
 .nav-btn.nav-fab .fab-circle {
-  width:46px; height:46px; border-radius:16px; display:flex; align-items:center; justify-content:center;
-  background:linear-gradient(135deg,#1d4ed8,#3b82f6); color:#fff; font-size:19px;
-  box-shadow:0 8px 22px rgba(37,99,235,0.5); margin-bottom:2px; transition:transform .15s;
+  width:48px; height:48px; border-radius:17px; display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,#1d4ed8,#3b82f6); color:#fff; font-size:20px;
+  box-shadow:0 4px 14px rgba(37,99,235,0.4), 0 10px 26px rgba(37,99,235,0.35); margin-bottom:3px; transition:transform .15s;
 }
 .nav-btn.nav-fab:active .fab-circle { transform:scale(0.93); }
 .nav-btn.nav-fab.active-nav { color:var(--text-muted); }
+.nav-btn.nav-fab span { font-size:9px; }
 
 /* ================================================================
    TOAST
@@ -715,13 +738,26 @@ body { position:relative; overscroll-behavior:none; }
 
       <div class="glass-card total-order-card" id="menuSummaryRow" style="display:none;">
         <div class="total-order-head clickable-total" onclick="goTo('orderDashboard')">
-          <div class="total-order-label">Total Order</div>
-          <div style="font-size:20px; font-weight:800; color:var(--accent);" id="sumTotal">0</div>
+          <div class="toh-icon"><i class="ic-clipboard"></i></div>
+          <div class="toh-text">
+            <div class="total-order-label">Total Order</div>
+            <div class="toh-num" id="sumTotal">0</div>
+          </div>
+          <i class="ic-arrow-left toh-chevron"></i>
         </div>
         <div class="summary-row">
-          <div class="summary-chip sc-unpicked" onclick="goTo('orderDashboard')"><div class="sc-num" id="sumOpen">0</div><div class="sc-label">Open</div></div>
-          <div class="summary-chip sc-progress" onclick="goTo('orderDashboard')"><div class="sc-num" id="sumInProgress">0</div><div class="sc-label">In Progress</div></div>
-          <div class="summary-chip sc-close" onclick="goTo('orderDashboard')"><div class="sc-num" id="sumCompleted">0</div><div class="sc-label">Completed</div></div>
+          <div class="summary-chip sc-unpicked" onclick="goTo('orderDashboard')">
+            <div class="sc-icon"><i class="ic-lock"></i></div>
+            <div class="sc-num" id="sumOpen">0</div><div class="sc-label">Open</div>
+          </div>
+          <div class="summary-chip sc-progress" onclick="goTo('orderDashboard')">
+            <div class="sc-icon"><i class="ic-refresh"></i></div>
+            <div class="sc-num" id="sumInProgress">0</div><div class="sc-label">In Progress</div>
+          </div>
+          <div class="summary-chip sc-close" onclick="goTo('orderDashboard')">
+            <div class="sc-icon"><i class="ic-check"></i></div>
+            <div class="sc-num" id="sumCompleted">0</div><div class="sc-label">Completed</div>
+          </div>
         </div>
       </div>
 
@@ -1231,7 +1267,7 @@ body { position:relative; overscroll-behavior:none; }
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
     <button class="nav-btn" data-screen="claim" onclick="goTo('claim')"><i class="ic-receipt"></i>Claim</button>
     <button class="nav-btn nav-fab" data-screen="menu" onclick="goTo('menu')"><div class="fab-circle"><i class="ic-house"></i></div>Home</button>
-    <button class="nav-btn" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN ONT</button>
+    <button class="nav-btn" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN</button>
     <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Justifikasi</button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i>Setting</button>
   </div>
