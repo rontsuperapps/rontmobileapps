@@ -1072,8 +1072,14 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- ORDER UPDATE -->
     <div id="screen-orderUpdate" class="screen">
+      <!-- DATA ORDER -->
       <div class="glass-card">
         <div class="section-label" style="margin-top:0;">Data Order</div>
+
+        <div class="view-only-box">
+          <div class="voi-label">No Inet</div>
+          <div class="voi-value" id="updNoInet">-</div>
+        </div>
 
         <div class="field-wrap">
           <label class="field-label">Prioritas</label>
@@ -1109,28 +1115,27 @@ body { position:relative; overscroll-behavior:none; }
           <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
           <input id="updPaketSpeed" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
         </div>
-        <div class="field-wrap">
+        <div class="field-wrap" style="margin-bottom:0;">
           <label class="field-label">Request ONT</label>
           <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
           <input id="updRequestOnt" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
         </div>
+      </div>
 
-        <div class="section-label">Data Progres</div>
+      <!-- DATA PROGRES -->
+      <div class="glass-card">
+        <div class="section-label" style="margin-top:0;">Data Progres</div>
 
         <div class="view-only-box">
           <div class="voi-label">Ticket ID</div>
           <div class="voi-value" id="updTicketId">-</div>
         </div>
 
-        <div class="field-wrap">
-          <label class="field-label">Status Task</label>
-          <i class="ic-check field-icon" style="top:calc(50% + 10px);"></i>
-          <select id="updStatusTask" class="field-select" onchange="onStatusTaskChange()">
-            <option value="">-- Pilih Status Task --</option>
-            <option value="MANJA">Manja</option>
-            <option value="KENDALA">Kendala</option>
-            <option value="CLOSE">Close</option>
-          </select>
+        <label class="field-label">Status Task</label>
+        <div class="presensi-status-grid" style="grid-template-columns:repeat(3,1fr);">
+          <button type="button" class="presensi-status-btn ps-cuti" id="stBtnMANJA" onclick="selectStatusTask('MANJA')"><i class="ic-hourglass"></i> Manja</button>
+          <button type="button" class="presensi-status-btn ps-sakit" id="stBtnKENDALA" onclick="selectStatusTask('KENDALA')"><i class="ic-alert"></i> Kendala</button>
+          <button type="button" class="presensi-status-btn ps-masuk" id="stBtnCLOSE" onclick="selectStatusTask('CLOSE')"><i class="ic-check"></i> Close</button>
         </div>
 
         <div class="view-only-box">
@@ -1138,31 +1143,36 @@ body { position:relative; overscroll-behavior:none; }
           <div class="voi-value" id="updStatusOrder">-</div>
         </div>
 
-        <div class="field-wrap" id="wrapSnOntLama">
-          <label class="field-label">SN ONT Lama</label>
-          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updSnOntLama" type="text" placeholder="Wajib jika Status Task Close" class="field-input has-scan" oninput="validateUpdateForm()">
-          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntLama')" title="Scan barcode SN ONT"></i>
-        </div>
-        <div class="field-wrap" id="wrapSnOntBaru">
-          <label class="field-label">SN ONT Baru</label>
-          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updSnOntBaru" type="text" placeholder="Wajib jika Status Task Close" class="field-input has-scan" oninput="validateUpdateForm()">
-          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntBaru')" title="Scan barcode SN ONT"></i>
-        </div>
-        <div class="field-wrap">
-          <label class="field-label">Valins ID</label>
-          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updValinsId" type="text" inputmode="numeric" placeholder="Wajib diisi angka" class="field-input" oninput="validateUpdateForm()">
-        </div>
-        <div class="field-wrap" id="wrapKeterangan">
+        <!-- Keterangan - wajib untuk Manja & Kendala -->
+        <div class="field-wrap" id="wrapKeterangan" style="display:none;">
           <label class="field-label">Keterangan</label>
           <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updKeterangan" type="text" placeholder="Wajib jika Status Task Kendala" class="field-input" oninput="validateUpdateForm()">
+          <input id="updKeterangan" type="text" placeholder="Wajib diisi" class="field-input" oninput="validateUpdateForm()">
         </div>
 
-        <button id="btnUpdateOrder" onclick="handleUpdateOrder(event)" class="btn-primary" style="margin-top:4px;">
-          <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Update</span></div>
+        <!-- SN ONT Lama/Baru + Valins ID - wajib untuk Close -->
+        <div id="wrapCloseFields" style="display:none;">
+          <div class="field-wrap" id="wrapSnOntLama">
+            <label class="field-label">SN ONT Lama</label>
+            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updSnOntLama" type="text" placeholder="Wajib diisi" class="field-input has-scan" oninput="validateUpdateForm()">
+            <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntLama')" title="Scan barcode SN ONT"></i>
+          </div>
+          <div class="field-wrap" id="wrapSnOntBaru">
+            <label class="field-label">SN ONT Baru</label>
+            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updSnOntBaru" type="text" placeholder="Wajib diisi" class="field-input has-scan" oninput="validateUpdateForm()">
+            <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntBaru')" title="Scan barcode SN ONT"></i>
+          </div>
+          <div class="field-wrap" style="margin-bottom:0;">
+            <label class="field-label">Valins ID</label>
+            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updValinsId" type="text" inputmode="numeric" placeholder="Wajib diisi angka" class="field-input" oninput="validateUpdateForm()">
+          </div>
+        </div>
+
+        <button id="btnUpdateOrder" onclick="handleUpdateOrder(event)" class="btn-primary" disabled style="margin-top:16px;">
+          <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Pilih Status Task</span></div>
         </button>
       </div>
     </div>
@@ -2414,6 +2424,9 @@ function confirmPickup(e) {
 /* ============================================================
  *  ORDER - UPDATE
  * ============================================================ */
+let orderUpdateStatusTask = null;
+const ORDER_STATUS_TASK_LABEL = { MANJA: 'Manja', KENDALA: 'Kendala', CLOSE: 'Close' };
+
 function openUpdate(noInet) {
   orderState.currentNoInet = noInet;
   goTo('orderUpdate');
@@ -2422,6 +2435,7 @@ function openUpdate(noInet) {
     if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
     const d = res.data;
     orderState.currentRow = d;
+    document.getElementById('updNoInet').textContent = d.noInet || noInet;
     document.getElementById('updPrioritas').value = d.prioritas || '';
     document.getElementById('updNama').value = d.nama || '';
     document.getElementById('updNomorHp').value = d.nomorHp || '';
@@ -2430,41 +2444,70 @@ function openUpdate(noInet) {
     document.getElementById('updPaketSpeed').value = d.paketSpeed || '';
     document.getElementById('updRequestOnt').value = d.requestOnt || '';
     document.getElementById('updTicketId').textContent = d.ticketId || '-';
-    document.getElementById('updStatusTask').value = '';
     document.getElementById('updStatusOrder').textContent = d.statusOrder || '-';
     document.getElementById('updSnOntLama').value = d.snOntLama || '';
     document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
     document.getElementById('updValinsId').value = d.valinsId || '';
     document.getElementById('updKeterangan').value = d.keterangan || '';
-    onStatusTaskChange();
+    resetStatusTaskUI();
   }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
 }
 
-function onStatusTaskChange() {
-  const st = document.getElementById('updStatusTask').value;
+/* ============================================================
+ *  DATA PROGRES - PILIH STATUS TASK (tombol, bukan dropdown lagi)
+ *  Field wajib beda-beda per status:
+ *  - MANJA / KENDALA -> wajib isi Keterangan
+ *  - CLOSE           -> wajib isi SN ONT Lama, SN ONT Baru, Valins ID
+ * ============================================================ */
+function resetStatusTaskUI() {
+  orderUpdateStatusTask = null;
+  ['MANJA', 'KENDALA', 'CLOSE'].forEach(s => {
+    const b = document.getElementById('stBtn' + s);
+    if (b) b.classList.remove('active');
+  });
+  document.getElementById('wrapKeterangan').style.display = 'none';
+  document.getElementById('wrapCloseFields').style.display = 'none';
+  document.getElementById('updateOrderBtnText').textContent = 'Pilih Status Task';
+  validateUpdateForm();
+}
+
+function selectStatusTask(status) {
+  orderUpdateStatusTask = status;
+
+  ['MANJA', 'KENDALA', 'CLOSE'].forEach(s => {
+    const b = document.getElementById('stBtn' + s);
+    if (b) b.classList.toggle('active', s === status);
+  });
+
   const orderStatusMap = { MANJA:'IN PROGRESS', KENDALA:'COMPLETED', CLOSE:'COMPLETED' };
-  document.getElementById('updStatusOrder').textContent = orderStatusMap[st] || (orderState.currentRow ? (orderState.currentRow.statusOrder || '-') : '-');
-  document.getElementById('wrapSnOntLama').style.display = st === 'CLOSE' ? 'block' : 'none';
-  document.getElementById('wrapSnOntBaru').style.display = st === 'CLOSE' ? 'block' : 'none';
-  document.getElementById('wrapKeterangan').style.display = st === 'KENDALA' ? 'block' : 'none';
+  document.getElementById('updStatusOrder').textContent = orderStatusMap[status] || (orderState.currentRow ? (orderState.currentRow.statusOrder || '-') : '-');
+
+  document.getElementById('wrapKeterangan').style.display = (status === 'MANJA' || status === 'KENDALA') ? 'block' : 'none';
+  document.getElementById('wrapCloseFields').style.display = (status === 'CLOSE') ? 'block' : 'none';
+
+  document.getElementById('updateOrderBtnText').textContent = 'Update Order - ' + ORDER_STATUS_TASK_LABEL[status];
   validateUpdateForm();
 }
 
 function validateUpdateForm() {
-  const st = document.getElementById('updStatusTask').value;
+  const st = orderUpdateStatusTask;
   const valinsId = document.getElementById('updValinsId').value.trim();
   const snLama = document.getElementById('updSnOntLama').value.trim();
   const snBaru = document.getElementById('updSnOntBaru').value.trim();
   const keterangan = document.getElementById('updKeterangan').value.trim();
 
-  let valid = true;
-  if (!st) valid = false;
-  if (!valinsId || isNaN(Number(valinsId))) valid = false;
-  if (st === 'CLOSE' && (!snLama || !snBaru)) valid = false;
-  if (st === 'KENDALA' && !keterangan) valid = false;
+  let valid = false;
+  if (st === 'MANJA' || st === 'KENDALA') {
+    valid = !!keterangan;
+  } else if (st === 'CLOSE') {
+    valid = !!(snLama && snBaru && valinsId && !isNaN(Number(valinsId)));
+  }
 
   const btn = document.getElementById('btnUpdateOrder');
-  if (btn) btn.classList.toggle('btn-ready', valid);
+  if (btn) {
+    btn.disabled = !valid;
+    btn.classList.toggle('btn-ready', valid);
+  }
   return valid;
 }
 
@@ -2473,7 +2516,10 @@ function handleUpdateOrder(e) {
   if (e) addRipple(btn, e);
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
+  if (!orderUpdateStatusTask) { showToast('error', 'Pilih Status Task terlebih dahulu.'); return; }
   if (!validateUpdateForm()) { showToast('error', 'Lengkapi parameter wajib sebelum update.'); shakeEl(btn.closest('.glass-card')); return; }
+
+  const btnLabel = 'Update Order - ' + ORDER_STATUS_TASK_LABEL[orderUpdateStatusTask];
 
   const payload = {
     action:'orderUpdate', nik: session.nik, telegramId: session.telegramId, noInet: orderState.currentNoInet,
@@ -2484,7 +2530,7 @@ function handleUpdateOrder(e) {
     koordinate: document.getElementById('updKoordinate').value.trim(),
     paketSpeed: document.getElementById('updPaketSpeed').value.trim(),
     requestOnt: document.getElementById('updRequestOnt').value.trim(),
-    statusTask: document.getElementById('updStatusTask').value,
+    statusTask: orderUpdateStatusTask,
     snOntLama: document.getElementById('updSnOntLama').value.trim(),
     snOntBaru: document.getElementById('updSnOntBaru').value.trim(),
     valinsId: document.getElementById('updValinsId').value.trim(),
@@ -2493,10 +2539,10 @@ function handleUpdateOrder(e) {
 
   setLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Mengirim...');
   apiPost(payload).then(res => {
-    resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Update');
+    resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel);
     if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(); loadOrderDashboard(); }
     else { showToast('error', res.message); }
-  }).catch(err => { resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Update'); showToast('error', 'Error: ' + err.message); });
+  }).catch(err => { resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel); showToast('error', 'Error: ' + err.message); });
 }
 
 function ambilLokasiOrderUpdate() {
