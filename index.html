@@ -101,6 +101,12 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
   --toast-text: #ffffff;
   --skeleton-base: #ECEDF0;
   --skeleton-shine: #F6F7F8;
+  --header-grad: linear-gradient(135deg, #2E6BFF 0%, #1554E0 55%, #0C3FC7 100%);
+  --header-grad-strong: linear-gradient(135deg, #1F5CF0 0%, #0B3FCB 100%);
+  --on-header: #FFFFFF;
+  --on-header-muted: rgba(255,255,255,0.78);
+  --on-header-soft-bg: rgba(255,255,255,0.16);
+  --on-header-soft-border: rgba(255,255,255,0.28);
 }
 :root[data-theme="dark"] {
   --bg-deep: #000000;
@@ -131,14 +137,20 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
   --toast-text: #12151B;
   --skeleton-base: #202023;
   --skeleton-shine: #2A2A2E;
+  --header-grad: linear-gradient(135deg, #1D4ED8 0%, #16309B 55%, #0A1B63 100%);
+  --header-grad-strong: linear-gradient(135deg, #1D4ED8 0%, #0A1B63 100%);
+  --on-header: #FFFFFF;
+  --on-header-muted: rgba(255,255,255,0.72);
+  --on-header-soft-bg: rgba(255,255,255,0.10);
+  --on-header-soft-border: rgba(255,255,255,0.18);
 }
 html, body { width:100%; min-height:100%; font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg-deep); color:var(--text-white); }
 body { position:relative; overscroll-behavior:none; }
 
 .theme-toggle {
-  width:34px; height:34px; border-radius:10px; border:1px solid var(--glass-border);
-  background:var(--glass-bg); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
-  color:var(--text-muted); transition:opacity .15s;
+  width:34px; height:34px; border-radius:10px; border:1px solid var(--on-header-soft-border);
+  background:var(--on-header-soft-bg); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  color:var(--on-header); transition:opacity .15s;
 }
 .theme-toggle:active { opacity:0.55; }
 
@@ -150,31 +162,33 @@ body { position:relative; overscroll-behavior:none; }
 .app-header {
   position:fixed; top:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
-  background:var(--header-bg);
-  border-bottom:1px solid var(--glass-border);
-  padding:calc(13px + env(safe-area-inset-top)) 16px 13px;
+  background:var(--header-grad);
+  border-bottom:none;
+  border-radius:0 0 22px 22px;
+  padding:calc(15px + env(safe-area-inset-top)) 18px 20px;
   display:flex; align-items:center; gap:10px;
+  box-shadow:0 10px 24px -8px rgba(11,63,199,0.45);
 }
 .header-icon {
-  width:34px; height:34px; border-radius:10px; flex-shrink:0;
-  background:var(--accent);
+  width:36px; height:36px; border-radius:11px; flex-shrink:0;
+  background:var(--on-header-soft-bg); border:1px solid var(--on-header-soft-border);
   display:flex; align-items:center; justify-content:center;
-  color:#fff; font-size:15px;
+  color:var(--on-header); font-size:15px;
 }
-.header-text .brand-title { font-size:14.5px; font-weight:700; letter-spacing:-0.2px; color:var(--text-white); }
-.header-text .brand-sub { font-size:10.5px; color:var(--text-muted); margin-top:1px; }
+.header-text .brand-title { font-size:15px; font-weight:700; letter-spacing:-0.2px; color:var(--on-header); }
+.header-text .brand-sub { font-size:11px; color:var(--on-header-muted); margin-top:1px; }
 
 .header-brand { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
 .header-titlebar { display:flex; align-items:center; gap:9px; flex:1; min-width:0; }
 .header-titlebar .back-circle {
-  width:30px; height:30px; border-radius:9px; flex-shrink:0; cursor:pointer;
-  background:var(--field-bg); border:1px solid var(--glass-border);
-  display:flex; align-items:center; justify-content:center; color:var(--text-white); font-size:13px;
+  width:32px; height:32px; border-radius:10px; flex-shrink:0; cursor:pointer;
+  background:var(--on-header-soft-bg); border:1px solid var(--on-header-soft-border);
+  display:flex; align-items:center; justify-content:center; color:var(--on-header); font-size:13px;
   transition:opacity .15s;
 }
 .header-titlebar .back-circle:active { opacity:0.55; }
-.header-titlebar-text { font-size:16px; font-weight:700; letter-spacing:-0.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.header-actions { display:flex; align-items:center; gap:7px; margin-left:auto; flex-shrink:0; }
+.header-titlebar-text { font-size:16.5px; font-weight:700; letter-spacing:-0.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--on-header); }
+.header-actions { display:flex; align-items:center; gap:8px; margin-left:auto; flex-shrink:0; }
 
 .app-main { flex:1; padding:74px 16px 92px; display:flex; flex-direction:column; justify-content:safe center; }
 
@@ -187,9 +201,9 @@ body { position:relative; overscroll-behavior:none; }
    CARD (dulu "glass card" - sekarang solid surface flat, native-style)
 ================================================================ */
 .glass-card {
-  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:16px;
+  background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:18px;
   padding:18px; margin-bottom:12px;
-  box-shadow:0 1px 2px var(--shadow-soft);
+  box-shadow:0 2px 10px -4px var(--shadow-soft);
 }
 .card-shake { animation:shakeX 0.4s ease both !important; }
 @keyframes shakeX { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-7px);} 40%{transform:translateX(7px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
@@ -199,69 +213,66 @@ body { position:relative; overscroll-behavior:none; }
 ================================================================ */
 .profile-hero { display:flex; align-items:center; gap:13px; }
 .avatar-circle {
-  width:50px; height:50px; border-radius:14px; flex-shrink:0;
-  background:var(--accent); color:#fff;
+  width:50px; height:50px; border-radius:16px; flex-shrink:0;
+  background:var(--header-grad); color:#fff;
   display:flex; align-items:center; justify-content:center;
   font-size:16px; font-weight:700; letter-spacing:0.3px;
+  box-shadow:0 4px 10px -2px rgba(21,94,239,0.45);
 }
 .profile-hero-text { flex:1; min-width:0; }
 .profile-hero-greet { font-size:11.5px; color:var(--text-muted); }
 .profile-hero-name { font-size:15.5px; font-weight:700; display:flex; align-items:center; gap:7px; margin-top:1px; }
 .profile-hero-nik { font-size:11.5px; color:var(--text-muted); margin-top:2px; }
-.badge-mitra { font-size:10px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:2px 9px; border-radius:20px; letter-spacing:.2px; }
+.badge-mitra { font-size:10px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:3px 10px; border-radius:20px; letter-spacing:.2px; }
+
+/* Home profile card floats up, tucking under the gradient header */
+.home-profile-card {
+  margin-top:-38px; margin-bottom:14px;
+  border-radius:20px; box-shadow:0 14px 28px -10px var(--shadow-strong);
+  position:relative; z-index:1;
+}
 
 .notif-btn {
-  width:34px; height:34px; border-radius:10px; border:1px solid var(--glass-border);
-  background:var(--glass-bg); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
-  color:var(--text-muted); position:relative;
+  width:34px; height:34px; border-radius:10px; border:1px solid var(--on-header-soft-border);
+  background:var(--on-header-soft-bg); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;
+  color:var(--on-header); position:relative;
 }
 .notif-btn:active { opacity:0.55; }
-.notif-btn .notif-dot { position:absolute; top:7px; right:7px; width:7px; height:7px; border-radius:50%; background:var(--error); border:1.5px solid var(--glass-bg); }
+.notif-btn .notif-dot { position:absolute; top:7px; right:7px; width:7px; height:7px; border-radius:50%; background:#FF5A5F; border:1.5px solid var(--header-grad-strong, var(--accent)); }
 
 /* ================================================================
    TOTAL ORDER SUMMARY (Beranda)
 ================================================================ */
-.total-order-card { padding:16px 18px 16px; }
-.total-order-head { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-.total-order-head .toh-icon {
-  width:40px; height:40px; border-radius:12px; flex-shrink:0;
-  background:var(--accent-soft); color:var(--accent);
-  display:flex; align-items:center; justify-content:center; font-size:17px;
-}
+.total-order-card { padding:16px 16px 14px; }
+.total-order-head { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .total-order-head .toh-text { flex:1; min-width:0; }
-.total-order-label { font-size:11px; font-weight:600; color:var(--text-muted); letter-spacing:.2px; }
-.total-order-head .toh-num { font-size:23px; font-weight:700; color:var(--text-white); line-height:1.15; margin-top:1px; }
-.total-order-head .toh-chevron { color:var(--text-muted); font-size:13px; flex-shrink:0; transform:rotate(180deg); opacity:.6; }
-.summary-row { display:flex; justify-content:space-between; margin-top:0; gap:8px; }
+.total-order-label { font-size:14px; font-weight:700; color:var(--text-white); letter-spacing:-0.1px; }
+.total-order-head .toh-sub { font-size:10.5px; color:var(--text-muted); margin-top:1px; }
+.toh-see-all { font-size:12px; font-weight:700; color:var(--accent); cursor:pointer; flex-shrink:0; white-space:nowrap; }
+.toh-see-all:active { opacity:0.6; }
+.summary-row { display:flex; justify-content:space-between; margin-top:0; }
 .summary-chip {
-  flex:1; text-align:center; padding:12px 4px 11px; border-radius:12px; background:var(--field-bg); cursor:pointer;
-  border:1px solid transparent; transition:opacity .15s;
+  flex:1; text-align:center; padding:4px 4px; cursor:pointer;
+  border-right:1px solid var(--glass-border); transition:opacity .15s;
 }
-.summary-chip:active { opacity:0.6; }
-.total-order-head.clickable-total { cursor:pointer; }
-.total-order-head.clickable-total:active { opacity:0.6; }
-.summary-chip .sc-icon {
-  width:24px; height:24px; border-radius:8px; margin:0 auto 6px; display:flex; align-items:center; justify-content:center; font-size:12px;
-}
-.summary-chip .sc-num { font-size:18px; font-weight:700; line-height:1.1; }
-.summary-chip .sc-label { font-size:9.5px; color:var(--text-muted); letter-spacing:.2px; margin-top:4px; font-weight:600; }
-.summary-chip.sc-unpicked .sc-icon { background:var(--warning-soft); color:var(--warning); }
+.summary-chip:last-child { border-right:none; }
+.summary-chip:active { opacity:0.55; }
+.summary-chip .sc-num { font-size:22px; font-weight:800; line-height:1.1; }
+.summary-chip .sc-label { font-size:10px; color:var(--text-muted); letter-spacing:.1px; margin-top:5px; font-weight:600; }
 .summary-chip.sc-unpicked .sc-num { color:var(--warning); }
-.summary-chip.sc-progress .sc-icon { background:var(--purple-soft); color:var(--accent-2); }
-.summary-chip.sc-progress .sc-num { color:var(--accent-2); }
-.summary-chip.sc-close .sc-icon { background:var(--success-soft); color:var(--success); }
+.summary-chip.sc-progress .sc-num { color:var(--accent); }
 .summary-chip.sc-close .sc-num { color:var(--success); }
 
 /* ================================================================
    QUICK ACCESS ROW
 ================================================================ */
-.quick-access-row { display:flex; justify-content:space-between; gap:8px; margin-top:2px; }
+.quick-access-row { display:flex; justify-content:space-between; gap:6px; margin-top:2px; }
 .quick-tile {
-  flex:1; display:flex; flex-direction:column; align-items:center; gap:7px; cursor:pointer;
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;
   padding:10px 2px; border-radius:14px; transition:opacity .15s;
 }
 .quick-tile:active { opacity:0.6; }
-.quick-tile .qt-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:17px; }
+.quick-tile .qt-icon { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; }
 .quick-tile .qt-label { font-size:10px; font-weight:600; text-align:center; color:var(--text-white); line-height:1.25; }
 .qt-green { background:var(--success-soft); color:var(--success); }
 .qt-blue { background:var(--accent-soft); color:var(--accent); }
@@ -377,14 +388,28 @@ body { position:relative; overscroll-behavior:none; }
 .presensi-status-btn.active.ps-cuti { background:var(--purple-soft); border-color:var(--accent-2); color:var(--accent-2); }
 .presensi-status-btn.active.ps-sakit { background:var(--error-soft); border-color:var(--error); color:var(--error); }
 
-.presensi-home-card { padding:16px 18px; }
-.presensi-home-label { font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:9px; }
+.presensi-home-card { padding:15px 16px; }
+.presensi-home-label { font-size:11px; font-weight:600; color:var(--text-muted); margin-bottom:5px; }
+.presensi-home-row { display:flex; align-items:center; gap:12px; }
+.presensi-home-icon {
+  width:38px; height:38px; border-radius:12px; flex-shrink:0;
+  background:var(--accent-soft); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+.presensi-home-body { flex:1; min-width:0; }
 .presensi-home-badge { display:inline-flex; align-items:center; gap:7px; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:700; }
 .presensi-home-badge.pb-masuk { background:var(--success-soft); color:var(--success); }
 .presensi-home-badge.pb-libur { background:var(--accent-soft); color:var(--accent); }
 .presensi-home-badge.pb-cuti { background:var(--purple-soft); color:var(--accent-2); }
 .presensi-home-badge.pb-sakit { background:var(--error-soft); color:var(--error); }
 .presensi-home-time { font-size:11.5px; color:var(--text-muted); margin-top:8px; }
+.btn-pill-primary {
+  flex-shrink:0; border:none; border-radius:24px; background:var(--header-grad); color:#fff;
+  font-size:12.5px; font-weight:700; padding:10px 16px; cursor:pointer; white-space:nowrap;
+  display:flex; align-items:center; gap:6px; box-shadow:0 6px 14px -4px rgba(21,94,239,0.5);
+  transition:opacity .15s;
+}
+.btn-pill-primary:active { opacity:0.8; }
 .presensi-home-empty-text { font-size:13px; color:var(--info-text); margin-bottom:12px; }
 
 .presensi-done-card { text-align:center; padding:30px 20px 24px; }
@@ -469,14 +494,15 @@ body { position:relative; overscroll-behavior:none; }
    BUTTONS
 ================================================================ */
 .btn-primary {
-  width:100%; border:none; border-radius:12px; color:#fff; font-family:'Inter',sans-serif;
+  width:100%; border:none; border-radius:13px; color:#fff; font-family:'Inter',sans-serif;
   font-size:14.5px; font-weight:700; padding:14px; cursor:pointer; position:relative; overflow:hidden;
   transition:opacity 0.15s;
-  background:var(--accent);
+  background:var(--header-grad);
+  box-shadow:0 8px 18px -6px rgba(21,94,239,0.5);
 }
 .btn-primary:active:not(:disabled) { opacity:0.85; }
-.btn-primary:disabled { opacity:0.45; cursor:not-allowed; }
-.btn-primary.btn-danger { background:var(--error); }
+.btn-primary:disabled { opacity:0.45; cursor:not-allowed; box-shadow:none; }
+.btn-primary.btn-danger { background:var(--error); box-shadow:none; }
 .btn-primary .ripple { display:none; }
 .btn-inner { display:flex; align-items:center; justify-content:center; gap:8px; pointer-events:none; }
 .btn-spinner { display:none; width:15px; height:15px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; }
@@ -498,15 +524,28 @@ body { position:relative; overscroll-behavior:none; }
   width:100%; max-width:480px; z-index:40;
   background:var(--nav-bg);
   border-top:1px solid var(--glass-border);
-  display:flex; justify-content:space-around; align-items:flex-end; padding:7px 0 calc(8px + env(safe-area-inset-bottom));
+  border-radius:22px 22px 0 0;
+  box-shadow:0 -8px 20px -6px var(--shadow-strong);
+  display:flex; justify-content:space-around; align-items:flex-end; padding:9px 4px calc(10px + env(safe-area-inset-bottom));
 }
 .nav-btn {
   background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:4px;
   font-size:9.5px; font-weight:600; letter-spacing:-0.1px; color:var(--text-muted); padding:6px 1px; cursor:pointer;
-  transition:color 0.15s; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  transition:color 0.15s, opacity .15s; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
+.nav-btn:active { opacity:0.6; }
 .nav-btn i { font-size:18px; }
-.nav-btn.active-nav { color:var(--accent); }
+.nav-btn.active-nav { color:var(--accent); font-weight:700; }
+.nav-btn.nav-btn-scan {
+  flex:0 0 auto; width:54px; margin-top:-26px;
+}
+.nav-btn.nav-btn-scan i {
+  width:52px; height:52px; border-radius:50%; font-size:21px; color:#fff;
+  background:var(--header-grad); display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 18px -4px rgba(21,94,239,0.55); border:3px solid var(--nav-bg);
+}
+.nav-btn.nav-btn-scan { color:var(--text-muted); }
+.nav-btn.nav-btn-scan.active-nav { color:var(--accent); }
 
 /* ================================================================
    TOAST
@@ -564,7 +603,7 @@ body { position:relative; overscroll-behavior:none; }
 .badge-close { background:var(--success-soft); color:var(--success); }
 .order-item-btn {
   flex-shrink:0; border:none; border-radius:10px; padding:9px 14px; font-size:12.5px; font-weight:700;
-  color:#fff; cursor:pointer; background:var(--accent);
+  color:#fff; cursor:pointer; background:var(--header-grad);
 }
 .order-item-btn.btn-update { background:var(--accent-2); }
 .order-item-btn:active { opacity:0.75; }
@@ -668,7 +707,7 @@ body { position:relative; overscroll-behavior:none; }
 
     <!-- MENU / HOME -->
     <div id="screen-menu" class="screen">
-      <div class="glass-card">
+      <div class="glass-card home-profile-card">
         <div class="profile-hero">
           <div class="avatar-circle" id="menuAvatar">--</div>
           <div class="profile-hero-text">
@@ -684,32 +723,28 @@ body { position:relative; overscroll-behavior:none; }
       </div>
 
       <div class="glass-card total-order-card" id="menuSummaryRow" style="display:none;">
-        <div class="total-order-head clickable-total" onclick="goTo('orderDashboard')">
-          <div class="toh-icon"><i class="ic-clipboard"></i></div>
+        <div class="total-order-head">
           <div class="toh-text">
-            <div class="total-order-label">Total Order</div>
-            <div class="toh-num" id="sumTotal">0</div>
+            <div class="total-order-label">Ringkasan Order</div>
+            <div class="toh-sub"><span id="sumTotal">0</span> total order Anda</div>
           </div>
-          <i class="ic-arrow-left toh-chevron"></i>
+          <div class="toh-see-all" onclick="goTo('orderDashboard')">Lihat Semua</div>
         </div>
         <div class="summary-row">
           <div class="summary-chip sc-unpicked" onclick="goTo('orderDashboard')">
-            <div class="sc-icon"><i class="ic-lock"></i></div>
             <div class="sc-num" id="sumOpen">0</div><div class="sc-label">Open</div>
           </div>
           <div class="summary-chip sc-progress" onclick="goTo('orderDashboard')">
-            <div class="sc-icon"><i class="ic-refresh"></i></div>
             <div class="sc-num" id="sumInProgress">0</div><div class="sc-label">In Progress</div>
           </div>
           <div class="summary-chip sc-close" onclick="goTo('orderDashboard')">
-            <div class="sc-icon"><i class="ic-check"></i></div>
             <div class="sc-num" id="sumCompleted">0</div><div class="sc-label">Completed</div>
           </div>
         </div>
       </div>
 
-      <div class="section-label">Menu Utama</div>
-      <div class="glass-card" style="padding:14px 8px;">
+      <div class="section-label">Menu Cepat</div>
+      <div class="glass-card" style="padding:16px 8px;">
         <div class="quick-access-row">
           <div class="quick-tile" onclick="goTo('presensi')">
             <div class="qt-icon qt-green"><i class="ic-location"></i></div>
@@ -1240,9 +1275,9 @@ body { position:relative; overscroll-behavior:none; }
   <div class="bottom-nav">
     <button class="nav-btn" data-screen="presensi" onclick="goTo('presensi')"><i class="ic-location"></i>Presensi</button>
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
-    <button class="nav-btn" data-screen="claim" onclick="goTo('claim')"><i class="ic-receipt"></i>Claim</button>
     <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Home</button>
-    <button class="nav-btn" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN</button>
+    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN</button>
+    <button class="nav-btn" data-screen="claim" onclick="goTo('claim')"><i class="ic-receipt"></i>Claim</button>
     <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Justifikasi</button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i>Setting</button>
   </div>
@@ -2041,15 +2076,26 @@ function loadPresensiStatusHome() {
       const badgeClass = PRESENSI_HOME_BADGE_CLASS[res.status] || 'pb-masuk';
       const label = PRESENSI_STATUS_LABEL[res.status] || res.status;
       card.innerHTML =
-        '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
-        '<div class="presensi-home-badge ' + badgeClass + '"><i class="ic-check"></i> ' + label + '</div>' +
+        '<div class="presensi-home-row">' +
+          '<div class="presensi-home-icon"><i class="ic-location"></i></div>' +
+          '<div class="presensi-home-body">' +
+            '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
+            '<div class="presensi-home-badge ' + badgeClass + '"><i class="ic-check"></i> ' + label + '</div>' +
+          '</div>' +
+        '</div>' +
         '<div class="presensi-home-time">Pukul ' + (res.waktu || '-') + '</div>';
     } else {
       card.innerHTML =
-        '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
-        '<div class="presensi-home-empty-text">Anda belum melakukan presensi hari ini.</div>' +
-        '<button type="button" class="btn-primary" style="margin-top:0;" onclick="goTo(\'presensi\')">' +
-        '<div class="btn-inner"><i class="ic-location"></i><span>Presensi Sekarang</span></div></button>';
+        '<div class="presensi-home-row">' +
+          '<div class="presensi-home-icon"><i class="ic-location"></i></div>' +
+          '<div class="presensi-home-body">' +
+            '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
+            '<div style="font-size:12.5px;font-weight:700;color:var(--error);">Belum melakukan presensi</div>' +
+          '</div>' +
+          '<button type="button" class="btn-pill-primary" onclick="goTo(\'presensi\')">' +
+            '<i class="ic-location"></i><span>Presensi Sekarang</span>' +
+          '</button>' +
+        '</div>';
     }
   }).catch(() => { card.innerHTML = ''; });
 }
