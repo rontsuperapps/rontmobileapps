@@ -138,7 +138,8 @@ body { position:relative; overscroll-behavior:none; }
 .theme-toggle:active { transform:scale(0.94); }
 
 #bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; }
-.blob { position:fixed; border-radius:50%; filter:blur(80px); pointer-events:none; z-index:1; opacity:var(--blob-opacity); animation:blobFloat 12s ease-in-out infinite alternate; }
+.blob { position:fixed; border-radius:50%; filter:blur(40px); pointer-events:none; z-index:1; opacity:var(--blob-opacity); animation:blobFloat 12s ease-in-out infinite alternate; will-change:transform; }
+body.app-paused .blob { animation-play-state:paused; }
 .blob-1 { width:420px; height:420px; background:#1d4ed8; top:-140px; left:-100px; }
 .blob-2 { width:320px; height:320px; background:#7c3aed; bottom:-90px; right:-70px; animation-delay:-5s; }
 .blob-3 { width:220px; height:220px; background:#0ea5e9; top:45%; left:60%; animation-delay:-3s; }
@@ -152,7 +153,7 @@ body { position:relative; overscroll-behavior:none; }
 .app-header {
   position:fixed; top:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
-  background:var(--header-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
+  background:var(--header-bg); backdrop-filter:blur(10px) saturate(160%); -webkit-backdrop-filter:blur(10px) saturate(160%);
   border-bottom:1px solid var(--glass-border);
   padding:calc(13px + env(safe-area-inset-top)) 16px 13px;
   display:flex; align-items:center; gap:10px;
@@ -197,7 +198,7 @@ body { position:relative; overscroll-behavior:none; }
 .glass-card {
   background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:18px;
   padding:20px; margin-bottom:14px;
-  backdrop-filter:blur(20px) saturate(150%); -webkit-backdrop-filter:blur(20px) saturate(150%);
+  backdrop-filter:blur(10px) saturate(150%); -webkit-backdrop-filter:blur(10px) saturate(150%);
   box-shadow:0 0 0 1px rgba(255,255,255,0.03) inset, 0 14px 34px var(--shadow-strong);
   animation:cardEntrance 0.5s cubic-bezier(0.22,1,0.36,1) both;
 }
@@ -326,7 +327,7 @@ body { position:relative; overscroll-behavior:none; }
 .modal-box {
   width:100%; max-width:320px; background:var(--glass-bg); border:1px solid var(--glass-border);
   border-radius:18px; padding:24px 20px 20px; text-align:center;
-  backdrop-filter:blur(24px) saturate(160%); -webkit-backdrop-filter:blur(24px) saturate(160%);
+  backdrop-filter:blur(12px) saturate(160%); -webkit-backdrop-filter:blur(12px) saturate(160%);
   box-shadow:0 24px 60px var(--shadow-strong);
   transform:scale(0.9); transition:transform 0.25s;
 }
@@ -516,7 +517,7 @@ body { position:relative; overscroll-behavior:none; }
 .bottom-nav {
   position:fixed; bottom:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
-  background:var(--nav-bg); backdrop-filter:blur(18px) saturate(160%); -webkit-backdrop-filter:blur(18px) saturate(160%);
+  background:var(--nav-bg); backdrop-filter:blur(10px) saturate(160%); -webkit-backdrop-filter:blur(10px) saturate(160%);
   border-top:1px solid var(--glass-border);
   display:flex; justify-content:space-around; align-items:flex-end; padding:7px 0 calc(8px + env(safe-area-inset-bottom));
   box-shadow:0 -6px 20px var(--shadow-soft);
@@ -549,7 +550,7 @@ body { position:relative; overscroll-behavior:none; }
 #toastWrap { position:fixed; bottom:110px; left:50%; transform:translateX(-50%); z-index:100; width:calc(100% - 48px); max-width:400px; pointer-events:none; }
 .toast-box {
   display:flex; align-items:center; gap:9px; border-radius:14px; padding:14px 18px; font-size:13px; font-weight:600;
-  backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
   opacity:0; transform:translateY(14px); transition:opacity 0.25s, transform 0.25s;
   box-shadow:0 12px 34px var(--shadow-strong);
   background:var(--toast-bg);
@@ -566,7 +567,7 @@ body { position:relative; overscroll-behavior:none; }
 .stat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
 .stat-card {
   background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:14px; padding:14px;
-  cursor:pointer; transition:transform .15s, border-color .2s; backdrop-filter:blur(16px);
+  cursor:pointer; transition:transform .15s, border-color .2s; backdrop-filter:blur(8px);
   display:flex; align-items:center; gap:11px;
 }
 .stat-card:active { transform:scale(0.97); }
@@ -590,9 +591,10 @@ body { position:relative; overscroll-behavior:none; }
 .order-item {
   display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px;
   border-radius:14px; background:var(--glass-bg); border:1px solid var(--glass-border); margin-bottom:10px;
-  backdrop-filter:blur(16px);
+  backdrop-filter:blur(8px);
 }
 .order-item-info .order-noinet { font-size:13.5px; font-weight:700; }
+.order-item-info .order-nama { font-size:11.5px; color:var(--text-muted); margin-top:2px; }
 .order-status-badge { font-size:10.5px; font-weight:700; padding:2px 9px; border-radius:20px; display:inline-block; margin-top:5px; letter-spacing:.3px; }
 .badge-unpicked { background:rgba(245,158,11,0.15); color:#d97706; }
 .badge-pickedup { background:rgba(37,99,235,0.15); color:#2563eb; }
@@ -662,18 +664,6 @@ body { position:relative; overscroll-behavior:none; }
 
 <!-- Foto Justifikasi TETAP boleh dari galeri (dokumen bukti transaksi, bukan selfie) -->
 <input type="file" id="justifikasiPhotoInput" accept="image/*" style="display:none;" onchange="handleJustifikasiPhoto(event)">
-
-<div id="modalOverlay" class="modal-overlay">
-  <div class="modal-box">
-    <div class="modal-icon"><i class="ic-user"></i></div>
-    <div class="modal-title">Konfirmasi Identitas</div>
-    <div class="modal-text" id="modalText">-</div>
-    <div class="modal-actions">
-      <button class="btn-outline" onclick="closeModal(false)">Bukan Saya</button>
-      <button class="btn-primary" onclick="closeModal(true)">Ya, Benar</button>
-    </div>
-  </div>
-</div>
 
 <!-- OVERLAY BARCODE SCANNER 1D (SN ONT) -->
 <div id="scannerOverlay" class="modal-overlay scanner-overlay">
@@ -1014,13 +1004,9 @@ body { position:relative; overscroll-behavior:none; }
             <div class="stat-number" id="statTotal">0</div>
             <div class="stat-label">Total Order</div>
           </div>
-          <div class="stat-card" data-status="UNPICKED" onclick="openOrderDetail('UNPICKED')">
+          <div class="stat-card" data-status="BELUM UPDATE" onclick="openOrderDetail('BELUM UPDATE')">
             <div class="stat-icon-wrap"><i class="ic-lock"></i></div>
-            <div><div class="stat-number" id="statUnpicked">0</div><div class="stat-label">Unpicked</div></div>
-          </div>
-          <div class="stat-card" data-status="PICKED UP" onclick="openOrderDetail('PICKED UP')">
-            <div class="stat-icon-wrap"><i class="ic-clipboard"></i></div>
-            <div><div class="stat-number" id="statPickedUp">0</div><div class="stat-label">Picked Up</div></div>
+            <div><div class="stat-number" id="statBelumUpdate">0</div><div class="stat-label">Belum Update</div></div>
           </div>
           <div class="stat-card" data-status="MANJA" onclick="openOrderDetail('MANJA')">
             <div class="stat-icon-wrap"><i class="ic-hourglass"></i></div>
@@ -1051,30 +1037,11 @@ body { position:relative; overscroll-behavior:none; }
       <div class="glass-card field-hint" id="orderDetailEmpty" style="display:none; text-align:center;">Tidak ada data order untuk status ini.</div>
     </div>
 
-    <!-- ORDER PICKUP -->
-    <div id="screen-orderPickup" class="screen">
-      <div class="glass-card">
-        <div class="info-list" id="pickupInfoList">
-          <div class="info-list-row"><span class="il-key">Prioritas</span><span class="il-val" id="pkPrioritas">-</span></div>
-          <div class="info-list-row"><span class="il-key">Nama</span><span class="il-val" id="pkNama">-</span></div>
-          <div class="info-list-row"><span class="il-key">Nomor HP</span><span class="il-val" id="pkNomorHp">-</span></div>
-          <div class="info-list-row"><span class="il-key">Alamat</span><span class="il-val" id="pkAlamat">-</span></div>
-          <div class="info-list-row"><span class="il-key">Koordinate</span><span class="il-val" id="pkKoordinate">-</span></div>
-          <div class="info-list-row"><span class="il-key">Paket Speed</span><span class="il-val" id="pkPaketSpeed">-</span></div>
-          <div class="info-list-row"><span class="il-key">Request ONT</span><span class="il-val" id="pkRequestOnt">-</span></div>
-          <div class="info-list-row"><span class="il-key">Ticket ID</span><span class="il-val" id="pkTicketId">-</span></div>
-        </div>
-        <button id="btnConfirmPickup" onclick="confirmPickup(event)" class="btn-primary" style="margin-top:16px;">
-          <div class="btn-inner"><div class="btn-spinner" id="pickupSpinner"></div><span id="pickupBtnText">Konfirmasi Picked Up</span></div>
-        </button>
-      </div>
-    </div>
-
     <!-- ORDER UPDATE -->
     <div id="screen-orderUpdate" class="screen">
-      <!-- DATA ORDER -->
+      <!-- FORM ORDER -->
       <div class="glass-card">
-        <div class="section-label" style="margin-top:0;">Data Order</div>
+        <div class="section-label" style="margin-top:0;">Form Order</div>
 
         <div class="view-only-box">
           <div class="voi-label">No Inet</div>
@@ -1082,102 +1049,143 @@ body { position:relative; overscroll-behavior:none; }
         </div>
 
         <div class="field-wrap">
-          <label class="field-label">Prioritas</label>
-          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updPrioritas" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
-        </div>
-        <div class="field-wrap">
-          <label class="field-label">Nama</label>
+          <label class="field-label">Nama Pelanggan</label>
           <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updNama" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+          <input id="updNamaPelanggan" type="text" placeholder="Opsional" class="field-input">
         </div>
         <div class="field-wrap">
           <label class="field-label">Nomor HP</label>
           <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updNomorHp" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+          <input id="updNomorHp" type="text" placeholder="Opsional" class="field-input">
         </div>
         <div class="field-wrap">
-          <label class="field-label">Koordinate</label>
+          <label class="field-label">Koordinat Pelanggan</label>
           <i class="ic-location field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updKoordinate" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+          <input id="updKoordinatPelanggan" type="text" placeholder="lat, long" class="field-input">
         </div>
         <button type="button" class="btn-outline" onclick="ambilLokasiOrderUpdate()"><i class="ic-location"></i> Get Sistem Koordinat (GPS)</button>
 
         <div class="field-wrap">
           <label class="field-label">Alamat</label>
           <i class="ic-location field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updAlamat" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+          <input id="updAlamat" type="text" placeholder="Opsional" class="field-input">
         </div>
         <button type="button" class="btn-outline" onclick="ambilAlamatOrderUpdate()"><i class="ic-location"></i> Get Sistem Alamat by Koordinat</button>
+
+        <div class="field-wrap" style="margin-bottom:0;">
+          <label class="field-label">Status Pelanggan</label>
+          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+          <input id="updStatusPelanggan" type="text" placeholder="Opsional" class="field-input">
+        </div>
+      </div>
+
+      <!-- FORM LAYANAN -->
+      <div class="glass-card">
+        <div class="section-label" style="margin-top:0;">Form Layanan</div>
 
         <div class="field-wrap">
           <label class="field-label">Paket Speed</label>
           <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updPaketSpeed" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+          <input id="updPaketSpeed" type="text" placeholder="Opsional" class="field-input">
         </div>
         <div class="field-wrap" style="margin-bottom:0;">
-          <label class="field-label">Request ONT</label>
+          <label class="field-label">Target Produk ONT</label>
           <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updRequestOnt" type="text" placeholder="Opsional" class="field-input" oninput="validateUpdateForm()">
+          <input id="updTargetProdukOnt" type="text" placeholder="Opsional" class="field-input">
         </div>
       </div>
 
-      <!-- DATA PROGRES -->
+      <!-- FORM REPLACEMENT -->
       <div class="glass-card">
-        <div class="section-label" style="margin-top:0;">Data Progres</div>
+        <div class="section-label" style="margin-top:0;">Form Replacement</div>
 
         <div class="view-only-box">
-          <div class="voi-label">Ticket ID</div>
-          <div class="voi-value" id="updTicketId">-</div>
+          <div class="voi-label">Tiket ID Tactical</div>
+          <div class="voi-value" id="updTiketIdTactical">-</div>
         </div>
 
-        <label class="field-label">Status Task</label>
+        <label class="field-label">Update Status</label>
         <div class="presensi-status-grid" style="grid-template-columns:repeat(3,1fr);">
           <button type="button" class="presensi-status-btn ps-cuti" id="stBtnMANJA" onclick="selectStatusTask('MANJA')"><i class="ic-hourglass"></i> Manja</button>
           <button type="button" class="presensi-status-btn ps-sakit" id="stBtnKENDALA" onclick="selectStatusTask('KENDALA')"><i class="ic-alert"></i> Kendala</button>
           <button type="button" class="presensi-status-btn ps-masuk" id="stBtnCLOSE" onclick="selectStatusTask('CLOSE')"><i class="ic-check"></i> Close</button>
         </div>
 
-        <div class="view-only-box">
-          <div class="voi-label">Status Order</div>
-          <div class="voi-value" id="updStatusOrder">-</div>
+        <!-- MANJA: Manja Date, Jam Manja, Keterangan Manja - semua wajib -->
+        <div id="wrapManjaFields" style="display:none;">
+          <div class="field-wrap">
+            <label class="field-label">Manja Date</label>
+            <i class="ic-calendar field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updManjaDatePicker" type="date" class="field-input" oninput="validateUpdateForm()">
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Jam Manja</label>
+            <i class="ic-clock field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updJamManjaPicker" type="time" class="field-input" oninput="validateUpdateForm()">
+          </div>
+          <div class="field-wrap" style="margin-bottom:0;">
+            <label class="field-label">Keterangan Manja</label>
+            <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updKeteranganManja" type="text" placeholder="Wajib diisi" class="field-input" oninput="validateUpdateForm()">
+          </div>
         </div>
 
-        <!-- Keterangan - wajib untuk Manja & Kendala -->
-        <div class="field-wrap" id="wrapKeterangan" style="display:none;">
-          <label class="field-label">Keterangan</label>
-          <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updKeterangan" type="text" placeholder="Wajib diisi" class="field-input" oninput="validateUpdateForm()">
+        <!-- KENDALA: dropdown alasan baku + Kendala Lain (textbox bebas) -->
+        <div id="wrapKendalaFields" style="display:none;">
+          <div class="field-wrap">
+            <label class="field-label">Kendala</label>
+            <i class="ic-alert field-icon" style="top:calc(50% + 10px);"></i>
+            <select id="updKendalaReason" class="field-select" onchange="onKendalaReasonChange()">
+              <option value="">-- Pilih Kendala --</option>
+              <option value="BUKAN PEMILIK">Bukan Pemilik</option>
+              <option value="PELANGGAN AKAN CABUT">Pelanggan Akan Cabut</option>
+              <option value="PELANGGAN CT0">Pelanggan CT0</option>
+              <option value="PELANGGAN SUDAH CABUT">Pelanggan Sudah Cabut</option>
+              <option value="PELANGGAN SUDAH TIDAK BERLANGGANAN">Pelanggan Sudah Tidak Berlangganan</option>
+              <option value="PELANGGAN TIDAK BISA DI KONTAK">Pelanggan Tidak Bisa Di Kontak</option>
+              <option value="SUDAH NYAMAN ONT EKSISTING">Sudah Nyaman ONT Eksisting</option>
+              <option value="KENDALA LAIN">Kendala Lain</option>
+            </select>
+          </div>
+          <div class="field-wrap" id="wrapKendalaLain" style="display:none; margin-bottom:0;">
+            <label class="field-label">Kendala Lain</label>
+            <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updKendalaLainText" type="text" placeholder="Wajib diisi" class="field-input" oninput="validateUpdateForm()">
+          </div>
         </div>
 
-        <!-- SN ONT Lama/Baru + Valins ID - wajib untuk Close -->
+        <!-- CLOSE: SN ONT Lama, SN ONT Baru, Valins ID (wajib) + Keterangan Close (opsional) -->
         <div id="wrapCloseFields" style="display:none;">
-          <div class="field-wrap" id="wrapSnOntLama">
+          <div class="field-wrap">
             <label class="field-label">SN ONT Lama</label>
             <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
             <input id="updSnOntLama" type="text" placeholder="Wajib diisi" class="field-input has-scan" oninput="validateUpdateForm()">
             <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntLama')" title="Scan barcode SN ONT"></i>
           </div>
-          <div class="field-wrap" id="wrapSnOntBaru">
+          <div class="field-wrap">
             <label class="field-label">SN ONT Baru</label>
             <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
             <input id="updSnOntBaru" type="text" placeholder="Wajib diisi" class="field-input has-scan" oninput="validateUpdateForm()">
             <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntBaru')" title="Scan barcode SN ONT"></i>
           </div>
-          <div class="field-wrap" style="margin-bottom:0;">
+          <div class="field-wrap">
             <label class="field-label">Valins ID</label>
             <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
             <input id="updValinsId" type="text" inputmode="numeric" placeholder="Wajib diisi angka" class="field-input" oninput="validateUpdateForm()">
           </div>
+          <div class="field-wrap" style="margin-bottom:0;">
+            <label class="field-label">Keterangan Close (Opsional)</label>
+            <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+            <input id="updKeteranganClose" type="text" placeholder="Opsional" class="field-input">
+          </div>
         </div>
 
         <button id="btnUpdateOrder" onclick="handleUpdateOrder(event)" class="btn-primary" disabled style="margin-top:16px;">
-          <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Pilih Status Task</span></div>
+          <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Pilih Status</span></div>
         </button>
       </div>
     </div>
 
-    <!-- PROFILE -->
     <!-- SETTING (dulu Profile) - hub menu -->
     <div id="screen-akun" class="screen">
       <div class="glass-card" style="text-align:center;">
@@ -1292,11 +1300,19 @@ body { position:relative; overscroll-behavior:none; }
   const canvas = document.getElementById('bgCanvas');
   const ctx = canvas.getContext('2d');
   let W, H, particles = [];
-  function getParticleRGB() {
-    return getComputedStyle(document.documentElement).getPropertyValue('--particle-rgb').trim() || '37,99,235';
+  // Cache warna partikel - jangan panggil getComputedStyle() tiap frame
+  // (mahal). Cukup dihitung ulang saat resize / ganti tema lewat
+  // refreshParticleColor(), dipanggil dari applyTheme().
+  let cachedRGB = '37,99,235';
+  function refreshParticleColor() {
+    cachedRGB = getComputedStyle(document.documentElement).getPropertyValue('--particle-rgb').trim() || '37,99,235';
   }
+  window.__refreshParticleColor = refreshParticleColor;
+
   function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
   window.addEventListener('resize', resize); resize();
+  refreshParticleColor();
+
   function rand(min, max) { return Math.random() * (max - min) + min; }
   function Particle() {
     this.reset = function() {
@@ -1306,16 +1322,28 @@ body { position:relative; overscroll-behavior:none; }
     };
     this.reset();
   }
-  for (let i = 0; i < 60; i++) particles.push(new Particle());
-  function draw() {
-    const rgb = getParticleRGB();
+  // Jumlah partikel dikurangi (60 -> 28): jumlah perhitungan jarak
+  // antar-partikel itu kuadratik (n*(n-1)/2), jadi turun dari ~1.770
+  // ke ~378 perhitungan per frame - dampaknya besar untuk CPU/baterai.
+  const PARTICLE_COUNT = 28;
+  for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+  let rafId = null;
+  let lastFrameTime = 0;
+  const FRAME_INTERVAL = 1000 / 30; // throttle ~30fps (cukup halus, setengah beban dari 60fps)
+
+  function draw(now) {
+    rafId = requestAnimationFrame(draw);
+    if (now - lastFrameTime < FRAME_INTERVAL) return;
+    lastFrameTime = now;
+
     ctx.clearRect(0, 0, W, H);
     particles.forEach(p => {
       p.x += p.vx; p.y += p.vy;
       if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
       if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
       ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${rgb},${p.alpha})`; ctx.fill();
+      ctx.fillStyle = `rgba(${cachedRGB},${p.alpha})`; ctx.fill();
     });
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
@@ -1323,13 +1351,33 @@ body { position:relative; overscroll-behavior:none; }
         const dist = Math.sqrt(dx*dx + dy*dy);
         if (dist < 100) {
           ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.strokeStyle = `rgba(${rgb},${0.1 * (1 - dist/100)})`; ctx.lineWidth = 0.6; ctx.stroke();
+          ctx.strokeStyle = `rgba(${cachedRGB},${0.1 * (1 - dist/100)})`; ctx.lineWidth = 0.6; ctx.stroke();
         }
       }
     }
-    requestAnimationFrame(draw);
   }
-  draw();
+
+  function startAnimation() {
+    if (rafId === null) { lastFrameTime = 0; rafId = requestAnimationFrame(draw); }
+  }
+  function stopAnimation() {
+    if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
+  }
+
+  // Hentikan total animasi & render saat tab/app disembunyikan
+  // (background/minimize) - hemat CPU, GPU, baterai, dan RAM saat
+  // aplikasi tidak sedang dilihat user.
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopAnimation();
+      document.body.classList.add('app-paused');
+    } else {
+      startAnimation();
+      document.body.classList.remove('app-paused');
+    }
+  });
+
+  startAnimation();
 })();
 
 /* ============================================================
@@ -1340,6 +1388,7 @@ function applyTheme(theme) {
   const icon = document.getElementById('themeIcon');
   if (icon) icon.className = theme === 'light' ? 'ic-sun' : 'ic-moon';
   localStorage.setItem('ront_theme', theme);
+  if (window.__refreshParticleColor) window.__refreshParticleColor();
 }
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'light';
@@ -1371,7 +1420,6 @@ const HEADER_CONFIG = {
   claim:          { mode:'title', title:'Claim', back:'menu' },
   orderDashboard: { mode:'title', title:'Dashboard Order', back:'menu' },
   orderDetail:    { mode:'title', title:'Detail Order', back:'orderDashboard' },
-  orderPickup:    { mode:'title', title:'Konfirmasi Pickup', back:'orderDetail' },
   orderUpdate:    { mode:'title', title:'Update Order', back:'orderDetail' },
   akun:           { mode:'title', title:'Setting', back:'menu' },
   ubahProfil:     { mode:'title', title:'Ubah Profil', back:'akun' },
@@ -1628,7 +1676,7 @@ function handleDarkModeSwitch() {
 /* ============================================================
  *  NAVIGASI & SESSION
  * ============================================================ */
-const ORDER_SCREENS = ['orderDashboard', 'orderDetail', 'orderPickup', 'orderUpdate'];
+const ORDER_SCREENS = ['orderDashboard', 'orderDetail', 'orderUpdate'];
 const SETTING_SCREENS = ['akun', 'ubahProfil', 'ubahPassword', 'modeTampilan'];
 
 function goTo(screen) {
@@ -2268,8 +2316,7 @@ function normStatus(s) { return String(s || '').trim().toUpperCase(); }
 
 function statusBadgeClass(s) {
   switch (normStatus(s)) {
-    case 'UNPICKED': return 'badge-unpicked';
-    case 'PICKED UP': return 'badge-pickedup';
+    case 'BELUM UPDATE': return 'badge-unpicked';
     case 'MANJA': return 'badge-manja';
     case 'KENDALA': return 'badge-kendala';
     case 'CLOSE': return 'badge-close';
@@ -2301,8 +2348,7 @@ function loadOrderDashboard(forceRefresh) {
     document.getElementById('dashboardContent').style.display = 'block';
     if (!res.success) { showToast('error', res.message || 'Gagal memuat dashboard order.'); return; }
     document.getElementById('statTotal').textContent = res.total;
-    document.getElementById('statUnpicked').textContent = res.counts.UNPICKED;
-    document.getElementById('statPickedUp').textContent = res.counts['PICKED UP'];
+    document.getElementById('statBelumUpdate').textContent = res.counts['BELUM UPDATE'];
     document.getElementById('statManja').textContent = res.counts.MANJA;
     document.getElementById('statKendala').textContent = res.counts.KENDALA;
     document.getElementById('statClose').textContent = res.counts.CLOSE;
@@ -2319,7 +2365,7 @@ function loadOrderDashboard(forceRefresh) {
  *  ORDER - DETAIL LIST
  * ============================================================ */
 const ORDER_STATUS_TITLES = {
-  TOTAL: 'Semua Order', UNPICKED: 'Unpicked', 'PICKED UP': 'Picked Up',
+  TOTAL: 'Semua Order', 'BELUM UPDATE': 'Belum Update',
   MANJA: 'Manja', KENDALA: 'Kendala', CLOSE: 'Close'
 };
 
@@ -2355,7 +2401,6 @@ function loadOrderDetail() {
     const frag = document.createDocumentFragment();
     orderState.list.forEach(item => {
       const st = normStatus(item.statusTask);
-      const isUnpicked = st === 'UNPICKED';
       const div = document.createElement('div');
       div.className = 'order-item';
 
@@ -2364,16 +2409,20 @@ function loadOrderDetail() {
       const noInetEl = document.createElement('div');
       noInetEl.className = 'order-noinet';
       noInetEl.textContent = item.noInet;
+      const namaEl = document.createElement('div');
+      namaEl.className = 'order-nama';
+      namaEl.textContent = item.namaPelanggan || '-';
       const badgeEl = document.createElement('span');
       badgeEl.className = 'order-status-badge ' + statusBadgeClass(st);
       badgeEl.textContent = st;
       infoWrap.appendChild(noInetEl);
+      infoWrap.appendChild(namaEl);
       infoWrap.appendChild(badgeEl);
 
       const actionBtn = document.createElement('button');
-      actionBtn.className = 'order-item-btn' + (isUnpicked ? '' : ' btn-update');
-      actionBtn.textContent = isUnpicked ? 'Picked Up' : 'Update';
-      actionBtn.onclick = () => (isUnpicked ? openPickup(item.noInet) : openUpdate(item.noInet));
+      actionBtn.className = 'order-item-btn btn-update';
+      actionBtn.textContent = 'Update';
+      actionBtn.onclick = () => openUpdate(item.noInet);
 
       div.appendChild(infoWrap);
       div.appendChild(actionBtn);
@@ -2381,44 +2430,6 @@ function loadOrderDetail() {
     });
     listEl.appendChild(frag);
   }).catch(err => { _detailLoading = false; skeletonEl.style.display = 'none'; showToast('error', 'Error: ' + err.message); });
-}
-
-/* ============================================================
- *  ORDER - PICKUP
- * ============================================================ */
-function openPickup(noInet) {
-  orderState.currentNoInet = noInet;
-  goTo('orderPickup');
-  const session = getSession();
-  apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
-    if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
-    const d = res.data;
-    orderState.currentRow = d;
-    document.getElementById('pkPrioritas').textContent = d.prioritas || '-';
-    document.getElementById('pkNama').textContent = d.nama || '-';
-    document.getElementById('pkNomorHp').textContent = d.nomorHp || '-';
-    document.getElementById('pkAlamat').textContent = d.alamat || '-';
-    document.getElementById('pkKoordinate').textContent = d.koordinate || '-';
-    document.getElementById('pkPaketSpeed').textContent = d.paketSpeed || '-';
-    document.getElementById('pkRequestOnt').textContent = d.requestOnt || '-';
-    document.getElementById('pkTicketId').textContent = d.ticketId || '-';
-  }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
-}
-
-function confirmPickup(e) {
-  const btn = document.getElementById('btnConfirmPickup');
-  if (e) addRipple(btn, e);
-  const session = getSession();
-  if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
-
-  setLoading('btnConfirmPickup', 'pickupSpinner', 'pickupBtnText', 'Memproses...');
-  apiPost({ action:'orderPickup', nik: session.nik, telegramId: session.telegramId, noInet: orderState.currentNoInet })
-    .then(res => {
-      resetLoading('btnConfirmPickup', 'pickupSpinner', 'pickupBtnText', 'Konfirmasi Picked Up');
-      if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(); loadOrderDashboard(); }
-      else { showToast('error', res.message); }
-    })
-    .catch(err => { resetLoading('btnConfirmPickup', 'pickupSpinner', 'pickupBtnText', 'Konfirmasi Picked Up'); showToast('error', 'Error: ' + err.message); });
 }
 
 /* ============================================================
@@ -2435,29 +2446,39 @@ function openUpdate(noInet) {
     if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
     const d = res.data;
     orderState.currentRow = d;
+
     document.getElementById('updNoInet').textContent = d.noInet || noInet;
-    document.getElementById('updPrioritas').value = d.prioritas || '';
-    document.getElementById('updNama').value = d.nama || '';
+    document.getElementById('updNamaPelanggan').value = d.namaPelanggan || '';
     document.getElementById('updNomorHp').value = d.nomorHp || '';
+    document.getElementById('updKoordinatPelanggan').value = d.koordinatPelanggan || '';
     document.getElementById('updAlamat').value = d.alamat || '';
-    document.getElementById('updKoordinate').value = d.koordinate || '';
+    document.getElementById('updStatusPelanggan').value = d.statusPelanggan || '';
     document.getElementById('updPaketSpeed').value = d.paketSpeed || '';
-    document.getElementById('updRequestOnt').value = d.requestOnt || '';
-    document.getElementById('updTicketId').textContent = d.ticketId || '-';
-    document.getElementById('updStatusOrder').textContent = d.statusOrder || '-';
+    document.getElementById('updTargetProdukOnt').value = d.targetProdukOnt || '';
+    document.getElementById('updTiketIdTactical').textContent = d.tiketIdTactical || '-';
+
+    document.getElementById('updManjaDatePicker').value = '';
+    document.getElementById('updJamManjaPicker').value = '';
+    document.getElementById('updKeteranganManja').value = '';
+    document.getElementById('updKendalaReason').value = '';
+    document.getElementById('updKendalaLainText').value = '';
     document.getElementById('updSnOntLama').value = d.snOntLama || '';
     document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
     document.getElementById('updValinsId').value = d.valinsId || '';
-    document.getElementById('updKeterangan').value = d.keterangan || '';
+    document.getElementById('updKeteranganClose').value = '';
+
     resetStatusTaskUI();
   }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
 }
 
 /* ============================================================
- *  DATA PROGRES - PILIH STATUS TASK (tombol, bukan dropdown lagi)
+ *  FORM REPLACEMENT - PILIH UPDATE STATUS (tombol Manja/Kendala/Close)
  *  Field wajib beda-beda per status:
- *  - MANJA / KENDALA -> wajib isi Keterangan
- *  - CLOSE           -> wajib isi SN ONT Lama, SN ONT Baru, Valins ID
+ *  - MANJA   -> Manja Date, Jam Manja, Keterangan Manja (semua wajib)
+ *  - KENDALA -> pilih 1 dari daftar baku, atau "Kendala Lain" + wajib
+ *               isi textbox-nya
+ *  - CLOSE   -> SN ONT Lama, SN ONT Baru, Valins ID wajib; Keterangan
+ *               Close OPSIONAL
  * ============================================================ */
 function resetStatusTaskUI() {
   orderUpdateStatusTask = null;
@@ -2465,9 +2486,11 @@ function resetStatusTaskUI() {
     const b = document.getElementById('stBtn' + s);
     if (b) b.classList.remove('active');
   });
-  document.getElementById('wrapKeterangan').style.display = 'none';
+  document.getElementById('wrapManjaFields').style.display = 'none';
+  document.getElementById('wrapKendalaFields').style.display = 'none';
+  document.getElementById('wrapKendalaLain').style.display = 'none';
   document.getElementById('wrapCloseFields').style.display = 'none';
-  document.getElementById('updateOrderBtnText').textContent = 'Pilih Status Task';
+  document.getElementById('updateOrderBtnText').textContent = 'Pilih Status';
   validateUpdateForm();
 }
 
@@ -2479,27 +2502,41 @@ function selectStatusTask(status) {
     if (b) b.classList.toggle('active', s === status);
   });
 
-  const orderStatusMap = { MANJA:'IN PROGRESS', KENDALA:'COMPLETED', CLOSE:'COMPLETED' };
-  document.getElementById('updStatusOrder').textContent = orderStatusMap[status] || (orderState.currentRow ? (orderState.currentRow.statusOrder || '-') : '-');
-
-  document.getElementById('wrapKeterangan').style.display = (status === 'MANJA' || status === 'KENDALA') ? 'block' : 'none';
+  document.getElementById('wrapManjaFields').style.display = (status === 'MANJA') ? 'block' : 'none';
+  document.getElementById('wrapKendalaFields').style.display = (status === 'KENDALA') ? 'block' : 'none';
+  document.getElementById('wrapKendalaLain').style.display = (status === 'KENDALA' && document.getElementById('updKendalaReason').value === 'KENDALA LAIN') ? 'block' : 'none';
   document.getElementById('wrapCloseFields').style.display = (status === 'CLOSE') ? 'block' : 'none';
 
   document.getElementById('updateOrderBtnText').textContent = 'Update Order - ' + ORDER_STATUS_TASK_LABEL[status];
   validateUpdateForm();
 }
 
+function onKendalaReasonChange() {
+  const isLain = document.getElementById('updKendalaReason').value === 'KENDALA LAIN';
+  document.getElementById('wrapKendalaLain').style.display = isLain ? 'block' : 'none';
+  validateUpdateForm();
+}
+
 function validateUpdateForm() {
   const st = orderUpdateStatusTask;
-  const valinsId = document.getElementById('updValinsId').value.trim();
-  const snLama = document.getElementById('updSnOntLama').value.trim();
-  const snBaru = document.getElementById('updSnOntBaru').value.trim();
-  const keterangan = document.getElementById('updKeterangan').value.trim();
-
   let valid = false;
-  if (st === 'MANJA' || st === 'KENDALA') {
-    valid = !!keterangan;
+
+  if (st === 'MANJA') {
+    const manjaDate = document.getElementById('updManjaDatePicker').value;
+    const jamManja = document.getElementById('updJamManjaPicker').value;
+    const keteranganManja = document.getElementById('updKeteranganManja').value.trim();
+    valid = !!(manjaDate && jamManja && keteranganManja);
+  } else if (st === 'KENDALA') {
+    const reason = document.getElementById('updKendalaReason').value;
+    if (reason === 'KENDALA LAIN') {
+      valid = !!document.getElementById('updKendalaLainText').value.trim();
+    } else {
+      valid = !!reason;
+    }
   } else if (st === 'CLOSE') {
+    const snLama = document.getElementById('updSnOntLama').value.trim();
+    const snBaru = document.getElementById('updSnOntBaru').value.trim();
+    const valinsId = document.getElementById('updValinsId').value.trim();
     valid = !!(snLama && snBaru && valinsId && !isNaN(Number(valinsId)));
   }
 
@@ -2516,25 +2553,30 @@ function handleUpdateOrder(e) {
   if (e) addRipple(btn, e);
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
-  if (!orderUpdateStatusTask) { showToast('error', 'Pilih Status Task terlebih dahulu.'); return; }
+  if (!orderUpdateStatusTask) { showToast('error', 'Pilih Status terlebih dahulu.'); return; }
   if (!validateUpdateForm()) { showToast('error', 'Lengkapi parameter wajib sebelum update.'); shakeEl(btn.closest('.glass-card')); return; }
 
   const btnLabel = 'Update Order - ' + ORDER_STATUS_TASK_LABEL[orderUpdateStatusTask];
 
   const payload = {
     action:'orderUpdate', nik: session.nik, telegramId: session.telegramId, noInet: orderState.currentNoInet,
-    prioritas: document.getElementById('updPrioritas').value.trim(),
-    nama: document.getElementById('updNama').value.trim(),
-    nomorHp: document.getElementById('updNomorHp').value.trim(),
+    namaPelanggan: document.getElementById('updNamaPelanggan').value.trim(),
     alamat: document.getElementById('updAlamat').value.trim(),
-    koordinate: document.getElementById('updKoordinate').value.trim(),
+    nomorHp: document.getElementById('updNomorHp').value.trim(),
+    koordinatPelanggan: document.getElementById('updKoordinatPelanggan').value.trim(),
+    statusPelanggan: document.getElementById('updStatusPelanggan').value.trim(),
     paketSpeed: document.getElementById('updPaketSpeed').value.trim(),
-    requestOnt: document.getElementById('updRequestOnt').value.trim(),
+    targetProdukOnt: document.getElementById('updTargetProdukOnt').value.trim(),
     statusTask: orderUpdateStatusTask,
+    manjaDate: document.getElementById('updManjaDatePicker').value,
+    jamManja: document.getElementById('updJamManjaPicker').value,
+    keteranganManja: document.getElementById('updKeteranganManja').value.trim(),
+    kendalaReason: document.getElementById('updKendalaReason').value,
+    kendalaLainText: document.getElementById('updKendalaLainText').value.trim(),
     snOntLama: document.getElementById('updSnOntLama').value.trim(),
     snOntBaru: document.getElementById('updSnOntBaru').value.trim(),
     valinsId: document.getElementById('updValinsId').value.trim(),
-    keterangan: document.getElementById('updKeterangan').value.trim()
+    keteranganClose: document.getElementById('updKeteranganClose').value.trim()
   };
 
   setLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Mengirim...');
@@ -2550,18 +2592,17 @@ function ambilLokasiOrderUpdate() {
   navigator.geolocation.getCurrentPosition(pos => {
     const lat = pos.coords.latitude.toFixed(6);
     const lng = pos.coords.longitude.toFixed(6);
-    document.getElementById('updKoordinate').value = lat + ', ' + lng;
-    validateUpdateForm();
+    document.getElementById('updKoordinatPelanggan').value = lat + ', ' + lng;
     showToast('success', 'Koordinat berhasil diambil.');
   }, err => { showToast('error', 'Gagal mengambil lokasi: ' + err.message); }, { enableHighAccuracy:true, timeout:15000 });
 }
 
 function ambilAlamatOrderUpdate() {
-  const koor = document.getElementById('updKoordinate').value.trim();
-  if (!koor || koor.indexOf(',') === -1) { showToast('error', 'Isi Koordinate terlebih dahulu (format: lat, lng).'); return; }
+  const koor = document.getElementById('updKoordinatPelanggan').value.trim();
+  if (!koor || koor.indexOf(',') === -1) { showToast('error', 'Isi Koordinat Pelanggan terlebih dahulu (format: lat, lng).'); return; }
   const parts = koor.split(',').map(s => s.trim());
   const lat = parts[0], lng = parts[1];
-  if (isNaN(Number(lat)) || isNaN(Number(lng))) { showToast('error', 'Format Koordinate tidak valid.'); return; }
+  if (isNaN(Number(lat)) || isNaN(Number(lng))) { showToast('error', 'Format Koordinat tidak valid.'); return; }
 
   showToast('success', 'Mencari alamat...');
   fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=' + lat + '&longitude=' + lng + '&localityLanguage=id')
@@ -2570,7 +2611,6 @@ function ambilAlamatOrderUpdate() {
       const parts2 = [data.locality, data.city, data.principalSubdivision, data.countryName]
         .filter(Boolean).filter((v,i,arr) => arr.indexOf(v) === i);
       document.getElementById('updAlamat').value = parts2.length ? parts2.join(', ') : 'Alamat tidak ditemukan';
-      validateUpdateForm();
     })
     .catch(() => showToast('error', 'Gagal memuat alamat.'));
 }
@@ -2786,9 +2826,8 @@ function scanAndOpenOrder(noInet) {
   const session = getSession();
   apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
     if (!res.success) { showToast('error', res.message || 'Order dengan No Inet "' + noInet + '" tidak ditemukan.'); return; }
-    const st = normStatus(res.data.statusTask);
     showToast('success', 'Order ditemukan: ' + noInet);
-    if (st === 'UNPICKED') openPickup(noInet); else openUpdate(noInet);
+    openUpdate(noInet);
   }).catch(err => showToast('error', 'Error: ' + err.message));
 }
 
