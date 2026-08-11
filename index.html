@@ -517,6 +517,20 @@ body { position:relative; overscroll-behavior:none; }
 .btn-outline:disabled { opacity:0.45; cursor:not-allowed; }
 
 /* ================================================================
+   RECONCILIATION HUB (tab Claim / Justifikasi)
+================================================================ */
+.recon-tabs {
+  display:flex; gap:6px; background:var(--field-bg); border-radius:14px; padding:4px; margin-bottom:14px;
+}
+.recon-tab {
+  flex:1; border:none; background:none; padding:10px 6px; border-radius:11px; cursor:pointer;
+  font-size:13px; font-weight:700; color:var(--text-muted); transition:background .15s,color .15s;
+}
+.recon-tab.active { background:var(--glass-bg); color:var(--accent); box-shadow:0 2px 8px -3px var(--shadow-soft); }
+.recon-panel .quick-access-row { justify-content:flex-start; gap:14px; }
+.recon-panel .quick-tile { flex:0 0 auto; width:96px; }
+
+/* ================================================================
    BOTTOM NAV
 ================================================================ */
 .bottom-nav {
@@ -536,16 +550,6 @@ body { position:relative; overscroll-behavior:none; }
 .nav-btn:active { opacity:0.6; }
 .nav-btn i { font-size:18px; }
 .nav-btn.active-nav { color:var(--accent); font-weight:700; }
-.nav-btn.nav-btn-scan {
-  flex:0 0 auto; width:54px; margin-top:-26px;
-}
-.nav-btn.nav-btn-scan i {
-  width:52px; height:52px; border-radius:50%; font-size:21px; color:#fff;
-  background:var(--header-grad); display:flex; align-items:center; justify-content:center;
-  box-shadow:0 8px 18px -4px rgba(21,94,239,0.55); border:3px solid var(--nav-bg);
-}
-.nav-btn.nav-btn-scan { color:var(--text-muted); }
-.nav-btn.nav-btn-scan.active-nav { color:var(--accent); }
 
 /* ================================================================
    TOAST
@@ -920,6 +924,62 @@ body { position:relative; overscroll-behavior:none; }
     </div>
 
     <!-- JUSTIFIKASI -->
+    <!-- RECONCILIATION HUB -->
+    <div id="screen-reconciliation" class="screen">
+      <div class="recon-tabs">
+        <button type="button" class="recon-tab active" id="reconTabClaim" onclick="switchReconTab('claim')">Claim</button>
+        <button type="button" class="recon-tab" id="reconTabJustifikasi" onclick="switchReconTab('justifikasi')">Justifikasi</button>
+      </div>
+
+      <div id="reconPanelClaim" class="recon-panel">
+        <div class="quick-access-row">
+          <div class="quick-tile" onclick="goTo('claim')">
+            <div class="qt-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-receipt"></i></div>
+            <div class="qt-label">Input Claim</div>
+          </div>
+          <div class="quick-tile" onclick="goTo('claimHistory')">
+            <div class="qt-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
+            <div class="qt-label">Lihat Claim</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="reconPanelJustifikasi" class="recon-panel" style="display:none;">
+        <div class="quick-access-row">
+          <div class="quick-tile" onclick="goTo('justifikasi')">
+            <div class="qt-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-inbox"></i></div>
+            <div class="qt-label">Input Justifikasi</div>
+          </div>
+          <div class="quick-tile" onclick="goTo('justifikasiHistory')">
+            <div class="qt-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
+            <div class="qt-label">Lihat Justifikasi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIHAT JUSTIFIKASI (riwayat) -->
+    <div id="screen-justifikasiHistory" class="screen">
+      <div id="justHistorySkeleton" style="display:none;">
+        <div class="skeleton-order-item"></div>
+        <div class="skeleton-order-item"></div>
+        <div class="skeleton-order-item"></div>
+      </div>
+      <div id="justHistoryList"></div>
+      <div class="glass-card field-hint" id="justHistoryEmpty" style="display:none; text-align:center;">Belum ada riwayat justifikasi.</div>
+    </div>
+
+    <!-- LIHAT CLAIM (placeholder - fitur Input Claim belum tersedia) -->
+    <div id="screen-claimHistory" class="screen">
+      <div class="glass-card">
+        <div class="coming-soon-wrap">
+          <div class="coming-soon-icon"><i class="ic-clipboard"></i></div>
+          <div class="coming-soon-title">Segera Hadir</div>
+          <div class="coming-soon-text">Riwayat Claim akan tersedia setelah fitur Input Claim aktif.</div>
+        </div>
+      </div>
+    </div>
+
     <div id="screen-justifikasi" class="screen">
       <div class="glass-card">
         <label class="field-label">Upload Gambar</label>
@@ -1277,8 +1337,7 @@ body { position:relative; overscroll-behavior:none; }
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
     <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Home</button>
     <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN</button>
-    <button class="nav-btn" data-screen="claim" onclick="goTo('claim')"><i class="ic-receipt"></i>Claim</button>
-    <button class="nav-btn" data-screen="justifikasi" onclick="goTo('justifikasi')"><i class="ic-inbox"></i>Justifikasi</button>
+    <button class="nav-btn" data-screen="reconciliation" onclick="goTo('reconciliation')"><i class="ic-receipt"></i>Reconciliation</button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i>Setting</button>
   </div>
 
@@ -1320,8 +1379,11 @@ const HEADER_CONFIG = {
   resetpw:        { mode:'title', title:'Reset Password', back:'login' },
   menu:           { mode:'brand' },
   presensi:       { mode:'title', title:'Presensi', back:'menu' },
-  justifikasi:    { mode:'title', title:'Justifikasi', back:'menu' },
-  claim:          { mode:'title', title:'Claim', back:'menu' },
+  reconciliation: { mode:'title', title:'Reconciliation', back:'menu' },
+  justifikasi:    { mode:'title', title:'Input Justifikasi', back:'reconciliation' },
+  justifikasiHistory: { mode:'title', title:'Lihat Justifikasi', back:'reconciliation' },
+  claim:          { mode:'title', title:'Input Claim', back:'reconciliation' },
+  claimHistory:   { mode:'title', title:'Lihat Claim', back:'reconciliation' },
   orderDashboard: { mode:'title', title:'Dashboard Order', back:'menu' },
   orderDetail:    { mode:'title', title:'Detail Order', back:'orderDashboard' },
   orderUpdate:    { mode:'title', title:'Update Order', back:'orderDetail' },
@@ -1582,6 +1644,7 @@ function handleDarkModeSwitch() {
  * ============================================================ */
 const ORDER_SCREENS = ['orderDashboard', 'orderDetail', 'orderUpdate'];
 const SETTING_SCREENS = ['akun', 'ubahProfil', 'ubahPassword', 'modeTampilan'];
+const RECON_SCREENS = ['reconciliation', 'claim', 'claimHistory', 'justifikasi', 'justifikasiHistory'];
 
 function goTo(screen) {
   // Matikan kamera presensi kalau user pindah dari layar presensi
@@ -1591,7 +1654,7 @@ function goTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-  const navKey = ORDER_SCREENS.indexOf(screen) !== -1 ? 'orderDashboard' : (SETTING_SCREENS.indexOf(screen) !== -1 ? 'akun' : screen);
+  const navKey = ORDER_SCREENS.indexOf(screen) !== -1 ? 'orderDashboard' : (SETTING_SCREENS.indexOf(screen) !== -1 ? 'akun' : (RECON_SCREENS.indexOf(screen) !== -1 ? 'reconciliation' : screen));
   const navBtn = document.querySelector('.nav-btn[data-screen="' + navKey + '"]');
   if (navBtn) navBtn.classList.add('active-nav');
   window.scrollTo({ top:0, behavior:'instant' });
@@ -1599,7 +1662,7 @@ function goTo(screen) {
   const nav = document.querySelector('.bottom-nav');
   nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'resetpw');
 
-  const needsLogin = screen === 'presensi' || screen === 'justifikasi' || screen === 'menu' || screen === 'claim' || ORDER_SCREENS.indexOf(screen) !== -1 || SETTING_SCREENS.indexOf(screen) !== -1;
+  const needsLogin = screen === 'presensi' || screen === 'menu' || RECON_SCREENS.indexOf(screen) !== -1 || ORDER_SCREENS.indexOf(screen) !== -1 || SETTING_SCREENS.indexOf(screen) !== -1;
   if (needsLogin && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
     applyHeaderForScreen('login');
@@ -1613,6 +1676,7 @@ function goTo(screen) {
   if (screen === 'orderDashboard') loadOrderDashboard();
   if (screen === 'menu') { loadMenuSummary(); loadPresensiStatusHome(); }
   if (screen === 'presensi') checkPresensiGate();
+  if (screen === 'justifikasiHistory') loadJustifikasiHistory();
   if (screen === 'ubahProfil') loadProfileDetail();
   if (screen === 'modeTampilan') syncDarkModeSwitch();
 }
@@ -2189,7 +2253,7 @@ function handleJustifikasi(e) {
     jenisTransaksi: jenisTransaksi, keterangan: keterangan
   }).then(res => {
     resetLoading('btnJustifikasi', 'justSpinner', 'justBtnText', 'Submit');
-    if (res.success) { showToast('success', res.message); resetJustifikasiForm(); goTo('menu'); }
+    if (res.success) { showToast('success', res.message); resetJustifikasiForm(); goTo('reconciliation'); }
     else { showToast('error', res.message); }
   }).catch(err => { resetLoading('btnJustifikasi', 'justSpinner', 'justBtnText', 'Submit'); showToast('error', 'Error: ' + err.message); });
 }
@@ -2209,8 +2273,51 @@ function resetJustifikasiForm() {
 }
 
 /* ============================================================
- *  MENU - RINGKASAN
+ *  RECONCILIATION HUB (tab switch) + LIHAT JUSTIFIKASI (riwayat)
  * ============================================================ */
+function switchReconTab(tab) {
+  const isClaim = tab === 'claim';
+  document.getElementById('reconTabClaim').classList.toggle('active', isClaim);
+  document.getElementById('reconTabJustifikasi').classList.toggle('active', !isClaim);
+  document.getElementById('reconPanelClaim').style.display = isClaim ? 'block' : 'none';
+  document.getElementById('reconPanelJustifikasi').style.display = isClaim ? 'none' : 'block';
+}
+
+const JUST_JENIS_BADGE_CLASS = { 'Uang Masuk': 'sc-close', 'Uang Keluar': 'sc-unpicked' };
+
+function loadJustifikasiHistory() {
+  const session = getSession();
+  if (!session) return;
+  document.getElementById('justHistorySkeleton').style.display = 'block';
+  document.getElementById('justHistoryList').innerHTML = '';
+  document.getElementById('justHistoryEmpty').style.display = 'none';
+
+  apiGet({ action:'justifikasiHistory', telegramId: session.telegramId }).then(res => {
+    document.getElementById('justHistorySkeleton').style.display = 'none';
+    if (!res.success) { showToast('error', res.message); return; }
+    if (!res.items || !res.items.length) {
+      document.getElementById('justHistoryEmpty').style.display = 'block';
+      return;
+    }
+    document.getElementById('justHistoryList').innerHTML = res.items.map(function (it) {
+      const badgeClass = JUST_JENIS_BADGE_CLASS[it.jenisTransaksi] || 'sc-progress';
+      return '<div class="glass-card" style="padding:14px 16px;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">' +
+          '<div>' +
+            '<div style="font-size:13px; font-weight:700;">' + it.jenisTransaksi + '</div>' +
+            '<div style="font-size:11px; color:var(--text-muted); margin-top:2px;">' + it.tanggal + '</div>' +
+          '</div>' +
+          '<div class="summary-chip ' + badgeClass + '" style="border-right:none; padding:0; flex:0 0 auto;">' +
+            '<div class="sc-num" style="font-size:15px;">Rp ' + Number(it.nominal).toLocaleString('id-ID') + '</div>' +
+          '</div>' +
+        '</div>' +
+        (it.keterangan ? '<div style="font-size:12px; color:var(--text-muted); margin-top:8px; padding-top:8px; border-top:1px solid var(--glass-border);">' + it.keterangan + '</div>' : '') +
+      '</div>';
+    }).join('');
+  }).catch(err => { document.getElementById('justHistorySkeleton').style.display = 'none'; showToast('error', 'Error: ' + err.message); });
+}
+
+
 function loadMenuSummary() {
   const session = getSession();
   if (!session) return;
