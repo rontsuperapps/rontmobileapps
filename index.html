@@ -1478,7 +1478,7 @@ const STO_LIST = [
 
 let presensiState = { koordinat: null, alamat: null, sto: null, statusPresensi: null, photoBase64: null, suratBase64: null };
 let justifikasiState = { photoBase64: null, tanggal: null, jenisTransaksi: null, keterangan: null };
-let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null };
+let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null, page: 1, pageSize: 30, total: 0, totalPages: 0 };
 let scanTargetFieldId = null;
 let scannerMode = null;
 let resetOtpState = { nik: null, expiresAt: null };
@@ -2441,32 +2441,95 @@ const ORDER_STATUS_TITLES = {
 
 function openOrderDetail(status) {
   orderState.filter = status;
+  orderState.page = 1;
   goTo('orderDetail');
   document.getElementById('headerTitleText').textContent = 'Detail - ' + (ORDER_STATUS_TITLES[status] || status);
-  loadOrderDetail();
+  loadOrderDetail(1);
 }
 
 let _detailLoading = false;
 
-function loadOrderDetail() {
+function _ensureOrderPaginationEl() {
+  let el = document.getElementById('orderPagination');
+  if (el) return el;
+  el = document.createElement('div');
+  el.id = 'orderPagination';
+  el.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 8px;flex-wrap:wrap;';
+  const listEl = document.getElementById('orderDetailList');
+  listEl.parentNode.insertBefore(el, listEl.nextSibling);
+  return el;
+}
+
+function _orderPageButton(label, disabled, onClick) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = label;
+  b.disabled = disabled;
+  b.style.cssText = 'min-width:42px;padding:9px 12px;border-radius:10px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text);font-weight:600;';
+  if (!disabled) b.onclick = onClick;
+  return b;
+}
+
+function renderOrderPagination(res) {
+  const el = _ensureOrderPaginationEl();
+  el.innerHTML = '';
+  if (!res || !res.totalPages || res.totalPages <= 1) {
+    el.style.display = 'none';
+    return;
+  }
+  el.style.display = 'flex';
+
+  const page = Number(res.page || 1);
+  const totalPages = Number(res.totalPages || 1);
+  el.appendChild(_orderPageButton('‹', page <= 1, () => loadOrderDetail(page - 1)));
+
+  const info = document.createElement('span');
+  info.textContent = 'Halaman ' + page + ' / ' + totalPages + ' · ' + Number(res.total || 0).toLocaleString('id-ID') + ' order';
+  info.style.cssText = 'font-size:12px;color:var(--text-muted);padding:0 6px;';
+  el.appendChild(info);
+
+  el.appendChild(_orderPageButton('›', page >= totalPages, () => loadOrderDetail(page + 1)));
+}
+
+function loadOrderDetail(page) {
   const session = getSession();
   if (!session) return;
   if (_detailLoading) return;
   _detailLoading = true;
 
+  const requestedPage = Math.max(1, Number(page) || 1);
+  orderState.page = requestedPage;
+
   const listEl = document.getElementById('orderDetailList');
   const emptyEl = document.getElementById('orderDetailEmpty');
   const skeletonEl = document.getElementById('orderDetailSkeleton');
+  const pagerEl = document.getElementById('orderPagination');
   listEl.innerHTML = '';
   emptyEl.style.display = 'none';
   skeletonEl.style.display = 'block';
+  if (pagerEl) pagerEl.style.display = 'none';
 
-  apiGet({ action:'orderDetail', nik: session.nik, status: orderState.filter }).then(res => {
+  apiGet({
+    action:'orderDetail',
+    nik: session.nik,
+    status: orderState.filter,
+    page: requestedPage,
+    pageSize: orderState.pageSize
+  }).then(res => {
     _detailLoading = false;
     skeletonEl.style.display = 'none';
     if (!res.success) { showToast('error', res.message || 'Gagal memuat detail order.'); return; }
+
     orderState.list = res.items || [];
-    if (!orderState.list.length) { emptyEl.style.display = 'block'; return; }
+    orderState.page = Number(res.page || requestedPage);
+    orderState.total = Number(res.total || 0);
+    orderState.totalPages = Number(res.totalPages || 0);
+
+    if (!orderState.list.length) {
+      emptyEl.style.display = 'block';
+      renderOrderPagination(res);
+      return;
+    }
 
     const frag = document.createDocumentFragment();
     orderState.list.forEach(item => {
@@ -2499,7 +2562,12 @@ function loadOrderDetail() {
       frag.appendChild(div);
     });
     listEl.appendChild(frag);
-  }).catch(err => { _detailLoading = false; skeletonEl.style.display = 'none'; showToast('error', 'Error: ' + err.message); });
+    renderOrderPagination(res);
+  }).catch(err => {
+    _detailLoading = false;
+    skeletonEl.style.display = 'none';
+    showToast('error', 'Error: ' + err.message);
+  });
 }
 
 /* ============================================================
@@ -2508,36 +2576,47 @@ function loadOrderDetail() {
 let orderUpdateStatusTask = null;
 const ORDER_STATUS_TASK_LABEL = { MANJA: 'Manja', KENDALA: 'Kendala', CLOSE: 'Close' };
 
-function openUpdate(noInet) {
+function _fillOrderUpdateForm(d, fallbackNoInet) {
+  orderState.currentRow = d;
+
+  document.getElementById('updNoInet').textContent = d.noInet || fallbackNoInet;
+  document.getElementById('updNamaPelanggan').value = d.namaPelanggan || '';
+  document.getElementById('updNomorHp').value = d.nomorHp || '';
+  document.getElementById('updKoordinatPelanggan').value = d.koordinatPelanggan || '';
+  document.getElementById('updAlamat').value = d.alamat || '';
+  document.getElementById('updStatusPelanggan').value = d.statusPelanggan || '';
+  document.getElementById('updPaketSpeed').value = d.paketSpeed || '';
+  document.getElementById('updTargetProdukOnt').value = d.targetProdukOnt || '';
+  document.getElementById('updTiketIdTactical').textContent = d.tiketIdTactical || '-';
+
+  document.getElementById('updManjaDatePicker').value = '';
+  document.getElementById('updJamManjaPicker').value = '';
+  document.getElementById('updKeteranganManja').value = '';
+  document.getElementById('updKendalaReason').value = '';
+  document.getElementById('updKendalaLainText').value = '';
+  document.getElementById('updSnOntLama').value = d.snOntLama || '';
+  document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
+  document.getElementById('updValinsId').value = d.valinsId || '';
+  document.getElementById('updKeteranganClose').value = '';
+
+  resetStatusTaskUI();
+}
+
+function openUpdate(noInet, prefetchedData) {
   orderState.currentNoInet = noInet;
   goTo('orderUpdate');
   const session = getSession();
+  if (!session) return;
+
+  // Jika data sudah didapat oleh Search, JANGAN request orderData kedua kali.
+  if (prefetchedData) {
+    _fillOrderUpdateForm(prefetchedData, noInet);
+    return;
+  }
+
   apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
     if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
-    const d = res.data;
-    orderState.currentRow = d;
-
-    document.getElementById('updNoInet').textContent = d.noInet || noInet;
-    document.getElementById('updNamaPelanggan').value = d.namaPelanggan || '';
-    document.getElementById('updNomorHp').value = d.nomorHp || '';
-    document.getElementById('updKoordinatPelanggan').value = d.koordinatPelanggan || '';
-    document.getElementById('updAlamat').value = d.alamat || '';
-    document.getElementById('updStatusPelanggan').value = d.statusPelanggan || '';
-    document.getElementById('updPaketSpeed').value = d.paketSpeed || '';
-    document.getElementById('updTargetProdukOnt').value = d.targetProdukOnt || '';
-    document.getElementById('updTiketIdTactical').textContent = d.tiketIdTactical || '-';
-
-    document.getElementById('updManjaDatePicker').value = '';
-    document.getElementById('updJamManjaPicker').value = '';
-    document.getElementById('updKeteranganManja').value = '';
-    document.getElementById('updKendalaReason').value = '';
-    document.getElementById('updKendalaLainText').value = '';
-    document.getElementById('updSnOntLama').value = d.snOntLama || '';
-    document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
-    document.getElementById('updValinsId').value = d.valinsId || '';
-    document.getElementById('updKeteranganClose').value = '';
-
-    resetStatusTaskUI();
+    _fillOrderUpdateForm(res.data, noInet);
   }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
 }
 
@@ -2652,7 +2731,7 @@ function handleUpdateOrder(e) {
   setLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Mengirim...');
   apiPost(payload).then(res => {
     resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel);
-    if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(); loadOrderDashboard(); }
+    if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(1); }
     else { showToast('error', res.message); }
   }).catch(err => { resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel); showToast('error', 'Error: ' + err.message); });
 }
@@ -2895,7 +2974,8 @@ function searchOrderByNoInet() {
     resetLoading('btnDashSearch', 'dashSearchSpinner', 'dashSearchBtnText', 'Cari Order');
     if (!res.success) { showToast('error', res.message || 'Order dengan No Inet "' + noInet + '" tidak ditemukan.'); return; }
     document.getElementById('dashSearchNoInet').value = '';
-    openUpdate(noInet);
+    // Data sudah tersedia dari request ini. Jangan panggil orderData lagi di openUpdate().
+    openUpdate(noInet, res.data);
   }).catch(err => {
     resetLoading('btnDashSearch', 'dashSearchSpinner', 'dashSearchBtnText', 'Cari Order');
     showToast('error', 'Error: ' + err.message);
