@@ -1089,14 +1089,15 @@ body { position:relative; overscroll-behavior:none; }
             <div><div class="stat-number" id="statClose">0</div><div class="stat-label">Close</div></div>
           </div>
         </div>
-        <button type="button" class="btn-outline" id="btnRefreshDashboard" style="margin-top:2px;" onclick="loadOrderDashboard(true)"><i class="ic-refresh"></i> Refresh Data</button>
+        <button type="button" class="btn-outline" id="btnRefreshDashboard" style="margin-top:2px; margin-bottom:0;" onclick="loadOrderDashboard(true)"><i class="ic-refresh"></i> Refresh Data</button>
+      </div>
 
-        <div class="field-wrap" style="margin-top:14px; margin-bottom:0;">
-          <label class="field-label">Cari Order (No Inet)</label>
+      <div class="glass-card">
+        <label class="field-label" style="margin-bottom:8px; display:block;">Cari Order (No Inet)</label>
+        <div class="field-wrap" style="margin-bottom:0;">
           <i class="ic-search field-icon" style="top:calc(50% + 10px);"></i>
           <input id="dashSearchNoInet" type="text" placeholder="Masukkan No Inet" class="field-input"
-                 style="padding-right:44px;" onkeydown="if(event.key==='Enter'){searchOrderByNoInet();}">
-          <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('order')" title="Scan barcode SN untuk isi No Inet"></i>
+                 onkeydown="if(event.key==='Enter'){searchOrderByNoInet();}">
         </div>
         <button type="button" id="btnDashSearch" class="btn-primary" style="margin-top:10px; margin-bottom:0;" onclick="searchOrderByNoInet()">
           <div class="btn-inner"><div class="btn-spinner" id="dashSearchSpinner"></div><i class="ic-search"></i><span id="dashSearchBtnText">Cari Order</span></div>
@@ -2703,8 +2704,7 @@ let scanStatusTimer = null;
 
 const SCANNER_MODE_TEXT = {
   display: { title: 'Scan SN ONT', hint: 'Arahkan kamera ke barcode 1D pada label SN ONT' },
-  field:   { title: 'Scan Barcode SN ONT', hint: 'Arahkan kamera ke barcode 1D pada label SN ONT' },
-  order:   { title: 'Scan untuk Cari Order', hint: 'Arahkan kamera ke barcode No Inet pada order' }
+  field:   { title: 'Scan Barcode SN ONT', hint: 'Arahkan kamera ke barcode 1D pada label SN ONT' }
 };
 
 function openBarcodeScanner(mode, fieldId) {
@@ -2833,13 +2833,6 @@ function onBarcodeDecoded(value) {
     return;
   }
 
-  if (scannerMode === 'order') {
-    stopBarcodeScan();
-    document.getElementById('scannerOverlay').classList.remove('show');
-    scanAndOpenOrder(value);
-    return;
-  }
-
   // mode 'display' (Scan SN ONT dari menu utama/bottom nav): TIDAK dicari
   // sebagai No Inet, cuma ditampilkan supaya user bisa lihat & copy nilainya.
   stopBarcodeScan();
@@ -2889,15 +2882,6 @@ function rescanBarcode(e) {
   scanAttemptCount = 0;
   _setScannerStatus('Menyalakan kamera...');
   startBarcodeScan();
-}
-
-function scanAndOpenOrder(noInet) {
-  const session = getSession();
-  apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
-    if (!res.success) { showToast('error', res.message || 'Order dengan No Inet "' + noInet + '" tidak ditemukan.'); return; }
-    showToast('success', 'Order ditemukan: ' + noInet);
-    openUpdate(noInet);
-  }).catch(err => showToast('error', 'Error: ' + err.message));
 }
 
 function searchOrderByNoInet() {
