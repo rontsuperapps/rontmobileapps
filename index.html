@@ -517,18 +517,24 @@ body { position:relative; overscroll-behavior:none; }
 .btn-outline:disabled { opacity:0.45; cursor:not-allowed; }
 
 /* ================================================================
-   RECONCILIATION HUB (tab Claim / Justifikasi)
+   RECONCILIATION HUB (menu vertikal, bukan tab)
 ================================================================ */
-.recon-tabs {
-  display:flex; gap:6px; background:var(--field-bg); border-radius:14px; padding:4px; margin-bottom:14px;
+.recon-group-title { font-size:12px; font-weight:700; color:var(--text-muted); letter-spacing:.3px; text-transform:uppercase; margin:18px 2px 8px; }
+.recon-group-title:first-child { margin-top:0; }
+.recon-list-item {
+  display:flex; align-items:center; gap:12px; padding:14px 14px; cursor:pointer;
+  border-bottom:1px solid var(--glass-border); transition:opacity .15s;
 }
-.recon-tab {
-  flex:1; border:none; background:none; padding:10px 6px; border-radius:11px; cursor:pointer;
-  font-size:13px; font-weight:700; color:var(--text-muted); transition:background .15s,color .15s;
+.recon-list-item:last-child { border-bottom:none; }
+.recon-list-item:active { opacity:0.55; }
+.recon-list-icon {
+  width:40px; height:40px; border-radius:12px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:17px;
 }
-.recon-tab.active { background:var(--glass-bg); color:var(--accent); box-shadow:0 2px 8px -3px var(--shadow-soft); }
-.recon-panel .quick-access-row { justify-content:flex-start; gap:14px; }
-.recon-panel .quick-tile { flex:0 0 auto; width:96px; }
+.recon-list-text { flex:1; min-width:0; }
+.recon-list-title { font-size:13.5px; font-weight:700; }
+.recon-list-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
+.recon-list-chevron { color:var(--text-muted); font-size:13px; flex-shrink:0; transform:rotate(180deg); opacity:.55; }
 
 /* ================================================================
    BOTTOM NAV
@@ -926,34 +932,41 @@ body { position:relative; overscroll-behavior:none; }
     <!-- JUSTIFIKASI -->
     <!-- RECONCILIATION HUB -->
     <div id="screen-reconciliation" class="screen">
-      <div class="recon-tabs">
-        <button type="button" class="recon-tab active" id="reconTabClaim" onclick="switchReconTab('claim')">Claim</button>
-        <button type="button" class="recon-tab" id="reconTabJustifikasi" onclick="switchReconTab('justifikasi')">Justifikasi</button>
-      </div>
-
-      <div id="reconPanelClaim" class="recon-panel">
-        <div class="quick-access-row">
-          <div class="quick-tile" onclick="goTo('claim')">
-            <div class="qt-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-receipt"></i></div>
-            <div class="qt-label">Input Claim</div>
+      <div class="glass-card" style="padding:6px 14px;">
+        <div class="recon-group-title">Claim</div>
+        <div class="recon-list-item" onclick="goTo('claim')">
+          <div class="recon-list-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-receipt"></i></div>
+          <div class="recon-list-text">
+            <div class="recon-list-title">Input Claim</div>
+            <div class="recon-list-sub">Ajukan klaim baru</div>
           </div>
-          <div class="quick-tile" onclick="goTo('claimHistory')">
-            <div class="qt-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
-            <div class="qt-label">Lihat Claim</div>
-          </div>
+          <i class="ic-arrow-left recon-list-chevron"></i>
         </div>
-      </div>
+        <div class="recon-list-item" onclick="goTo('claimHistory')">
+          <div class="recon-list-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
+          <div class="recon-list-text">
+            <div class="recon-list-title">Lihat Claim</div>
+            <div class="recon-list-sub">Riwayat pengajuan claim</div>
+          </div>
+          <i class="ic-arrow-left recon-list-chevron"></i>
+        </div>
 
-      <div id="reconPanelJustifikasi" class="recon-panel" style="display:none;">
-        <div class="quick-access-row">
-          <div class="quick-tile" onclick="goTo('justifikasi')">
-            <div class="qt-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-inbox"></i></div>
-            <div class="qt-label">Input Justifikasi</div>
+        <div class="recon-group-title">Justifikasi</div>
+        <div class="recon-list-item" onclick="goTo('justifikasi')">
+          <div class="recon-list-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-inbox"></i></div>
+          <div class="recon-list-text">
+            <div class="recon-list-title">Input Justifikasi</div>
+            <div class="recon-list-sub">Ajukan justifikasi baru</div>
           </div>
-          <div class="quick-tile" onclick="goTo('justifikasiHistory')">
-            <div class="qt-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
-            <div class="qt-label">Lihat Justifikasi</div>
+          <i class="ic-arrow-left recon-list-chevron"></i>
+        </div>
+        <div class="recon-list-item" onclick="goTo('justifikasiHistory')">
+          <div class="recon-list-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
+          <div class="recon-list-text">
+            <div class="recon-list-title">Lihat Justifikasi</div>
+            <div class="recon-list-sub">Riwayat justifikasi</div>
           </div>
+          <i class="ic-arrow-left recon-list-chevron"></i>
         </div>
       </div>
     </div>
@@ -2273,15 +2286,8 @@ function resetJustifikasiForm() {
 }
 
 /* ============================================================
- *  RECONCILIATION HUB (tab switch) + LIHAT JUSTIFIKASI (riwayat)
+ *  RECONCILIATION HUB + LIHAT JUSTIFIKASI (riwayat)
  * ============================================================ */
-function switchReconTab(tab) {
-  const isClaim = tab === 'claim';
-  document.getElementById('reconTabClaim').classList.toggle('active', isClaim);
-  document.getElementById('reconTabJustifikasi').classList.toggle('active', !isClaim);
-  document.getElementById('reconPanelClaim').style.display = isClaim ? 'block' : 'none';
-  document.getElementById('reconPanelJustifikasi').style.display = isClaim ? 'none' : 'block';
-}
 
 const JUST_JENIS_BADGE_CLASS = { 'Uang Masuk': 'sc-close', 'Uang Keluar': 'sc-unpicked' };
 
