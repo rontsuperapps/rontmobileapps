@@ -1014,6 +1014,51 @@ body { background: var(--bg-deep); }
 .btn-primary { min-height:42px; padding:11px 13px; border-radius:12px; font-size:13.5px; }
 #screen-login .link-btn, #screen-resetpw .link-btn { font-size:10.5px; }
 
+/* Login / Reset UX refinement */
+#screen-login, #screen-resetpw { margin-top:12px; }
+.login-welcome-row { align-items:center; }
+.login-access-label {
+  flex-shrink:0; padding:6px 9px; border-radius:9px;
+  background:#F1F5FF; color:var(--accent); border:1px solid #DCE7FF;
+  font-size:9px; font-weight:800; letter-spacing:.25px;
+}
+.login-register-icon { font-family:Arial,sans-serif; font-size:20px; font-weight:500; }
+.login-register-arrow { font-family:Arial,sans-serif; font-size:20px; line-height:1; }
+.reset-app-header {
+  display:flex; align-items:center; gap:10px; padding:12px 13px;
+  margin-bottom:10px; border-radius:16px;
+  background:linear-gradient(135deg,#2E6BFF,#1554E0);
+  color:#fff; box-shadow:0 10px 22px -15px rgba(21,84,224,.75);
+}
+.reset-back-btn {
+  width:36px; height:36px; flex:0 0 36px; border:1px solid rgba(255,255,255,.25);
+  border-radius:11px; background:rgba(255,255,255,.12); color:#fff;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  font-family:Arial,sans-serif; font-size:22px; line-height:1;
+}
+.reset-header-logo {
+  width:36px; height:36px; flex:0 0 36px; padding:3px; border-radius:10px;
+  background:#fff; object-fit:contain;
+}
+.reset-header-text { min-width:0; flex:1; }
+.reset-header-title { font-size:13px; font-weight:800; line-height:1.15; }
+.reset-header-sub { margin-top:2px; font-size:9.5px; opacity:.82; }
+.reset-progress {
+  display:flex; align-items:center; gap:7px; margin:0 0 12px; padding:0 2px;
+  font-size:9px; font-weight:700; color:var(--text-muted);
+}
+.reset-progress .rp-step { display:flex; align-items:center; gap:5px; white-space:nowrap; }
+.reset-progress .rp-dot {
+  width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:var(--accent-soft); color:var(--accent); font-size:9px; font-weight:800;
+}
+.reset-progress .rp-line { height:1px; flex:1; background:var(--field-border); }
+.reset-card-title { font-size:18px; font-weight:800; letter-spacing:-.3px; }
+.reset-card-sub { margin-top:4px; color:var(--text-muted); font-size:11px; line-height:1.45; }
+.reset-help { margin-top:11px; padding:9px 10px; border-radius:10px; background:var(--accent-soft); color:var(--info-text); font-size:9.5px; line-height:1.4; }
+.reset-step2-actions { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:12px; }
+#screen-resetpw .glass-card { padding:14px; }
+
 /* ================================================================
    LOGIN - TECHNICIAN PROFESSIONAL REDESIGN
    No global top navbar on login/reset; branding lives inside login.
@@ -1419,7 +1464,7 @@ body { background: var(--bg-deep); }
               <div class="login-welcome-title">Selamat Datang</div>
               <div class="login-welcome-sub">Masuk untuk melanjutkan aktivitas teknisi Anda.</div>
             </div>
-            <div class="login-pro-badge"><i class="ic-shield"></i> PRO</div>
+            <div class="login-access-label">AKSES TEKNISI</div>
           </div>
 
           <div class="field-wrap">
@@ -1448,12 +1493,12 @@ body { background: var(--bg-deep); }
           <div class="login-divider"><span>AKUN TEKNISI</span></div>
 
           <a class="login-register-card" href="https://t.me/super_apps_rontbot" target="_blank" rel="noopener">
-            <div class="login-register-icon"><i class="ic-user-plus"></i></div>
+            <div class="login-register-icon" aria-hidden="true">+</div>
             <div class="login-register-text">
               <strong>Belum punya akun?</strong>
               <span>Daftar melalui Ront Bot</span>
             </div>
-            <i class="ic-chevron-right login-register-arrow"></i>
+            <span class="login-register-arrow" aria-hidden="true">›</span>
           </a>
 
           <div class="login-footer-note">
@@ -1465,12 +1510,27 @@ body { background: var(--bg-deep); }
 
     <!-- RESET PASSWORD - OTP -->
     <div id="screen-resetpw" class="screen">
-      <div class="glass-card">
+      <div class="reset-app-header">
+        <button type="button" class="reset-back-btn" onclick="goTo('login')" aria-label="Kembali">‹</button>
+        <img class="reset-header-logo" src="https://raw.githubusercontent.com/rontsuperapps/rontmobileapps/main/icons/icon-512.png" alt="Ront Mobile Apps">
+        <div class="reset-header-text">
+          <div class="reset-header-title">Lupa Password</div>
+          <div class="reset-header-sub">Pemulihan akun teknisi</div>
+        </div>
+      </div>
 
+      <div class="reset-progress" aria-label="Progress pemulihan password">
+        <div class="rp-step"><span class="rp-dot">1</span> Verifikasi NIK</div>
+        <div class="rp-line"></div>
+        <div class="rp-step"><span class="rp-dot">2</span> OTP & Password</div>
+      </div>
+
+      <div class="glass-card">
         <div id="resetStep1">
-          <div style="text-align:center; margin-bottom:18px;">
-            <div class="modal-icon" style="margin:0 auto 12px;"><i class="ic-lock"></i></div>
-            <div style="font-size:13.5px; color:var(--info-text);">Masukkan NIK Anda. Kode OTP akan dikirim ke Telegram yang terdaftar.</div>
+          <div style="text-align:center; margin-bottom:16px;">
+            <div class="modal-icon" style="margin:0 auto 10px;"><i class="ic-lock"></i></div>
+            <div class="reset-card-title">Verifikasi Akun</div>
+            <div class="reset-card-sub">Masukkan NIK teknisi. Kode OTP akan dikirim ke Telegram yang terdaftar.</div>
           </div>
           <div class="field-wrap">
             <label class="field-label">NIK Teknisi</label>
@@ -1480,12 +1540,13 @@ body { background: var(--bg-deep); }
           <button id="btnResetLookup" onclick="handleRequestOtp(event)" class="btn-primary" style="margin-top:4px;">
             <div class="btn-inner"><div class="btn-spinner" id="resetLookupSpinner"></div><span id="resetLookupText">Kirim Kode OTP</span></div>
           </button>
+          <div class="reset-help">Pastikan NIK sesuai dengan akun teknisi yang sudah terdaftar di Ront Bot.</div>
         </div>
 
         <div id="resetStep2" style="display:none;">
-          <div class="info-box">
-            Kode OTP telah dikirim ke Telegram untuk <strong id="resetNamaDisplay">-</strong>.<br>
-            Berlaku selama <strong id="otpCountdown">05:00</strong>
+          <div style="margin-bottom:14px;">
+            <div class="reset-card-title">Masukkan Kode OTP</div>
+            <div class="reset-card-sub">Kode dikirim ke Telegram untuk <strong id="resetNamaDisplay">-</strong>. Berlaku <strong id="otpCountdown">05:00</strong>.</div>
           </div>
           <div class="field-wrap">
             <label class="field-label">Kode OTP</label>
@@ -1505,9 +1566,9 @@ body { background: var(--bg-deep); }
           <button id="btnResetSubmit" onclick="handleVerifyOtpReset(event)" class="btn-primary" style="margin-top:4px;">
             <div class="btn-inner"><div class="btn-spinner" id="resetSubmitSpinner"></div><span id="resetSubmitText">Simpan Password Baru</span></div>
           </button>
-          <div style="display:flex; justify-content:space-between; margin-top:14px;">
+          <div class="reset-step2-actions">
             <span class="link-btn" id="resendOtpBtn" onclick="handleResendOtp(event)">Kirim ulang kode OTP</span>
-            <div class="link-btn" onclick="resetResetForm()">Batal, mulai ulang</div>
+            <div class="link-btn" onclick="resetResetForm()">Mulai ulang</div>
           </div>
         </div>
       </div>
