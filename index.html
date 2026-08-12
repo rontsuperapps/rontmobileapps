@@ -1599,16 +1599,21 @@ function loadProfilePhotoHome() {
     includePhoto: session.foto ? '0' : '1',
     _t: Date.now()
   }).then(res => {
-    if (!res || !res.success || !res.foto) return;
+    if (!res || !res.success) return;
 
+    // PLOTTING harus tetap diproses walaupun foto kosong / tidak di-request.
+    // Sebelumnya fungsi langsung `return` saat res.foto kosong, sehingga
+    // Home menampilkan '-' padahal PLOTTING di Data User sudah ada.
     const current = getSession() || session;
-    if (res.plotting !== undefined) current.plotting = res.plotting;
+    if (res.plotting !== undefined) current.plotting = String(res.plotting || '').trim();
     if (res.foto) current.foto = res.foto;
     setSession(current);
 
     renderPlottingBadge(current.plotting);
-    renderAvatar('menuAvatar', current.nama, current.foto);
-    renderAvatar('akunAvatar', current.nama, current.foto);
+    if (current.foto) {
+      renderAvatar('menuAvatar', current.nama, current.foto);
+      renderAvatar('akunAvatar', current.nama, current.foto);
+    }
   }).catch(err => {
     console.warn('[profilePhoto] gagal memuat foto:', err);
   }).finally(() => {
