@@ -540,25 +540,33 @@ body { position:relative; overscroll-behavior:none; }
 .recon-list-chevron { color:var(--text-muted); font-size:13px; flex-shrink:0; transform:rotate(180deg); opacity:.55; }
 
 /* ================================================================
-   BOTTOM NAV
+   BOTTOM NAV - BRAND BLUE
 ================================================================ */
 .bottom-nav {
   position:fixed; bottom:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:480px; z-index:40;
-  background:var(--nav-bg);
-  border-top:1px solid var(--glass-border);
+  background:var(--header-grad);
+  border-top:1px solid rgba(255,255,255,0.16);
   border-radius:22px 22px 0 0;
-  box-shadow:0 -8px 20px -6px var(--shadow-strong);
-  display:flex; justify-content:space-around; align-items:flex-end; padding:9px 4px calc(10px + env(safe-area-inset-bottom));
+  box-shadow:0 -10px 26px -8px rgba(11,63,199,0.42);
+  display:flex; justify-content:space-around; align-items:flex-end;
+  padding:8px 4px calc(9px + env(safe-area-inset-bottom));
 }
 .nav-btn {
   background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:4px;
-  font-size:9.5px; font-weight:600; letter-spacing:-0.1px; color:var(--text-muted); padding:6px 1px; cursor:pointer;
-  transition:color 0.15s, opacity .15s; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  font-size:9px; font-weight:600; letter-spacing:-0.1px; color:rgba(255,255,255,0.72);
+  padding:6px 1px; cursor:pointer;
+  transition:color 0.15s, opacity .15s, transform .15s;
+  flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.nav-btn:active { opacity:0.6; }
-.nav-btn i { font-size:18px; }
-.nav-btn.active-nav { color:var(--accent); font-weight:700; }
+.nav-btn:active { opacity:0.65; transform:scale(0.96); }
+.nav-btn i { font-size:18px; color:currentColor; }
+.nav-btn.active-nav {
+  color:#FFFFFF; font-weight:700;
+}
+.nav-btn.active-nav i {
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,0.20));
+}
 
 /* ================================================================
    TOAST
@@ -1408,11 +1416,11 @@ body { position:relative; overscroll-behavior:none; }
   </div>
 
   <div class="bottom-nav">
+    <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Home</button>
     <button class="nav-btn" data-screen="presensi" onclick="goTo('presensi')"><i class="ic-location"></i>Presensi</button>
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
-    <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Home</button>
-    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN</button>
     <button class="nav-btn" data-screen="reconciliation" onclick="goTo('reconciliation')"><i class="ic-receipt"></i>Reconciliation</button>
+    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN</button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i>Setting</button>
   </div>
 
