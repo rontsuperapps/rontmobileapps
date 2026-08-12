@@ -425,6 +425,30 @@ body { position:relative; overscroll-behavior:none; }
 .presensi-done-text { font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:6px; }
 
 /* ================================================================
+   PRESENSI HUB & RIWAYAT
+================================================================ */
+.presensi-summary-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px; }
+.presensi-summary-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px 12px; box-shadow:0 7px 16px rgba(15,23,42,.07), inset 0 1px 0 rgba(255,255,255,.75); }
+.presensi-summary-number { font-size:22px; font-weight:800; line-height:1; margin-bottom:5px; }
+.presensi-summary-label { font-size:11px; font-weight:600; color:var(--text-muted); }
+.presensi-summary-card.ps-hadir .presensi-summary-number { color:var(--success); }
+.presensi-summary-card.ps-libur .presensi-summary-number { color:var(--accent); }
+.presensi-summary-card.ps-cuti .presensi-summary-number { color:var(--accent-2); }
+.presensi-summary-card.ps-sakit .presensi-summary-number { color:var(--error); }
+.presensi-history-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:15px; }
+.presensi-history-table { width:100%; border-collapse:collapse; min-width:330px; font-size:11.5px; }
+.presensi-history-table th { text-align:left; padding:10px 9px; background:var(--surface-soft); color:var(--text-muted); font-size:10.5px; font-weight:700; white-space:nowrap; }
+.presensi-history-table td { padding:10px 9px; border-top:1px solid var(--border); color:var(--text); white-space:nowrap; }
+.presensi-history-table tbody tr:first-child td { border-top:none; }
+.presensi-history-status { display:inline-flex; align-items:center; padding:4px 9px; border-radius:999px; font-size:10.5px; font-weight:700; }
+.presensi-history-status.status-MASUK { background:var(--success-soft); color:var(--success); }
+.presensi-history-status.status-LIBUR { background:var(--accent-soft); color:var(--accent); }
+.presensi-history-status.status-CUTI { background:var(--purple-soft); color:var(--accent-2); }
+.presensi-history-status.status-SAKIT { background:var(--error-soft); color:var(--error); }
+.presensi-empty { text-align:center; padding:24px 12px; color:var(--text-muted); font-size:12px; }
+.presensi-period-label { font-size:11.5px; color:var(--text-muted); margin:-6px 0 12px; }
+
+/* ================================================================
    SETTING - menu list & mode tampilan switch
 ================================================================ */
 .setting-menu-item {
@@ -913,8 +937,24 @@ body { position:relative; overscroll-behavior:none; }
       </div>
     </div>
 
-    <!-- PRESENSI -->
+    <!-- PRESENSI HUB -->
     <div id="screen-presensi" class="screen">
+      <div class="glass-card" style="padding:8px;">
+        <div class="setting-menu-item" onclick="goTo('presensiInput')">
+          <div class="menu-icon-wrap"><i class="ic-location"></i></div>
+          <div><div class="menu-item-title">Input Presensi</div><div class="menu-item-sub">Masuk, Libur, Cuti atau Sakit</div></div>
+          <i class="ic-arrow-left menu-item-chevron" style="transform:rotate(180deg);"></i>
+        </div>
+        <div class="setting-menu-item" onclick="goTo('presensiHistory')">
+          <div class="menu-icon-wrap"><i class="ic-eye"></i></div>
+          <div><div class="menu-item-title">Lihat Presensi</div><div class="menu-item-sub">Ringkasan dan riwayat presensi</div></div>
+          <i class="ic-arrow-left menu-item-chevron" style="transform:rotate(180deg);"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRESENSI INPUT -->
+    <div id="screen-presensiInput" class="screen">
       <!-- Tampil kalau user SUDAH presensi hari ini - form disembunyikan total -->
       <div class="glass-card presensi-done-card" id="presensiAlreadyDone" style="display:none;">
         <div class="presensi-done-icon"><i class="ic-check"></i></div>
@@ -985,6 +1025,29 @@ body { position:relative; overscroll-behavior:none; }
         </button>
         <p class="field-hint" style="text-align:center; margin-top:8px;" id="presRequirementHint">Pilih jenis presensi, lalu lengkapi lokasi &amp; STO.</p>
       </div>
+      </div>
+    </div>
+
+    <!-- PRESENSI HISTORY -->
+    <div id="screen-presensiHistory" class="screen">
+      <div class="glass-card">
+        <div style="font-size:16px;font-weight:800;">Ringkasan Presensi</div>
+        <div class="presensi-period-label" id="presensiHistoryPeriod">Bulan ini</div>
+        <div class="presensi-summary-grid">
+          <div class="presensi-summary-card ps-hadir"><div class="presensi-summary-number" id="presensiCountHadir">0</div><div class="presensi-summary-label">Hadir</div></div>
+          <div class="presensi-summary-card ps-libur"><div class="presensi-summary-number" id="presensiCountLibur">0</div><div class="presensi-summary-label">Libur</div></div>
+          <div class="presensi-summary-card ps-cuti"><div class="presensi-summary-number" id="presensiCountCuti">0</div><div class="presensi-summary-label">Cuti</div></div>
+          <div class="presensi-summary-card ps-sakit"><div class="presensi-summary-number" id="presensiCountSakit">0</div><div class="presensi-summary-label">Sakit</div></div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+          <div style="font-size:15px;font-weight:800;">Riwayat Presensi</div>
+          <button type="button" class="btn-outline" style="width:auto;padding:8px 12px;margin:0;" onclick="loadPresensiHistory(true)"><i class="ic-refresh"></i> Refresh</button>
+        </div>
+        <div id="presensiHistoryTableWrap" class="presensi-history-wrap">
+          <div class="presensi-empty">Memuat riwayat presensi...</div>
+        </div>
       </div>
     </div>
 
@@ -1476,6 +1539,8 @@ const HEADER_CONFIG = {
   resetpw:        { mode:'title', title:'Reset Password', back:'login' },
   menu:           { mode:'brand' },
   presensi:       { mode:'title', title:'Presensi', back:'menu' },
+  presensiInput:  { mode:'title', title:'Input Presensi', back:'presensi' },
+  presensiHistory:{ mode:'title', title:'Lihat Presensi', back:'presensi' },
   reconciliation: { mode:'title', title:'Reconciliation', back:'menu' },
   justifikasi:    { mode:'title', title:'Input Justifikasi', back:'reconciliation' },
   justifikasiHistory: { mode:'title', title:'Lihat Justifikasi', back:'reconciliation' },
@@ -1808,19 +1873,20 @@ function handleDarkModeSwitch() {
 /* ============================================================
  *  NAVIGASI & SESSION
  * ============================================================ */
+const PRESENSI_SCREENS = ['presensi', 'presensiInput', 'presensiHistory'];
 const ORDER_SCREENS = ['orderDashboard', 'orderDetail', 'orderUpdate'];
 const SETTING_SCREENS = ['akun', 'ubahProfil', 'ubahPassword', 'modeTampilan'];
 const RECON_SCREENS = ['reconciliation', 'claim', 'claimHistory', 'justifikasi', 'justifikasiHistory'];
 
 function goTo(screen) {
   // Matikan kamera presensi kalau user pindah dari layar presensi
-  const leavingPresensi = document.getElementById('screen-presensi').classList.contains('active') && screen !== 'presensi';
+  const leavingPresensi = document.getElementById('screen-presensiInput').classList.contains('active') && screen !== 'presensiInput';
   if (leavingPresensi) stopPresensiCamera();
 
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-  const navKey = ORDER_SCREENS.indexOf(screen) !== -1 ? 'orderDashboard' : (SETTING_SCREENS.indexOf(screen) !== -1 ? 'akun' : (RECON_SCREENS.indexOf(screen) !== -1 ? 'reconciliation' : screen));
+  const navKey = PRESENSI_SCREENS.indexOf(screen) !== -1 ? 'presensi' : (ORDER_SCREENS.indexOf(screen) !== -1 ? 'orderDashboard' : (SETTING_SCREENS.indexOf(screen) !== -1 ? 'akun' : (RECON_SCREENS.indexOf(screen) !== -1 ? 'reconciliation' : screen)));
   const navBtn = document.querySelector('.nav-btn[data-screen="' + navKey + '"]');
   if (navBtn) navBtn.classList.add('active-nav');
   window.scrollTo({ top:0, behavior:'instant' });
@@ -1828,7 +1894,7 @@ function goTo(screen) {
   const nav = document.querySelector('.bottom-nav');
   nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'resetpw');
 
-  const needsLogin = screen === 'presensi' || screen === 'menu' || RECON_SCREENS.indexOf(screen) !== -1 || ORDER_SCREENS.indexOf(screen) !== -1 || SETTING_SCREENS.indexOf(screen) !== -1;
+  const needsLogin = PRESENSI_SCREENS.indexOf(screen) !== -1 || screen === 'menu' || RECON_SCREENS.indexOf(screen) !== -1 || ORDER_SCREENS.indexOf(screen) !== -1 || SETTING_SCREENS.indexOf(screen) !== -1;
   if (needsLogin && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
     applyHeaderForScreen('login');
@@ -1845,7 +1911,8 @@ function goTo(screen) {
     loadPresensiStatusHome();
     loadProfilePhotoHome();
   }
-  if (screen === 'presensi') checkPresensiGate();
+  if (screen === 'presensiInput') checkPresensiGate();
+  if (screen === 'presensiHistory') loadPresensiHistory();
   if (screen === 'justifikasiHistory') loadJustifikasiHistory();
   if (screen === 'ubahProfil') loadProfileDetail();
   if (screen === 'modeTampilan') syncDarkModeSwitch();
@@ -2291,6 +2358,48 @@ function resetPresensiForm() {
   });
   document.getElementById('absenBtnText').textContent = 'Pilih Jenis Presensi';
   cekRequirement();
+}
+
+/* ============================================================
+ *  PRESENSI - LIHAT PRESENSI
+ * ============================================================ */
+let presensiHistoryPromise = null;
+function _escHtml(v) {
+  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+function loadPresensiHistory(force) {
+  const session = getSession();
+  if (!session || !session.telegramId) return Promise.resolve();
+  if (presensiHistoryPromise && !force) return presensiHistoryPromise;
+  const wrap = document.getElementById('presensiHistoryTableWrap');
+  if (wrap && !force) wrap.innerHTML = '<div class="presensi-empty">Memuat riwayat presensi...</div>';
+  const now = new Date();
+  const month = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0');
+  const periodEl = document.getElementById('presensiHistoryPeriod');
+  if (periodEl) periodEl.textContent = 'Ringkasan bulan ' + now.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+  presensiHistoryPromise = apiGet({ action:'presensiHistory', telegramId:session.telegramId, month:month, _t:Date.now() })
+    .then(res => {
+      if (!res || !res.success) throw new Error((res && res.message) || 'Gagal memuat presensi.');
+      const c = res.summary || {};
+      document.getElementById('presensiCountHadir').textContent = c.hadir || 0;
+      document.getElementById('presensiCountLibur').textContent = c.libur || 0;
+      document.getElementById('presensiCountCuti').textContent = c.cuti || 0;
+      document.getElementById('presensiCountSakit').textContent = c.sakit || 0;
+      const rows = Array.isArray(res.rows) ? res.rows : [];
+      if (!wrap) return;
+      if (!rows.length) { wrap.innerHTML = '<div class="presensi-empty">Belum ada data presensi pada bulan ini.</div>'; return; }
+      const body = rows.map(r => {
+        const st = String(r.status || '').toUpperCase();
+        const label = st === 'MASUK' ? 'Hadir' : (PRESENSI_STATUS_LABEL[st] || st || '-');
+        return '<tr><td>' + _escHtml(r.timestamp || '-') + '</td><td>' + _escHtml(r.sto || '-') + '</td><td><span class="presensi-history-status status-' + _escHtml(st) + '">' + _escHtml(label) + '</span></td></tr>';
+      }).join('');
+      wrap.innerHTML = '<table class="presensi-history-table"><thead><tr><th>Waktu Masuk</th><th>STO</th><th>Status Presensi</th></tr></thead><tbody>' + body + '</tbody></table>';
+    })
+    .catch(err => {
+      if (wrap) wrap.innerHTML = '<div class="presensi-empty">Gagal memuat data presensi.<br><span style="font-size:10.5px;">' + _escHtml(err.message) + '</span></div>';
+    })
+    .finally(() => { presensiHistoryPromise = null; });
+  return presensiHistoryPromise;
 }
 
 /* ============================================================
