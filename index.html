@@ -773,7 +773,7 @@ body { position:relative; overscroll-behavior:none; }
           <div class="avatar-circle" id="menuAvatar">--</div>
           <div class="profile-hero-text">
             <div class="profile-hero-greet">Selamat datang!</div>
-            <div class="profile-hero-name"><span id="menuNamaOnly">-</span> <span class="badge-mitra">Mitra</span></div>
+            <div class="profile-hero-name"><span id="menuNamaOnly">-</span> <span class="badge-mitra" id="menuPlottingBadge">-</span></div>
             <div class="profile-hero-nik" id="menuNikOnly">-</div>
           </div>
         </div>
@@ -1570,15 +1570,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
 let profilePhotoLoadPromise = null;
 
+function renderPlottingBadge(plotting) {
+  const el = document.getElementById('menuPlottingBadge');
+  if (!el) return;
+  const value = String(plotting == null ? '' : plotting).trim();
+  el.textContent = value || '-';
+  el.title = value ? 'Plotting: ' + value : 'Plotting belum tersedia';
+}
+
 function loadProfilePhotoHome() {
   const session = getSession();
   if (!session || !session.nik) return Promise.resolve();
 
-  // Sudah ada foto di session: tampilkan langsung tanpa request.
+  // Foto yang sudah ada di session langsung ditampilkan.
+  // PLOTTING tetap disinkronkan dari Data User setiap kali Home dibuka.
+  renderPlottingBadge(session.plotting);
   if (session.foto) {
     renderAvatar('menuAvatar', session.nama, session.foto);
     renderAvatar('akunAvatar', session.nama, session.foto);
-    return Promise.resolve();
   }
 
   // Cegah request profilePhoto paralel saat Home dipanggil berulang.
@@ -1587,14 +1596,17 @@ function loadProfilePhotoHome() {
   profilePhotoLoadPromise = apiGet({
     action: 'profilePhoto',
     nik: session.nik,
+    includePhoto: session.foto ? '0' : '1',
     _t: Date.now()
   }).then(res => {
     if (!res || !res.success || !res.foto) return;
 
     const current = getSession() || session;
-    current.foto = res.foto;
+    if (res.plotting !== undefined) current.plotting = res.plotting;
+    if (res.foto) current.foto = res.foto;
     setSession(current);
 
+    renderPlottingBadge(current.plotting);
     renderAvatar('menuAvatar', current.nama, current.foto);
     renderAvatar('akunAvatar', current.nama, current.foto);
   }).catch(err => {
@@ -1609,6 +1621,7 @@ function loadProfilePhotoHome() {
 function applySessionToUI(session) {
   document.getElementById('menuNamaOnly').textContent = session.nama;
   document.getElementById('menuNikOnly').textContent = 'NIK ' + session.nik;
+  renderPlottingBadge(session.plotting);
   renderAvatar('menuAvatar', session.nama, session.foto);
   document.getElementById('akunNama').textContent = session.nama;
   document.getElementById('akunNik').textContent = 'NIK ' + session.nik;
