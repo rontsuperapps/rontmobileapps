@@ -871,6 +871,233 @@ body { position:relative; overscroll-behavior:none; }
 .presensi-history-wrap {
   overflow-x: auto;
 }
+
+
+/* ================================================================
+   v14.6.6 — COMPACT / MODERN / PROFESSIONAL UI SYSTEM
+   Visual-only refinement. Existing JS/API/IDs/functionality are kept.
+================================================================ */
+:root {
+  /* aliases used by Presensi History so the component is theme-safe */
+  --surface: var(--glass-bg);
+  --surface-soft: var(--field-bg);
+  --border: var(--glass-border);
+  --text: var(--text-white);
+}
+
+html, body { -webkit-tap-highlight-color: transparent; }
+body { background: var(--bg-deep); }
+
+.app-main {
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-bottom: 94px;
+  justify-content: flex-start;
+}
+
+/* Header: slightly shorter and cleaner */
+.app-header {
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 16px;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 8px 22px -10px rgba(11,63,199,.42);
+}
+.header-icon { width:34px; height:34px; border-radius:10px; }
+.header-text .brand-title { font-size:15px; }
+.header-text .brand-sub { font-size:10.5px; }
+.header-titlebar-text { font-size:16px; }
+.notif-btn, .theme-toggle { width:34px; height:34px; border-radius:10px; }
+
+/* Global surfaces */
+.glass-card {
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:10px;
+  box-shadow: 0 5px 16px -10px var(--shadow-strong);
+}
+.screen-title { font-size:18px; margin-bottom:12px; }
+.section-label { margin:14px 0 8px; font-size:11.5px; }
+
+/* Home profile: remove excessive header overlap while retaining depth */
+.home-profile-card {
+  margin-top:-8px;
+  margin-bottom:10px;
+  padding:13px 14px;
+  border-radius:17px;
+  box-shadow:0 8px 20px -12px var(--shadow-strong);
+}
+.profile-hero { gap:10px; }
+.avatar-circle { width:46px; height:46px; border-radius:14px; font-size:15px; }
+.profile-hero-greet { font-size:10.5px; }
+.profile-hero-name { font-size:14px; gap:6px; line-height:1.15; }
+.profile-hero-nik { font-size:10.5px; margin-top:2px; }
+.badge-mitra { font-size:9px; padding:3px 8px; }
+
+/* Home presence card */
+.presensi-home-card { padding:12px 13px; }
+.presensi-home-row { gap:9px; }
+.presensi-home-icon { width:34px; height:34px; border-radius:10px; font-size:15px; }
+.presensi-home-label { font-size:10px; margin-bottom:3px; }
+.presensi-home-badge { padding:5px 10px; font-size:11.5px; }
+.presensi-home-time { font-size:10.5px; margin-top:5px; }
+.btn-pill-primary { font-size:11px; padding:9px 12px; border-radius:20px; gap:5px; }
+
+/* Home order summary */
+.total-order-card { padding:13px 13px 11px; }
+.total-order-head { margin-bottom:9px; gap:8px; }
+.total-order-label { font-size:13px; }
+.total-order-head .toh-sub { font-size:10px; }
+.toh-see-all { font-size:11px; }
+.summary-row { gap:6px !important; margin-top:4px !important; }
+.summary-chip {
+  min-height:58px;
+  padding:8px 5px !important;
+  border-radius:12px !important;
+  border:1px solid var(--glass-border) !important;
+  box-shadow:0 5px 12px -8px var(--shadow-strong), inset 0 1px 0 rgba(255,255,255,.7) !important;
+}
+.summary-chip .sc-num { font-size:20px; }
+.summary-chip .sc-label { font-size:9.5px; margin-top:3px; }
+
+/* Quick menu: dense 4-column grid, consistent icon + label geometry */
+.quick-access-grid {
+  grid-template-columns:repeat(4, minmax(0,1fr));
+  gap:4px 3px;
+  margin-top:0;
+}
+.quick-access-grid .quick-tile {
+  min-height:67px;
+  padding:7px 1px 6px;
+  gap:5px;
+  border-radius:11px;
+}
+.quick-access-grid .quick-tile .qt-icon {
+  width:36px;
+  height:36px;
+  border-radius:11px;
+  font-size:15px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+}
+.quick-access-grid .quick-tile .qt-label {
+  font-size:8.5px;
+  line-height:1.15;
+  min-height:20px;
+  max-width:72px;
+  font-weight:700;
+  color:var(--text-white);
+}
+.quick-access-grid .quick-tile:active { transform:scale(.96); background:var(--accent-soft); }
+
+/* Login / reset: centered, compact, polished */
+#screen-login, #screen-resetpw {
+  max-width:390px;
+  width:100%;
+  margin:18px auto 0;
+}
+#screen-login .glass-card, #screen-resetpw .glass-card {
+  padding:18px 16px 16px;
+  border-radius:18px;
+  box-shadow:0 10px 28px -18px var(--shadow-strong);
+}
+#screen-login .field-wrap, #screen-resetpw .field-wrap { margin-bottom:11px; }
+.field-label { font-size:11px; margin-bottom:5px; }
+.field-input, .field-select {
+  min-height:42px;
+  border-radius:11px;
+  font-size:13.5px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+.remember-row { margin-bottom:12px; }
+.remember-row label { font-size:11.5px; }
+.btn-primary { min-height:42px; padding:11px 13px; border-radius:12px; font-size:13.5px; }
+#screen-login .link-btn, #screen-resetpw .link-btn { font-size:10.5px; }
+
+/* Form / settings consistency */
+.setting-menu-item {
+  gap:11px;
+  padding:12px 13px;
+  margin-bottom:7px;
+  border-radius:12px;
+}
+.setting-menu-item .menu-icon-wrap { width:36px; height:36px; border-radius:10px; font-size:15px; }
+.setting-menu-item .menu-item-title { font-size:13px; }
+.setting-menu-item .menu-item-sub { font-size:10.5px; }
+.setting-menu-item .menu-item-chevron { font-size:11px; }
+.switch-title { font-size:13px; }
+.switch-sub { font-size:10.5px; }
+.switch { width:44px; height:26px; }
+.switch-slider::before { width:20px; height:20px; }
+.switch input:checked + .switch-slider::before { transform:translateX(18px); }
+
+/* Presensi summary/history */
+.presensi-summary-section { padding:15px; }
+.presensi-summary-title { font-size:15px; }
+.presensi-summary-section .presensi-period-label { font-size:10.5px; }
+.presensi-summary-grid { gap:8px; }
+.presensi-summary-card { border-radius:13px; padding:12px 11px; box-shadow:0 5px 13px -8px var(--shadow-strong); }
+.presensi-summary-number { font-size:20px; margin-bottom:4px; }
+.presensi-summary-label { font-size:10px; }
+.presensi-filter-card { padding:13px 14px; }
+.presensi-filter-title { font-size:12.5px; margin-bottom:8px; }
+.presensi-quick-filters { gap:5px; }
+.presensi-filter-btn { padding:8px 5px; font-size:9.5px; border-radius:9px; }
+.presensi-history-wrap { border-radius:12px; }
+.presensi-history-table { font-size:10.5px; }
+.presensi-history-table th { padding:9px 8px; font-size:9.5px; }
+.presensi-history-table td { padding:9px 8px; }
+.presensi-history-status { padding:3px 8px; font-size:9.5px; }
+
+/* Order / reconciliation lists */
+.stat-grid { gap:8px; }
+.stat-card { border-radius:12px; padding:11px; gap:9px; }
+.stat-card .stat-icon-wrap { width:32px; height:32px; border-radius:9px; font-size:14px; }
+.stat-number { font-size:19px; }
+.stat-card.total .stat-number { font-size:23px; }
+.order-item { padding:11px; border-radius:12px; margin-bottom:7px; }
+.order-item-info .order-noinet { font-size:12.5px; }
+.order-item-info .order-nama { font-size:10.5px; }
+.order-status-badge { font-size:9px; padding:2px 7px; }
+.order-item-btn { padding:8px 11px; font-size:11px; border-radius:9px; }
+.recon-group-title { font-size:10.5px; margin:14px 2px 6px; }
+.recon-list-item { gap:10px; padding:11px 12px; }
+.recon-list-icon { width:36px; height:36px; border-radius:10px; font-size:15px; }
+.recon-list-title { font-size:12.5px; }
+.recon-list-sub { font-size:10px; }
+
+/* Bottom nav: 7 items without looking cramped */
+.bottom-nav {
+  border-radius:18px 18px 0 0;
+  padding:6px 2px calc(7px + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 20px -10px rgba(11,63,199,.42);
+}
+.bottom-nav .nav-btn {
+  gap:2px;
+  padding:5px 0 3px;
+  font-size:8px;
+  line-height:1;
+}
+.bottom-nav .nav-btn i { font-size:16px; }
+.bottom-nav .nav-btn.active-nav i { filter:drop-shadow(0 2px 4px rgba(0,0,0,.18)); }
+
+/* Keep content safely above the fixed bottom nav */
+.screen { padding-bottom:2px; }
+
+@media (max-width:380px) {
+  .app-main { padding-left:11px; padding-right:11px; }
+  .quick-access-grid { gap:3px 2px; }
+  .quick-access-grid .quick-tile { min-height:63px; padding-top:6px; }
+  .quick-access-grid .quick-tile .qt-icon { width:34px; height:34px; font-size:14px; border-radius:10px; }
+  .quick-access-grid .quick-tile .qt-label { font-size:8px; max-width:64px; }
+  .bottom-nav .nav-btn { font-size:7.4px; }
+  .bottom-nav .nav-btn i { font-size:15px; }
+}
+
+@media (min-width:481px) {
+  .app-main { padding-left:16px; padding-right:16px; }
+}
+
 </style>
 </head>
 <body>
@@ -1706,7 +1933,7 @@ body { position:relative; overscroll-behavior:none; }
     <button class="nav-btn" data-screen="presensi" onclick="goTo('presensi')"><i class="ic-location"></i><span>Presensi</span></button>
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i><span>Order</span></button>
     <button class="nav-btn" data-screen="reconciliation" onclick="goTo('reconciliation')"><i class="ic-receipt"></i><span>Reconciliation</span></button>
-    <button class="nav-btn" data-screen="request" onclick="goTo('request')"><i class="ic-settings"></i><span>Request</span></button>
+    <button class="nav-btn" data-screen="request" onclick="goTo('request')"><i class="ic-inbox"></i><span>Request</span></button>
     <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i><span>Scan SN</span></button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i><span>Setting</span></button>
   </div>
