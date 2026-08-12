@@ -658,6 +658,54 @@ body { position:relative; overscroll-behavior:none; }
 .skeleton-stat.wide { grid-column:1 / -1; height:64px; }
 
 .skeleton-order-item { height:64px; border-radius:14px; margin-bottom:10px; background:linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 37%, var(--skeleton-base) 63%); background-size:400% 100%; animation:skeletonShine 1.4s ease infinite; }
+
+
+/* v14.2 — Compact 3D Home Summary */
+.summary-row {
+  gap: 8px !important;
+  margin-top: 8px !important;
+}
+.summary-chip {
+  position: relative;
+  min-height: 62px;
+  padding: 9px 7px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  box-shadow: 0 6px 12px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.12) !important;
+  transform: translateZ(0);
+  transition: transform .15s ease, box-shadow .15s ease;
+  overflow: hidden;
+}
+.summary-chip::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: rgba(255,255,255,.24);
+  pointer-events: none;
+}
+.summary-chip:active {
+  transform: translateY(2px) scale(.985);
+  box-shadow: 0 3px 7px rgba(0,0,0,.10), inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+.summary-chip .summary-value {
+  font-size: 20px !important;
+  line-height: 1.05 !important;
+  font-weight: 800 !important;
+}
+.summary-chip .summary-label {
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+  letter-spacing: .04em;
+  margin-top: 4px !important;
+}
+@media (max-width: 380px) {
+  .summary-row { gap: 6px !important; }
+  .summary-chip { min-height: 58px; padding: 8px 5px !important; border-radius: 12px !important; }
+  .summary-chip .summary-value { font-size: 18px !important; }
+  .summary-chip .summary-label { font-size: 9px !important; }
+}
+
 </style>
 </head>
 <body>
@@ -1478,7 +1526,7 @@ const STO_LIST = [
 
 let presensiState = { koordinat: null, alamat: null, sto: null, statusPresensi: null, photoBase64: null, suratBase64: null };
 let justifikasiState = { photoBase64: null, tanggal: null, jenisTransaksi: null, keterangan: null };
-let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null, page: 1, pageSize: 30, total: 0, totalPages: 0 };
+let orderState = { filter: null, list: [], currentNoInet: null, currentRow: null };
 let scanTargetFieldId = null;
 let scannerMode = null;
 let resetOtpState = { nik: null, expiresAt: null };
@@ -2441,95 +2489,32 @@ const ORDER_STATUS_TITLES = {
 
 function openOrderDetail(status) {
   orderState.filter = status;
-  orderState.page = 1;
   goTo('orderDetail');
   document.getElementById('headerTitleText').textContent = 'Detail - ' + (ORDER_STATUS_TITLES[status] || status);
-  loadOrderDetail(1);
+  loadOrderDetail();
 }
 
 let _detailLoading = false;
 
-function _ensureOrderPaginationEl() {
-  let el = document.getElementById('orderPagination');
-  if (el) return el;
-  el = document.createElement('div');
-  el.id = 'orderPagination';
-  el.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 8px;flex-wrap:wrap;';
-  const listEl = document.getElementById('orderDetailList');
-  listEl.parentNode.insertBefore(el, listEl.nextSibling);
-  return el;
-}
-
-function _orderPageButton(label, disabled, onClick) {
-  const b = document.createElement('button');
-  b.type = 'button';
-  b.textContent = label;
-  b.disabled = disabled;
-  b.style.cssText = 'min-width:42px;padding:9px 12px;border-radius:10px;border:1px solid var(--glass-border);background:var(--glass-bg);color:var(--text);font-weight:600;';
-  if (!disabled) b.onclick = onClick;
-  return b;
-}
-
-function renderOrderPagination(res) {
-  const el = _ensureOrderPaginationEl();
-  el.innerHTML = '';
-  if (!res || !res.totalPages || res.totalPages <= 1) {
-    el.style.display = 'none';
-    return;
-  }
-  el.style.display = 'flex';
-
-  const page = Number(res.page || 1);
-  const totalPages = Number(res.totalPages || 1);
-  el.appendChild(_orderPageButton('‹', page <= 1, () => loadOrderDetail(page - 1)));
-
-  const info = document.createElement('span');
-  info.textContent = 'Halaman ' + page + ' / ' + totalPages + ' · ' + Number(res.total || 0).toLocaleString('id-ID') + ' order';
-  info.style.cssText = 'font-size:12px;color:var(--text-muted);padding:0 6px;';
-  el.appendChild(info);
-
-  el.appendChild(_orderPageButton('›', page >= totalPages, () => loadOrderDetail(page + 1)));
-}
-
-function loadOrderDetail(page) {
+function loadOrderDetail() {
   const session = getSession();
   if (!session) return;
   if (_detailLoading) return;
   _detailLoading = true;
 
-  const requestedPage = Math.max(1, Number(page) || 1);
-  orderState.page = requestedPage;
-
   const listEl = document.getElementById('orderDetailList');
   const emptyEl = document.getElementById('orderDetailEmpty');
   const skeletonEl = document.getElementById('orderDetailSkeleton');
-  const pagerEl = document.getElementById('orderPagination');
   listEl.innerHTML = '';
   emptyEl.style.display = 'none';
   skeletonEl.style.display = 'block';
-  if (pagerEl) pagerEl.style.display = 'none';
 
-  apiGet({
-    action:'orderDetail',
-    nik: session.nik,
-    status: orderState.filter,
-    page: requestedPage,
-    pageSize: orderState.pageSize
-  }).then(res => {
+  apiGet({ action:'orderDetail', nik: session.nik, status: orderState.filter }).then(res => {
     _detailLoading = false;
     skeletonEl.style.display = 'none';
     if (!res.success) { showToast('error', res.message || 'Gagal memuat detail order.'); return; }
-
     orderState.list = res.items || [];
-    orderState.page = Number(res.page || requestedPage);
-    orderState.total = Number(res.total || 0);
-    orderState.totalPages = Number(res.totalPages || 0);
-
-    if (!orderState.list.length) {
-      emptyEl.style.display = 'block';
-      renderOrderPagination(res);
-      return;
-    }
+    if (!orderState.list.length) { emptyEl.style.display = 'block'; return; }
 
     const frag = document.createDocumentFragment();
     orderState.list.forEach(item => {
@@ -2562,12 +2547,7 @@ function loadOrderDetail(page) {
       frag.appendChild(div);
     });
     listEl.appendChild(frag);
-    renderOrderPagination(res);
-  }).catch(err => {
-    _detailLoading = false;
-    skeletonEl.style.display = 'none';
-    showToast('error', 'Error: ' + err.message);
-  });
+  }).catch(err => { _detailLoading = false; skeletonEl.style.display = 'none'; showToast('error', 'Error: ' + err.message); });
 }
 
 /* ============================================================
@@ -2576,47 +2556,36 @@ function loadOrderDetail(page) {
 let orderUpdateStatusTask = null;
 const ORDER_STATUS_TASK_LABEL = { MANJA: 'Manja', KENDALA: 'Kendala', CLOSE: 'Close' };
 
-function _fillOrderUpdateForm(d, fallbackNoInet) {
-  orderState.currentRow = d;
-
-  document.getElementById('updNoInet').textContent = d.noInet || fallbackNoInet;
-  document.getElementById('updNamaPelanggan').value = d.namaPelanggan || '';
-  document.getElementById('updNomorHp').value = d.nomorHp || '';
-  document.getElementById('updKoordinatPelanggan').value = d.koordinatPelanggan || '';
-  document.getElementById('updAlamat').value = d.alamat || '';
-  document.getElementById('updStatusPelanggan').value = d.statusPelanggan || '';
-  document.getElementById('updPaketSpeed').value = d.paketSpeed || '';
-  document.getElementById('updTargetProdukOnt').value = d.targetProdukOnt || '';
-  document.getElementById('updTiketIdTactical').textContent = d.tiketIdTactical || '-';
-
-  document.getElementById('updManjaDatePicker').value = '';
-  document.getElementById('updJamManjaPicker').value = '';
-  document.getElementById('updKeteranganManja').value = '';
-  document.getElementById('updKendalaReason').value = '';
-  document.getElementById('updKendalaLainText').value = '';
-  document.getElementById('updSnOntLama').value = d.snOntLama || '';
-  document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
-  document.getElementById('updValinsId').value = d.valinsId || '';
-  document.getElementById('updKeteranganClose').value = '';
-
-  resetStatusTaskUI();
-}
-
-function openUpdate(noInet, prefetchedData) {
+function openUpdate(noInet) {
   orderState.currentNoInet = noInet;
   goTo('orderUpdate');
   const session = getSession();
-  if (!session) return;
-
-  // Jika data sudah didapat oleh Search, JANGAN request orderData kedua kali.
-  if (prefetchedData) {
-    _fillOrderUpdateForm(prefetchedData, noInet);
-    return;
-  }
-
   apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
     if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
-    _fillOrderUpdateForm(res.data, noInet);
+    const d = res.data;
+    orderState.currentRow = d;
+
+    document.getElementById('updNoInet').textContent = d.noInet || noInet;
+    document.getElementById('updNamaPelanggan').value = d.namaPelanggan || '';
+    document.getElementById('updNomorHp').value = d.nomorHp || '';
+    document.getElementById('updKoordinatPelanggan').value = d.koordinatPelanggan || '';
+    document.getElementById('updAlamat').value = d.alamat || '';
+    document.getElementById('updStatusPelanggan').value = d.statusPelanggan || '';
+    document.getElementById('updPaketSpeed').value = d.paketSpeed || '';
+    document.getElementById('updTargetProdukOnt').value = d.targetProdukOnt || '';
+    document.getElementById('updTiketIdTactical').textContent = d.tiketIdTactical || '-';
+
+    document.getElementById('updManjaDatePicker').value = '';
+    document.getElementById('updJamManjaPicker').value = '';
+    document.getElementById('updKeteranganManja').value = '';
+    document.getElementById('updKendalaReason').value = '';
+    document.getElementById('updKendalaLainText').value = '';
+    document.getElementById('updSnOntLama').value = d.snOntLama || '';
+    document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
+    document.getElementById('updValinsId').value = d.valinsId || '';
+    document.getElementById('updKeteranganClose').value = '';
+
+    resetStatusTaskUI();
   }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
 }
 
@@ -2731,7 +2700,7 @@ function handleUpdateOrder(e) {
   setLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Mengirim...');
   apiPost(payload).then(res => {
     resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel);
-    if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(1); }
+    if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(); loadOrderDashboard(); }
     else { showToast('error', res.message); }
   }).catch(err => { resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel); showToast('error', 'Error: ' + err.message); });
 }
@@ -2974,8 +2943,7 @@ function searchOrderByNoInet() {
     resetLoading('btnDashSearch', 'dashSearchSpinner', 'dashSearchBtnText', 'Cari Order');
     if (!res.success) { showToast('error', res.message || 'Order dengan No Inet "' + noInet + '" tidak ditemukan.'); return; }
     document.getElementById('dashSearchNoInet').value = '';
-    // Data sudah tersedia dari request ini. Jangan panggil orderData lagi di openUpdate().
-    openUpdate(noInet, res.data);
+    openUpdate(noInet);
   }).catch(err => {
     resetLoading('btnDashSearch', 'dashSearchSpinner', 'dashSearchBtnText', 'Cari Order');
     showToast('error', 'Error: ' + err.message);
