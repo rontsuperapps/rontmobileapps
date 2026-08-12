@@ -2290,40 +2290,91 @@ function resetPresensiForm() {
  * ============================================================ */
 const PRESENSI_HOME_BADGE_CLASS = { MASUK: 'pb-masuk', LIBUR: 'pb-libur', CUTI: 'pb-cuti', SAKIT: 'pb-sakit' };
 
+let presensiStatusHomePromise = null;
+
+function _presensiHomeCacheKey(nik) {
+  const d = new Date();
+  const dateKey = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  return 'rontPresensiHome_' + String(nik) + '_' + dateKey;
+}
+
+function _renderPresensiStatusHome(card, res) {
+  if (!card) return;
+
+  if (res && res.success && res.done) {
+    const badgeClass = PRESENSI_HOME_BADGE_CLASS[res.status] || 'pb-masuk';
+    const label = PRESENSI_STATUS_LABEL[res.status] || res.status;
+    card.innerHTML =
+      '<div class="presensi-home-row">' +
+        '<div class="presensi-home-icon"><i class="ic-location"></i></div>' +
+        '<div class="presensi-home-body">' +
+          '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
+          '<div class="presensi-home-badge ' + badgeClass + '"><i class="ic-check"></i> ' + label + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="presensi-home-time">Pukul ' + (res.waktu || '-') + '</div>';
+    return;
+  }
+
+  card.innerHTML =
+    '<div class="presensi-home-row">' +
+      '<div class="presensi-home-icon"><i class="ic-location"></i></div>' +
+      '<div class="presensi-home-body">' +
+        '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
+        '<div style="font-size:12.5px;font-weight:700;color:var(--error);">Belum melakukan presensi</div>' +
+      '</div>' +
+      '<button type="button" class="btn-pill-primary" onclick="goTo(\'presensi\')">' +
+        '<i class="ic-location"></i><span>Presensi Sekarang</span>' +
+      '</button>' +
+    '</div>';
+}
+
 function loadPresensiStatusHome() {
   const session = getSession();
-  if (!session) return;
-  const card = document.getElementById('presensiStatusCard');
-  card.innerHTML = '<div class="skeleton-line" style="width:60%;"></div>';
+  if (!session || !session.telegramId) return Promise.resolve();
 
-  apiGet({ action:'presensiStatus', telegramId: session.telegramId }).then(res => {
-    if (!res.success) { card.innerHTML = ''; return; }
-    if (res.done) {
-      const badgeClass = PRESENSI_HOME_BADGE_CLASS[res.status] || 'pb-masuk';
-      const label = PRESENSI_STATUS_LABEL[res.status] || res.status;
-      card.innerHTML =
-        '<div class="presensi-home-row">' +
-          '<div class="presensi-home-icon"><i class="ic-location"></i></div>' +
-          '<div class="presensi-home-body">' +
-            '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
-            '<div class="presensi-home-badge ' + badgeClass + '"><i class="ic-check"></i> ' + label + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="presensi-home-time">Pukul ' + (res.waktu || '-') + '</div>';
-    } else {
-      card.innerHTML =
-        '<div class="presensi-home-row">' +
-          '<div class="presensi-home-icon"><i class="ic-location"></i></div>' +
-          '<div class="presensi-home-body">' +
-            '<div class="presensi-home-label">Status Presensi Hari Ini</div>' +
-            '<div style="font-size:12.5px;font-weight:700;color:var(--error);">Belum melakukan presensi</div>' +
-          '</div>' +
-          '<button type="button" class="btn-pill-primary" onclick="goTo(\'presensi\')">' +
-            '<i class="ic-location"></i><span>Presensi Sekarang</span>' +
-          '</button>' +
-        '</div>';
+  const card = document.getElementById('presensiStatusCard');
+  if (!card) return Promise.resolve();
+
+  // Jangan tampilkan skeleton lagi. Kalau ada hasil hari ini di local cache,
+  // tampilkan langsung sementara request realtime berjalan di background.
+  let cached = null;
+  try {
+    const raw = localStorage.getItem(_presensiHomeCacheKey(session.nik));
+    if (raw) cached = JSON.parse(raw);
+  } catch (e) {}
+
+  if (cached) {
+    _renderPresensiStatusHome(card, cached);
+  } else if (!card.dataset.presensiReady) {
+    _renderPresensiStatusHome(card, { success:true, done:false });
+  }
+
+  if (presensiStatusHomePromise) return presensiStatusHomePromise;
+
+  // Selalu request ulang setiap Home dibuka supaya perubahan hari ini tetap
+  // realtime, tetapi request tidak diduplikasi jika navigasi terjadi cepat.
+  const params = {
+    action: 'presensiStatus',
+    telegramId: session.telegramId,
+    _t: Date.now()
+  };
+
+  presensiStatusHomePromise = apiGet(params).then(res => {
+    if (res && res.success) {
+      try { localStorage.setItem(_presensiHomeCacheKey(session.nik), JSON.stringify(res)); } catch (e) {}
+      _renderPresensiStatusHome(card, res);
+      card.dataset.presensiReady = '1';
     }
-  }).catch(() => { card.innerHTML = ''; });
+  }).catch(err => {
+    // Pertahankan data cache/placeholder. Jangan biarkan kartu menggantung
+    // pada skeleton hanya karena backend sedang lambat.
+    console.warn('[presensiStatusHome] gagal refresh:', err);
+  }).finally(() => {
+    presensiStatusHomePromise = null;
+  });
+
+  return presensiStatusHomePromise;
 }
 
 /* ============================================================
