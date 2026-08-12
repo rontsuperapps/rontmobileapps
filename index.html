@@ -771,6 +771,54 @@ body { position:relative; overscroll-behavior:none; }
   .summary-chip .summary-label { font-size: 9px !important; }
 }
 
+
+/* v14.6.1 — Presensi History spacing / alignment fix */
+.presensi-summary-section {
+  padding: 18px 18px 16px;
+}
+.presensi-summary-heading {
+  margin: 0 0 14px;
+}
+.presensi-summary-title {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0;
+}
+.presensi-summary-section .presensi-period-label {
+  font-size: 11px;
+  line-height: 1.35;
+  margin: 2px 0 0;
+  color: var(--text-muted);
+}
+.presensi-summary-grid {
+  margin-bottom: 0;
+}
+.presensi-filter-card {
+  padding: 16px 18px;
+}
+.presensi-filter-title {
+  font-size: 14px;
+  line-height: 1.3;
+  margin-bottom: 11px;
+}
+.presensi-quick-filters {
+  gap: 8px;
+}
+.presensi-filter-btn {
+  min-height: 38px;
+  padding: 8px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+}
+.presensi-custom-range {
+  gap: 9px;
+}
+.presensi-history-wrap {
+  overflow-x: auto;
+}
 </style>
 </head>
 <body>
@@ -1084,9 +1132,11 @@ body { position:relative; overscroll-behavior:none; }
         </div>
       </div>
 
-      <div class="glass-card">
-        <div style="font-size:16px;font-weight:800;">Ringkasan Presensi</div>
-        <div class="presensi-period-label" id="presensiHistoryPeriod">Bulan ini</div>
+      <div class="glass-card presensi-summary-section">
+        <div class="presensi-summary-heading">
+          <div class="presensi-summary-title">Ringkasan Presensi</div>
+          <div class="presensi-period-label" id="presensiHistoryPeriod">Bulan ini</div>
+        </div>
         <div class="presensi-summary-grid">
           <div class="presensi-summary-card ps-hadir"><div class="presensi-summary-number" id="presensiCountHadir">0</div><div class="presensi-summary-label">Hadir</div></div>
           <div class="presensi-summary-card ps-libur"><div class="presensi-summary-number" id="presensiCountLibur">0</div><div class="presensi-summary-label">Libur</div></div>
