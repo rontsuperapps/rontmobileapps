@@ -282,6 +282,40 @@ body { position:relative; overscroll-behavior:none; }
 .qt-orange { background:var(--warning-soft); color:var(--warning); }
 .qt-purple { background:var(--purple-soft); color:var(--accent-2); }
 
+/* Quick Menu v14.6.3 - compact 10-item grid */
+.quick-access-grid {
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:6px 4px;
+  margin-top:2px;
+}
+.quick-access-grid .quick-tile {
+  min-width:0;
+  padding:9px 2px 8px;
+  border-radius:13px;
+}
+.quick-access-grid .quick-tile .qt-icon {
+  width:40px;
+  height:40px;
+  font-size:16px;
+}
+.quick-access-grid .quick-tile .qt-label {
+  font-size:9.5px;
+  line-height:1.2;
+  min-height:23px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+}
+.quick-access-grid .quick-tile:active {
+  transform:scale(.97);
+}
+@media (max-width:360px) {
+  .quick-access-grid { gap:5px 2px; }
+  .quick-access-grid .quick-tile .qt-icon { width:38px; height:38px; }
+  .quick-access-grid .quick-tile .qt-label { font-size:9px; }
+}
+
 /* ================================================================
    FORM FIELDS
 ================================================================ */
@@ -617,12 +651,30 @@ body { position:relative; overscroll-behavior:none; }
   flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .nav-btn:active { opacity:0.65; transform:scale(0.96); }
+/* v14.6.2 — 7-item bottom navigation */
+.bottom-nav .nav-btn {
+  font-size:8.5px;
+  gap:3px;
+  padding-left:0;
+  padding-right:0;
+}
+.bottom-nav .nav-btn i { font-size:17px; }
+.bottom-nav .nav-btn span {
+  display:block;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
 .nav-btn i { font-size:18px; color:currentColor; }
 .nav-btn.active-nav {
   color:#FFFFFF; font-weight:700;
 }
 .nav-btn.active-nav i {
   filter:drop-shadow(0 2px 5px rgba(0,0,0,0.20));
+}
+@media (max-width:360px) {
+  .bottom-nav .nav-btn { font-size:7.5px; }
+  .bottom-nav .nav-btn i { font-size:16px; }
 }
 
 /* ================================================================
@@ -918,24 +970,59 @@ body { position:relative; overscroll-behavior:none; }
       </div>
 
       <div class="section-label">Menu Cepat</div>
-      <div class="glass-card" style="padding:16px 8px;">
-        <div class="quick-access-row">
-          <div class="quick-tile" onclick="goTo('presensi')">
+      <div class="glass-card" style="padding:12px 8px;">
+        <div class="quick-access-grid">
+
+          <div class="quick-tile" onclick="goTo('presensiInput')">
             <div class="qt-icon qt-green"><i class="ic-location"></i></div>
-            <div class="qt-label">Presensi</div>
+            <div class="qt-label">Input Presensi</div>
           </div>
+
+          <div class="quick-tile" onclick="goTo('presensiHistory')">
+            <div class="qt-icon qt-purple"><i class="ic-eye"></i></div>
+            <div class="qt-label">View Presensi</div>
+          </div>
+
           <div class="quick-tile" onclick="goTo('orderDashboard')">
             <div class="qt-icon qt-blue"><i class="ic-clipboard"></i></div>
-            <div class="qt-label">Order</div>
+            <div class="qt-label">Inbox Order</div>
           </div>
+
+          <div class="quick-tile" onclick="goTo('claim')">
+            <div class="qt-icon qt-orange"><i class="ic-receipt"></i></div>
+            <div class="qt-label">Input Claim</div>
+          </div>
+
+          <div class="quick-tile" onclick="goTo('claimHistory')">
+            <div class="qt-icon qt-purple"><i class="ic-eye"></i></div>
+            <div class="qt-label">View Claim</div>
+          </div>
+
           <div class="quick-tile" onclick="goTo('justifikasi')">
             <div class="qt-icon qt-orange"><i class="ic-inbox"></i></div>
-            <div class="qt-label">Justifikasi</div>
+            <div class="qt-label">Input Justifikasi</div>
           </div>
-          <div class="quick-tile" onclick="openBarcodeScanner('display')">
-            <div class="qt-icon qt-purple"><i class="ic-scan"></i></div>
-            <div class="qt-label">Scan SN ONT</div>
+
+          <div class="quick-tile" onclick="goTo('justifikasiHistory')">
+            <div class="qt-icon qt-purple"><i class="ic-eye"></i></div>
+            <div class="qt-label">View Justifikasi</div>
           </div>
+
+          <div class="quick-tile" onclick="goTo('requestConfig')">
+            <div class="qt-icon qt-blue"><i class="ic-settings"></i></div>
+            <div class="qt-label">Result Config</div>
+          </div>
+
+          <div class="quick-tile" onclick="goTo('requestTicket')">
+            <div class="qt-icon qt-orange"><i class="ic-receipt"></i></div>
+            <div class="qt-label">Result Ticket</div>
+          </div>
+
+          <div class="quick-tile" onclick="goTo('akun')">
+            <div class="qt-icon qt-blue"><i class="ic-settings"></i></div>
+            <div class="qt-label">Setting</div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -1028,9 +1115,41 @@ body { position:relative; overscroll-behavior:none; }
         </div>
         <div class="setting-menu-item" onclick="goTo('presensiHistory')">
           <div class="menu-icon-wrap"><i class="ic-eye"></i></div>
-          <div><div class="menu-item-title">Lihat Presensi</div><div class="menu-item-sub">Ringkasan dan riwayat presensi</div></div>
+          <div><div class="menu-item-title">View Presensi</div><div class="menu-item-sub">Ringkasan dan riwayat presensi</div></div>
           <i class="ic-arrow-left menu-item-chevron" style="transform:rotate(180deg);"></i>
         </div>
+      </div>
+    </div>
+
+    <!-- REQUEST HUB -->
+    <div id="screen-request" class="screen">
+      <div class="glass-card" style="padding:8px;">
+        <div class="setting-menu-item" onclick="goTo('requestConfig')">
+          <div class="menu-icon-wrap" style="color:var(--accent);background:var(--accent-soft);"><i class="ic-settings"></i></div>
+          <div><div class="menu-item-title">Config</div><div class="menu-item-sub">Request konfigurasi layanan / perangkat</div></div>
+          <i class="ic-arrow-left menu-item-chevron" style="transform:rotate(180deg);"></i>
+        </div>
+        <div class="setting-menu-item" onclick="goTo('requestTicket')">
+          <div class="menu-icon-wrap" style="color:var(--warning);background:var(--warning-soft);"><i class="ic-receipt"></i></div>
+          <div><div class="menu-item-title">Ticket</div><div class="menu-item-sub">Request dan tindak lanjut ticket</div></div>
+          <i class="ic-arrow-left menu-item-chevron" style="transform:rotate(180deg);"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- REQUEST > CONFIG -->
+    <div id="screen-requestConfig" class="screen">
+      <div class="glass-card">
+        <div class="menu-item-title" style="font-size:16px;">Config</div>
+        <div class="menu-item-sub" style="margin-top:6px;">Menu request konfigurasi. Form dan proses Config dapat ditambahkan tanpa mengubah modul lain.</div>
+      </div>
+    </div>
+
+    <!-- REQUEST > TICKET -->
+    <div id="screen-requestTicket" class="screen">
+      <div class="glass-card">
+        <div class="menu-item-title" style="font-size:16px;">Ticket</div>
+        <div class="menu-item-sub" style="margin-top:6px;">Menu request ticket. Form dan proses Ticket dapat ditambahkan tanpa mengubah modul lain.</div>
       </div>
     </div>
 
@@ -1171,7 +1290,7 @@ body { position:relative; overscroll-behavior:none; }
         <div class="recon-list-item" onclick="goTo('claimHistory')">
           <div class="recon-list-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
           <div class="recon-list-text">
-            <div class="recon-list-title">Lihat Claim</div>
+            <div class="recon-list-title">View Claim</div>
             <div class="recon-list-sub">Riwayat pengajuan claim</div>
           </div>
           <i class="ic-arrow-left recon-list-chevron"></i>
@@ -1189,7 +1308,7 @@ body { position:relative; overscroll-behavior:none; }
         <div class="recon-list-item" onclick="goTo('justifikasiHistory')">
           <div class="recon-list-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-eye"></i></div>
           <div class="recon-list-text">
-            <div class="recon-list-title">Lihat Justifikasi</div>
+            <div class="recon-list-title">View Justifikasi</div>
             <div class="recon-list-sub">Riwayat justifikasi</div>
           </div>
           <i class="ic-arrow-left recon-list-chevron"></i>
@@ -1583,12 +1702,13 @@ body { position:relative; overscroll-behavior:none; }
   </div>
 
   <div class="bottom-nav">
-    <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i>Home</button>
-    <button class="nav-btn" data-screen="presensi" onclick="goTo('presensi')"><i class="ic-location"></i>Presensi</button>
-    <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i>Order</button>
-    <button class="nav-btn" data-screen="reconciliation" onclick="goTo('reconciliation')"><i class="ic-receipt"></i>Reconciliation</button>
-    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i>Scan SN</button>
-    <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i>Setting</button>
+    <button class="nav-btn" data-screen="menu" onclick="goTo('menu')"><i class="ic-house"></i><span>Home</span></button>
+    <button class="nav-btn" data-screen="presensi" onclick="goTo('presensi')"><i class="ic-location"></i><span>Presensi</span></button>
+    <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i><span>Order</span></button>
+    <button class="nav-btn" data-screen="reconciliation" onclick="goTo('reconciliation')"><i class="ic-receipt"></i><span>Reconciliation</span></button>
+    <button class="nav-btn" data-screen="request" onclick="goTo('request')"><i class="ic-settings"></i><span>Request</span></button>
+    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i><span>Scan SN</span></button>
+    <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i><span>Setting</span></button>
   </div>
 
 </div>
@@ -1643,13 +1763,16 @@ const HEADER_CONFIG = {
   resetpw:        { mode:'title', title:'Reset Password', back:'login' },
   menu:           { mode:'brand' },
   presensi:       { mode:'title', title:'Presensi', back:'menu' },
+  request:        { mode:'title', title:'Request', back:'menu' },
+  requestConfig:  { mode:'title', title:'Config', back:'request' },
+  requestTicket:  { mode:'title', title:'Ticket', back:'request' },
   presensiInput:  { mode:'title', title:'Input Presensi', back:'presensi' },
-  presensiHistory:{ mode:'title', title:'Lihat Presensi', back:'presensi' },
+  presensiHistory:{ mode:'title', title:'View Presensi', back:'presensi' },
   reconciliation: { mode:'title', title:'Reconciliation', back:'menu' },
   justifikasi:    { mode:'title', title:'Input Justifikasi', back:'reconciliation' },
-  justifikasiHistory: { mode:'title', title:'Lihat Justifikasi', back:'reconciliation' },
+  justifikasiHistory: { mode:'title', title:'View Justifikasi', back:'reconciliation' },
   claim:          { mode:'title', title:'Input Claim', back:'reconciliation' },
-  claimHistory:   { mode:'title', title:'Lihat Claim', back:'reconciliation' },
+  claimHistory:   { mode:'title', title:'View Claim', back:'reconciliation' },
   orderDashboard: { mode:'title', title:'Dashboard Order', back:'menu' },
   orderDetail:    { mode:'title', title:'Detail Order', back:'orderDashboard' },
   orderUpdate:    { mode:'title', title:'Update Order', back:'orderDetail' },
@@ -1981,6 +2104,7 @@ const PRESENSI_SCREENS = ['presensi', 'presensiInput', 'presensiHistory'];
 const ORDER_SCREENS = ['orderDashboard', 'orderDetail', 'orderUpdate'];
 const SETTING_SCREENS = ['akun', 'ubahProfil', 'ubahPassword', 'modeTampilan'];
 const RECON_SCREENS = ['reconciliation', 'claim', 'claimHistory', 'justifikasi', 'justifikasiHistory'];
+const REQUEST_SCREENS = ['request', 'requestConfig', 'requestTicket'];
 
 function goTo(screen) {
   // Matikan kamera presensi kalau user pindah dari layar presensi
@@ -1990,7 +2114,7 @@ function goTo(screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-  const navKey = PRESENSI_SCREENS.indexOf(screen) !== -1 ? 'presensi' : (ORDER_SCREENS.indexOf(screen) !== -1 ? 'orderDashboard' : (SETTING_SCREENS.indexOf(screen) !== -1 ? 'akun' : (RECON_SCREENS.indexOf(screen) !== -1 ? 'reconciliation' : screen)));
+  const navKey = PRESENSI_SCREENS.indexOf(screen) !== -1 ? 'presensi' : (ORDER_SCREENS.indexOf(screen) !== -1 ? 'orderDashboard' : (SETTING_SCREENS.indexOf(screen) !== -1 ? 'akun' : (RECON_SCREENS.indexOf(screen) !== -1 ? 'reconciliation' : (REQUEST_SCREENS.indexOf(screen) !== -1 ? 'request' : screen))));
   const navBtn = document.querySelector('.nav-btn[data-screen="' + navKey + '"]');
   if (navBtn) navBtn.classList.add('active-nav');
   window.scrollTo({ top:0, behavior:'instant' });
@@ -1998,7 +2122,7 @@ function goTo(screen) {
   const nav = document.querySelector('.bottom-nav');
   nav.classList.toggle('hidden-nav', screen === 'login' || screen === 'resetpw');
 
-  const needsLogin = PRESENSI_SCREENS.indexOf(screen) !== -1 || screen === 'menu' || RECON_SCREENS.indexOf(screen) !== -1 || ORDER_SCREENS.indexOf(screen) !== -1 || SETTING_SCREENS.indexOf(screen) !== -1;
+  const needsLogin = PRESENSI_SCREENS.indexOf(screen) !== -1 || screen === 'menu' || RECON_SCREENS.indexOf(screen) !== -1 || ORDER_SCREENS.indexOf(screen) !== -1 || SETTING_SCREENS.indexOf(screen) !== -1 || REQUEST_SCREENS.indexOf(screen) !== -1;
   if (needsLogin && !getSession()) {
     showToast('error', 'Silakan Login terlebih dahulu.');
     applyHeaderForScreen('login');
