@@ -2313,12 +2313,33 @@ let resendCooldownTimer = null;
 /* ============================================================
  *  API HELPER
  * ============================================================ */
+async function _apiJsonResponse(response) {
+  const text = await response.text();
+  let data;
+  try { data = JSON.parse(text); }
+  catch (e) { throw new Error('Respons server tidak valid.'); }
+  if (data && data.authExpired) {
+    sessionStorage.removeItem('rontSession');
+    showToast('error', data.message || 'Sesi telah berakhir. Silakan login kembali.');
+    try { goTo('login'); } catch (e) {}
+  }
+  if (!response.ok) throw new Error(data.message || ('HTTP ' + response.status));
+  return data;
+}
 function apiGet(params) {
-  const qs = new URLSearchParams(params).toString();
-  return fetch(API_URL + '?' + qs).then(r => r.json());
+  const p = Object.assign({}, params || {});
+  const session = getSession();
+  if (session && session.sessionToken && !p.sessionToken) p.sessionToken = session.sessionToken;
+  const qs = new URLSearchParams(p).toString();
+  return fetch(API_URL + '?' + qs, { cache:'no-store' }).then(_apiJsonResponse);
 }
 function apiPost(data) {
-  return fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(data) }).then(r => r.json());
+  const payload = Object.assign({}, data || {});
+  const session = getSession();
+  if (session && session.sessionToken && !payload.sessionToken && payload.action !== 'login' && payload.action !== 'checkReset' && payload.action !== 'resendOtp' && payload.action !== 'resetPassword') {
+    payload.sessionToken = session.sessionToken;
+  }
+  return fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload), cache:'no-store' }).then(_apiJsonResponse);
 }
 
 /* ============================================================
@@ -2333,15 +2354,16 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('rememberMeBox').checked = localStorage.getItem('ront_remember') !== '0';
 
   const session = getSession();
-  if (session) {
+  if (session && session.sessionToken) {
     applySessionToUI(session);
     goTo('menu');
   } else {
+    sessionStorage.removeItem('rontSession');
     goTo('login');
   }
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    navigator.serviceWorker.register('service-worker.js').catch(err => console.warn('[RONT SW] registration failed:', err));
   }
 });
 
@@ -2553,7 +2575,8 @@ function handleChangePassword(e) {
       document.getElementById('oldPasswordChange').value = '';
       document.getElementById('newPasswordChange').value = '';
       document.getElementById('confirmPasswordChange').value = '';
-      goTo('akun');
+      sessionStorage.removeItem('rontSession');
+      goTo('login');
     } else {
       showToast('error', res.message);
     }
@@ -2629,8 +2652,12 @@ function goTo(screen) {
 function getSession() { try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; } }
 function setSession(data) { sessionStorage.setItem('rontSession', JSON.stringify(data)); }
 function logout() {
+  const session = getSession();
   sessionStorage.removeItem('rontSession');
   document.getElementById('loginPassword').value = '';
+  if (session && session.sessionToken) {
+    fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action:'logout', sessionToken: session.sessionToken }) }).catch(() => {});
+  }
   showToast('success', 'Anda telah keluar.');
   goTo('login');
 }
@@ -2962,9 +2989,24 @@ function selectPresensiStatus(status) {
   document.getElementById('presSuratSection').style.display = (status === 'SAKIT') ? 'block' : 'none';
 
   if (status === 'MASUK' && !wasMasuk) {
+    presensiState.suratBase64 = null;
+    const suratPreview = document.getElementById('suratPreviewWrap');
+    const suratBox = document.getElementById('suratUploadBox');
+    if (suratPreview) suratPreview.classList.remove('show');
+    if (suratBox) suratBox.style.display = 'flex';
     startPresensiCamera();
   } else if (status !== 'MASUK' && wasMasuk) {
+    presensiState.photoBase64 = null;
+    document.getElementById('presPreviewWrap').classList.remove('show');
+    document.getElementById('presCameraBox').style.display = 'block';
     stopPresensiCamera();
+  }
+  if (status !== 'SAKIT') {
+    presensiState.suratBase64 = null;
+    const suratPreview = document.getElementById('suratPreviewWrap');
+    const suratBox = document.getElementById('suratUploadBox');
+    if (suratPreview) suratPreview.classList.remove('show');
+    if (suratBox) suratBox.style.display = 'flex';
   }
 
   document.getElementById('absenBtnText').textContent = 'Kirim Presensi - ' + (PRESENSI_STATUS_LABEL[status] || status);
@@ -4070,12 +4112,20 @@ function setLoading(btnId, spinnerId, textId, label) {
   document.getElementById(textId).textContent = label;
 }
 function resetLoading(btnId, spinnerId, textId, label) {
-  document.getElementById(btnId).disabled = (btnId === 'btnAbsen') ? !allPresensiReady() : false;
   document.getElementById(spinnerId).style.display = 'none';
   document.getElementById(textId).textContent = label;
+  if (btnId === 'btnAbsen') {
+    cekRequirement();
+  } else {
+    document.getElementById(btnId).disabled = false;
+  }
 }
 function allPresensiReady() {
-  return !(presensiState.koordinat && presensiState.sto && presensiState.photoBase64);
+  const status = presensiState.statusPresensi;
+  if (status === 'MASUK') return !!(presensiState.koordinat && presensiState.sto && presensiState.photoBase64);
+  if (status === 'SAKIT') return !!(presensiState.koordinat && presensiState.sto && presensiState.suratBase64);
+  if (status === 'LIBUR' || status === 'CUTI') return !!(presensiState.koordinat && presensiState.sto);
+  return false;
 }
 </script>
 </body>
