@@ -1559,7 +1559,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (session) {
     applySessionToUI(session);
     goTo('menu');
-    loadMenuSummary();
   } else {
     goTo('login');
   }
@@ -1568,6 +1567,44 @@ window.addEventListener('DOMContentLoaded', () => {
     navigator.serviceWorker.register('service-worker.js').catch(() => {});
   }
 });
+
+let profilePhotoLoadPromise = null;
+
+function loadProfilePhotoHome() {
+  const session = getSession();
+  if (!session || !session.nik) return Promise.resolve();
+
+  // Sudah ada foto di session: tampilkan langsung tanpa request.
+  if (session.foto) {
+    renderAvatar('menuAvatar', session.nama, session.foto);
+    renderAvatar('akunAvatar', session.nama, session.foto);
+    return Promise.resolve();
+  }
+
+  // Cegah request profilePhoto paralel saat Home dipanggil berulang.
+  if (profilePhotoLoadPromise) return profilePhotoLoadPromise;
+
+  profilePhotoLoadPromise = apiGet({
+    action: 'profilePhoto',
+    nik: session.nik,
+    _t: Date.now()
+  }).then(res => {
+    if (!res || !res.success || !res.foto) return;
+
+    const current = getSession() || session;
+    current.foto = res.foto;
+    setSession(current);
+
+    renderAvatar('menuAvatar', current.nama, current.foto);
+    renderAvatar('akunAvatar', current.nama, current.foto);
+  }).catch(err => {
+    console.warn('[profilePhoto] gagal memuat foto:', err);
+  }).finally(() => {
+    profilePhotoLoadPromise = null;
+  });
+
+  return profilePhotoLoadPromise;
+}
 
 function applySessionToUI(session) {
   document.getElementById('menuNamaOnly').textContent = session.nama;
@@ -1777,7 +1814,11 @@ function goTo(screen) {
   applyHeaderForScreen(screen);
 
   if (screen === 'orderDashboard') loadOrderDashboard();
-  if (screen === 'menu') { loadMenuSummary(); loadPresensiStatusHome(); }
+  if (screen === 'menu') {
+    loadMenuSummary();
+    loadPresensiStatusHome();
+    loadProfilePhotoHome();
+  }
   if (screen === 'presensi') checkPresensiGate();
   if (screen === 'justifikasiHistory') loadJustifikasiHistory();
   if (screen === 'ubahProfil') loadProfileDetail();
