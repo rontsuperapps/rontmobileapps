@@ -1965,7 +1965,7 @@ body { background: var(--bg-deep); }
         <div class="field-wrap" style="margin-bottom:0;">
           <label class="field-label">Status Pelanggan</label>
           <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updStatusPelanggan" type="text" placeholder="Opsional" class="field-input">
+          <input id="updStatusPelanggan" type="text" placeholder="View only" class="field-input" readonly aria-readonly="true">
         </div>
       </div>
 
@@ -1976,12 +1976,12 @@ body { background: var(--bg-deep); }
         <div class="field-wrap">
           <label class="field-label">Paket Speed</label>
           <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updPaketSpeed" type="text" placeholder="Opsional" class="field-input">
+          <input id="updPaketSpeed" type="text" placeholder="View only" class="field-input" readonly aria-readonly="true">
         </div>
         <div class="field-wrap" style="margin-bottom:0;">
           <label class="field-label">Target Produk ONT</label>
           <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
-          <input id="updTargetProdukOnt" type="text" placeholder="Opsional" class="field-input">
+          <input id="updTargetProdukOnt" type="text" placeholder="View only" class="field-input" readonly aria-readonly="true">
         </div>
       </div>
 
@@ -1992,6 +1992,11 @@ body { background: var(--bg-deep); }
         <div class="view-only-box">
           <div class="voi-label">Tiket ID Tactical</div>
           <div class="voi-value" id="updTiketIdTactical">-</div>
+        </div>
+
+        <div class="view-only-box" style="margin-bottom:16px;">
+          <div class="voi-label">Status Saat Ini</div>
+          <div class="voi-value"><span id="updCurrentStatusBadge" class="order-status-badge">-</span></div>
         </div>
 
         <label class="field-label">Update Status</label>
@@ -2070,9 +2075,14 @@ body { background: var(--bg-deep); }
           </div>
         </div>
 
-        <button id="btnUpdateOrder" onclick="handleUpdateOrder(event)" class="btn-primary" disabled style="margin-top:16px;">
-          <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Pilih Status</span></div>
-        </button>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button type="button" id="btnCancelUpdateOrder" class="btn-outline" style="flex:1; margin:0;" onclick="cancelUpdateOrder()">
+            <i class="ic-arrow-left"></i> Batal
+          </button>
+          <button id="btnUpdateOrder" onclick="handleUpdateOrder(event)" class="btn-primary" disabled style="flex:1; margin:0;">
+            <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Pilih Status</span></div>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -3817,7 +3827,7 @@ function openUpdate(noInet) {
   const session = getSession();
   apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
     if (!res.success) { showToast('error', res.message || 'Gagal memuat data order.'); goTo('orderDetail'); return; }
-    const d = res.data;
+    const d = res.data || {};
     orderState.currentRow = d;
 
     document.getElementById('updNoInet').textContent = d.noInet || noInet;
@@ -3830,18 +3840,39 @@ function openUpdate(noInet) {
     document.getElementById('updTargetProdukOnt').value = d.targetProdukOnt || '';
     document.getElementById('updTiketIdTactical').textContent = d.tiketIdTactical || '-';
 
-    document.getElementById('updManjaDatePicker').value = '';
-    document.getElementById('updJamManjaPicker').value = '';
-    document.getElementById('updKeteranganManja').value = '';
-    document.getElementById('updKendalaReason').value = '';
-    document.getElementById('updKendalaLainText').value = '';
+    // Tampilkan badge status order saat ini tanpa otomatis memilih status update.
+    const currentStatus = normStatus(d.statusTask);
+    const currentBadge = document.getElementById('updCurrentStatusBadge');
+    if (currentBadge) {
+      currentBadge.textContent = currentStatus || 'BELUM UPDATE';
+      currentBadge.className = 'order-status-badge ' + statusBadgeClass(currentStatus);
+    }
+
+    // Muat seluruh data Replacement yang sudah tersimpan.
+    document.getElementById('updManjaDatePicker').value = d.manjaDate || '';
+    document.getElementById('updJamManjaPicker').value = d.jamManja || '';
+    document.getElementById('updKeteranganManja').value = currentStatus === 'MANJA' ? (d.keteranganDispatch || '') : '';
+
+    const kendalaValue = currentStatus === 'KENDALA' ? String(d.keteranganDispatch || '').trim().toUpperCase() : '';
+    const kendalaOptions = Array.from(document.getElementById('updKendalaReason').options).map(o => o.value);
+    document.getElementById('updKendalaReason').value = kendalaOptions.indexOf(kendalaValue) !== -1 ? kendalaValue : (kendalaValue ? 'KENDALA LAIN' : '');
+    document.getElementById('updKendalaLainText').value = (currentStatus === 'KENDALA' && kendalaValue && kendalaOptions.indexOf(kendalaValue) === -1) ? String(d.keteranganDispatch || '').trim() : '';
+
     document.getElementById('updSnOntLama').value = d.snOntLama || '';
     document.getElementById('updSnOntBaru').value = d.snOntBaru || '';
-    document.getElementById('updValinsId').value = d.valinsId || '';
-    document.getElementById('updKeteranganClose').value = '';
+    document.getElementById('updValinsId').value = d.valinsId == null ? '' : String(d.valinsId);
+    document.getElementById('updKeteranganClose').value = currentStatus === 'CLOSE' ? (d.keteranganDispatch || '') : '';
 
     resetStatusTaskUI();
+    validateUpdateForm();
   }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
+}
+
+function cancelUpdateOrder() {
+  orderState.currentRow = null;
+  orderUpdateStatusTask = null;
+  goTo('orderDetail');
+  loadOrderDetail();
 }
 
 /* ============================================================
@@ -3937,9 +3968,6 @@ function handleUpdateOrder(e) {
     alamat: document.getElementById('updAlamat').value.trim(),
     nomorHp: document.getElementById('updNomorHp').value.trim(),
     koordinatPelanggan: document.getElementById('updKoordinatPelanggan').value.trim(),
-    statusPelanggan: document.getElementById('updStatusPelanggan').value.trim(),
-    paketSpeed: document.getElementById('updPaketSpeed').value.trim(),
-    targetProdukOnt: document.getElementById('updTargetProdukOnt').value.trim(),
     statusTask: orderUpdateStatusTask,
     manjaDate: document.getElementById('updManjaDatePicker').value,
     jamManja: document.getElementById('updJamManjaPicker').value,
