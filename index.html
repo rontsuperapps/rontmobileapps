@@ -2649,6 +2649,16 @@ function goTo(screen) {
   if (screen === 'ubahProfil') loadProfileDetail();
   if (screen === 'modeTampilan') syncDarkModeSwitch();
 }
+     
+/ ===== DASHBOARD CLIENT CACHE =====
+let _dashboardLoading = false;
+let _dashboardPromise = null;
+let _dashboardCache = null;
+let _dashboardCacheNik = '';
+let _dashboardCacheAt = 0;
+
+const DASHBOARD_CLIENT_CACHE_TTL = 10000; // 10 detik
+     
 function getSession() { try { return JSON.parse(sessionStorage.getItem('rontSession')); } catch (e) { return null; } }
 function setSession(data) { sessionStorage.setItem('rontSession', JSON.stringify(data)); }
 function logout() {
