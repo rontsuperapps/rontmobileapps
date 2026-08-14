@@ -3605,40 +3605,132 @@ function statusBadgeClass(s) {
   }
 }
 
-let _dashboardLoading = false;
-
 function loadOrderDashboard(forceRefresh) {
   const session = getSession();
   if (!session) return;
-  if (_dashboardLoading) return;
-  _dashboardLoading = true;
 
-  document.getElementById('dashboardSkeleton').style.display = 'block';
-  document.getElementById('dashboardContent').style.display = 'none';
+  const nik = String(session.nik || '').trim();
+  if (!nik) return;
 
-  const refreshBtn = document.getElementById('btnRefreshDashboard');
-  if (refreshBtn) refreshBtn.disabled = true;
+  const now = Date.now();
 
-  const params = { action:'orderDashboard', nik: session.nik };
-  if (forceRefresh) params._t = Date.now();
+  // ============================================================
+  // 1. PAKAI CACHE CLIENT JIKA MASIH VALID
+  // ============================================================
+  if (
+    !forceRefresh &&
+    _dashboardCache &&
+    _dashboardCacheNik === nik &&
+    (now - _dashboardCacheAt) < DASHBOARD_CLIENT_CACHE_TTL
+  ) {
+    const res = _dashboardCache;
 
-  apiGet(params).then(res => {
-    _dashboardLoading = false;
-    if (refreshBtn) refreshBtn.disabled = false;
     document.getElementById('dashboardSkeleton').style.display = 'none';
     document.getElementById('dashboardContent').style.display = 'block';
-    if (!res.success) { showToast('error', res.message || 'Gagal memuat dashboard order.'); return; }
+
     document.getElementById('statTotal').textContent = res.total;
     document.getElementById('statBelumUpdate').textContent = res.counts['BELUM UPDATE'];
     document.getElementById('statManja').textContent = res.counts.MANJA;
     document.getElementById('statKendala').textContent = res.counts.KENDALA;
     document.getElementById('statClose').textContent = res.counts.CLOSE;
+
+    return;
+  }
+
+  // ============================================================
+  // 2. JIKA REQUEST DASHBOARD MASIH BERJALAN, JANGAN BUAT REQUEST BARU
+  // ============================================================
+  if (_dashboardPromise) return;
+
+  _dashboardLoading = true;
+
+  const skeleton = document.getElementById('dashboardSkeleton');
+  const content = document.getElementById('dashboardContent');
+  const refreshBtn = document.getElementById('btnRefreshDashboard');
+
+  if (skeleton) skeleton.style.display = 'block';
+  if (content) content.style.display = 'none';
+  if (refreshBtn) refreshBtn.disabled = true;
+
+  const params = {
+    action: 'orderDashboard',
+    nik: nik
+  };
+
+  // Force refresh memakai timestamp agar tidak mengambil response lama
+  if (forceRefresh) {
+    params._t = Date.now();
+  }
+
+  // ============================================================
+  // 3. SIMPAN PROMISE AGAR REQUEST TIDAK DOBEL
+  // ============================================================
+  _dashboardPromise = apiGet(params);
+
+  _dashboardPromise.then(res => {
+
+    // Simpan hasil hanya jika response valid
+    if (res && res.success) {
+      _dashboardCache = res;
+      _dashboardCacheNik = nik;
+      _dashboardCacheAt = Date.now();
+
+      if (document.getElementById('statTotal')) {
+        document.getElementById('statTotal').textContent = res.total;
+      }
+
+      if (document.getElementById('statBelumUpdate')) {
+        document.getElementById('statBelumUpdate').textContent =
+          res.counts['BELUM UPDATE'];
+      }
+
+      if (document.getElementById('statManja')) {
+        document.getElementById('statManja').textContent =
+          res.counts.MANJA;
+      }
+
+      if (document.getElementById('statKendala')) {
+        document.getElementById('statKendala').textContent =
+          res.counts.KENDALA;
+      }
+
+      if (document.getElementById('statClose')) {
+        document.getElementById('statClose').textContent =
+          res.counts.CLOSE;
+      }
+
+      if (skeleton) skeleton.style.display = 'none';
+      if (content) content.style.display = 'block';
+
+    } else {
+      if (skeleton) skeleton.style.display = 'none';
+      if (content) content.style.display = 'block';
+
+      showToast(
+        'error',
+        (res && res.message) || 'Gagal memuat dashboard order.'
+      );
+    }
+
   }).catch(err => {
+
+    if (skeleton) skeleton.style.display = 'none';
+    if (content) content.style.display = 'block';
+
+    showToast(
+      'error',
+      'Error: ' + (err && err.message ? err.message : err)
+    );
+
+  }).finally(() => {
+
     _dashboardLoading = false;
-    if (refreshBtn) refreshBtn.disabled = false;
-    document.getElementById('dashboardSkeleton').style.display = 'none';
-    document.getElementById('dashboardContent').style.display = 'block';
-    showToast('error', 'Error: ' + err.message);
+    _dashboardPromise = null;
+
+    if (refreshBtn) {
+      refreshBtn.disabled = false;
+    }
+
   });
 }
 
