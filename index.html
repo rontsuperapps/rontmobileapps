@@ -1999,11 +1999,13 @@ body { background: var(--bg-deep); }
           <div class="voi-value"><span id="updCurrentStatusBadge" class="order-status-badge">-</span></div>
         </div>
 
-        <label class="field-label">Update Status</label>
-        <div class="presensi-status-grid" style="grid-template-columns:repeat(3,1fr);">
-          <button type="button" class="presensi-status-btn ps-cuti" id="stBtnMANJA" onclick="selectStatusTask('MANJA')"><i class="ic-hourglass"></i> Manja</button>
-          <button type="button" class="presensi-status-btn ps-sakit" id="stBtnKENDALA" onclick="selectStatusTask('KENDALA')"><i class="ic-alert"></i> Kendala</button>
-          <button type="button" class="presensi-status-btn ps-masuk" id="stBtnCLOSE" onclick="selectStatusTask('CLOSE')"><i class="ic-check"></i> Close</button>
+        <div id="updateStatusEditor" style="display:none;">
+          <label class="field-label">Update Status</label>
+          <div class="presensi-status-grid" style="grid-template-columns:repeat(3,1fr);">
+            <button type="button" class="presensi-status-btn ps-cuti" id="stBtnMANJA" onclick="selectStatusTask('MANJA')"><i class="ic-hourglass"></i> Manja</button>
+            <button type="button" class="presensi-status-btn ps-sakit" id="stBtnKENDALA" onclick="selectStatusTask('KENDALA')"><i class="ic-alert"></i> Kendala</button>
+            <button type="button" class="presensi-status-btn ps-masuk" id="stBtnCLOSE" onclick="selectStatusTask('CLOSE')"><i class="ic-check"></i> Close</button>
+          </div>
         </div>
 
         <!-- MANJA: Manja Date, Jam Manja, Keterangan Manja - semua wajib -->
@@ -2079,8 +2081,11 @@ body { background: var(--bg-deep); }
           <button type="button" id="btnCancelUpdateOrder" class="btn-outline" style="flex:1; margin:0;" onclick="cancelUpdateOrder()">
             <i class="ic-arrow-left"></i> Batal
           </button>
-          <button id="btnUpdateOrder" onclick="handleUpdateOrder(event)" class="btn-primary" disabled style="flex:1; margin:0;">
-            <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Pilih Status</span></div>
+          <button type="button" id="btnEditOrder" class="btn-primary" style="flex:1; margin:0;" onclick="enterEditOrderMode(event)">
+            <div class="btn-inner"><i class="ic-edit"></i><span>Update</span></div>
+          </button>
+          <button type="button" id="btnSaveOrder" onclick="handleUpdateOrder(event)" class="btn-primary" disabled style="display:none; flex:1; margin:0;">
+            <div class="btn-inner"><div class="btn-spinner" id="updateOrderSpinner"></div><span id="updateOrderBtnText">Simpan</span></div>
           </button>
         </div>
       </div>
@@ -3819,10 +3824,13 @@ function loadOrderDetail() {
  *  ORDER - UPDATE
  * ============================================================ */
 let orderUpdateStatusTask = null;
+let orderUpdateEditMode = false;
 const ORDER_STATUS_TASK_LABEL = { MANJA: 'Manja', KENDALA: 'Kendala', CLOSE: 'Close' };
 
 function openUpdate(noInet) {
   orderState.currentNoInet = noInet;
+  orderUpdateEditMode = false;
+  orderUpdateStatusTask = null;
   goTo('orderUpdate');
   const session = getSession();
   apiGet({ action:'orderData', nik: session.nik, telegramId: session.telegramId, noInet: noInet }).then(res => {
@@ -3840,7 +3848,6 @@ function openUpdate(noInet) {
     document.getElementById('updTargetProdukOnt').value = d.targetProdukOnt || '';
     document.getElementById('updTiketIdTactical').textContent = d.tiketIdTactical || '-';
 
-    // Tampilkan badge status order saat ini tanpa otomatis memilih status update.
     const currentStatus = normStatus(d.statusTask);
     const currentBadge = document.getElementById('updCurrentStatusBadge');
     if (currentBadge) {
@@ -3848,7 +3855,7 @@ function openUpdate(noInet) {
       currentBadge.className = 'order-status-badge ' + statusBadgeClass(currentStatus);
     }
 
-    // Muat seluruh data Replacement yang sudah tersimpan.
+    // Semua data Replacement dimuat terlebih dahulu. Mode awal selalu view-only.
     document.getElementById('updManjaDatePicker').value = d.manjaDate || '';
     document.getElementById('updJamManjaPicker').value = d.jamManja || '';
     document.getElementById('updKeteranganManja').value = currentStatus === 'MANJA' ? (d.keteranganDispatch || '') : '';
@@ -3863,14 +3870,69 @@ function openUpdate(noInet) {
     document.getElementById('updValinsId').value = d.valinsId == null ? '' : String(d.valinsId);
     document.getElementById('updKeteranganClose').value = currentStatus === 'CLOSE' ? (d.keteranganDispatch || '') : '';
 
-    resetStatusTaskUI();
-    validateUpdateForm();
+    setOrderUpdateMode(false, currentStatus);
   }).catch(err => { showToast('error', 'Error: ' + err.message); goTo('orderDetail'); });
 }
 
+function setOrderUpdateMode(editMode, currentStatus) {
+  orderUpdateEditMode = !!editMode;
+
+  const editableFields = ['updNamaPelanggan','updNomorHp','updKoordinatPelanggan','updAlamat','updManjaDatePicker','updJamManjaPicker','updKeteranganManja','updKendalaLainText','updSnOntLama','updSnOntBaru','updValinsId','updKeteranganClose'];
+  editableFields.forEach(id => { const el = document.getElementById(id); if (el) el.readOnly = !orderUpdateEditMode; });
+
+  // Field view-only tetap terkunci walaupun mode edit.
+  ['updStatusPelanggan','updPaketSpeed','updTargetProdukOnt'].forEach(id => { const el = document.getElementById(id); if (el) el.readOnly = true; });
+
+  const reasonEl = document.getElementById('updKendalaReason');
+  if (reasonEl) reasonEl.disabled = !orderUpdateEditMode;
+
+  document.querySelectorAll('#screen-orderUpdate .scan-trigger').forEach(el => { el.style.display = orderUpdateEditMode ? '' : 'none'; });
+  document.querySelectorAll('#screen-orderUpdate button.btn-outline').forEach(btn => {
+    if (btn.id !== 'btnCancelUpdateOrder') btn.style.display = orderUpdateEditMode ? '' : 'none';
+  });
+
+  const statusEditor = document.getElementById('updateStatusEditor');
+  if (statusEditor) statusEditor.style.display = orderUpdateEditMode ? 'block' : 'none';
+
+  const editBtn = document.getElementById('btnEditOrder');
+  const saveBtn = document.getElementById('btnSaveOrder');
+  if (editBtn) editBtn.style.display = orderUpdateEditMode ? 'none' : 'block';
+  if (saveBtn) saveBtn.style.display = orderUpdateEditMode ? 'block' : 'none';
+
+  const st = normStatus(currentStatus || orderState.currentRow?.statusTask);
+
+  if (orderUpdateEditMode) {
+    if (st === 'MANJA' || st === 'KENDALA' || st === 'CLOSE') selectStatusTask(st);
+    else resetStatusTaskUI();
+  } else {
+    orderUpdateStatusTask = null;
+    ['MANJA','KENDALA','CLOSE'].forEach(s => { const b=document.getElementById('stBtn'+s); if(b) b.classList.remove('active'); });
+    document.getElementById('wrapManjaFields').style.display = st === 'MANJA' ? 'block' : 'none';
+    document.getElementById('wrapKendalaFields').style.display = st === 'KENDALA' ? 'block' : 'none';
+    document.getElementById('wrapCloseFields').style.display = st === 'CLOSE' ? 'block' : 'none';
+    document.getElementById('wrapKendalaLain').style.display = st === 'KENDALA' && document.getElementById('updKendalaReason').value === 'KENDALA LAIN' ? 'block' : 'none';
+    if (saveBtn) saveBtn.disabled = true;
+  }
+  validateUpdateForm();
+}
+
+function enterEditOrderMode(e) {
+  const btn = document.getElementById('btnEditOrder');
+  if (e) addRipple(btn, e);
+  setOrderUpdateMode(true, normStatus(orderState.currentRow?.statusTask));
+}
+
 function cancelUpdateOrder() {
+  // Jika sedang edit, Batal hanya membatalkan perubahan dan kembali ke mode view-only.
+  if (orderUpdateEditMode && orderState.currentNoInet) {
+    openUpdate(orderState.currentNoInet);
+    return;
+  }
+
+  // Jika masih mode view-only, Batal kembali ke daftar/detail order.
   orderState.currentRow = null;
   orderUpdateStatusTask = null;
+  orderUpdateEditMode = false;
   goTo('orderDetail');
   loadOrderDetail();
 }
@@ -3894,11 +3956,12 @@ function resetStatusTaskUI() {
   document.getElementById('wrapKendalaFields').style.display = 'none';
   document.getElementById('wrapKendalaLain').style.display = 'none';
   document.getElementById('wrapCloseFields').style.display = 'none';
-  document.getElementById('updateOrderBtnText').textContent = 'Pilih Status';
+  document.getElementById('updateOrderBtnText').textContent = 'Simpan';
   validateUpdateForm();
 }
 
 function selectStatusTask(status) {
+  if (!orderUpdateEditMode) return;
   orderUpdateStatusTask = status;
 
   ['MANJA', 'KENDALA', 'CLOSE'].forEach(s => {
@@ -3911,7 +3974,7 @@ function selectStatusTask(status) {
   document.getElementById('wrapKendalaLain').style.display = (status === 'KENDALA' && document.getElementById('updKendalaReason').value === 'KENDALA LAIN') ? 'block' : 'none';
   document.getElementById('wrapCloseFields').style.display = (status === 'CLOSE') ? 'block' : 'none';
 
-  document.getElementById('updateOrderBtnText').textContent = 'Update Order - ' + ORDER_STATUS_TASK_LABEL[status];
+  document.getElementById('updateOrderBtnText').textContent = 'Simpan';
   validateUpdateForm();
 }
 
@@ -3944,7 +4007,7 @@ function validateUpdateForm() {
     valid = !!(snLama && snBaru && valinsId && !isNaN(Number(valinsId)));
   }
 
-  const btn = document.getElementById('btnUpdateOrder');
+  const btn = document.getElementById('btnSaveOrder');
   if (btn) {
     btn.disabled = !valid;
     btn.classList.toggle('btn-ready', valid);
@@ -3953,10 +4016,11 @@ function validateUpdateForm() {
 }
 
 function handleUpdateOrder(e) {
-  const btn = document.getElementById('btnUpdateOrder');
+  const btn = document.getElementById('btnSaveOrder');
   if (e) addRipple(btn, e);
   const session = getSession();
   if (!session) { showToast('error', 'Silakan Login terlebih dahulu.'); goTo('login'); return; }
+  if (!orderUpdateEditMode) { showToast('error', 'Klik Update terlebih dahulu untuk mengedit order.'); return; }
   if (!orderUpdateStatusTask) { showToast('error', 'Pilih Status terlebih dahulu.'); return; }
   if (!validateUpdateForm()) { showToast('error', 'Lengkapi parameter wajib sebelum update.'); shakeEl(btn.closest('.glass-card')); return; }
 
@@ -3980,12 +4044,12 @@ function handleUpdateOrder(e) {
     keteranganClose: document.getElementById('updKeteranganClose').value.trim()
   };
 
-  setLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Mengirim...');
+  setLoading('btnSaveOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Menyimpan...');
   apiPost(payload).then(res => {
-    resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel);
+    resetLoading('btnSaveOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Simpan');
     if (res.success) { showToast('success', res.message); goTo('orderDetail'); loadOrderDetail(); loadOrderDashboard(); }
     else { showToast('error', res.message); }
-  }).catch(err => { resetLoading('btnUpdateOrder', 'updateOrderSpinner', 'updateOrderBtnText', btnLabel); showToast('error', 'Error: ' + err.message); });
+  }).catch(err => { resetLoading('btnSaveOrder', 'updateOrderSpinner', 'updateOrderBtnText', 'Simpan'); showToast('error', 'Error: ' + err.message); });
 }
 
 function ambilLokasiOrderUpdate() {
