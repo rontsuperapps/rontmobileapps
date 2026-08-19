@@ -2185,6 +2185,331 @@ button i[class*="ic-"][style],
 }
 </style>
 
+
+<style id="v28-ui-ux-final">
+/* =========================================================
+   V28 — DEEP UI/UX CLEANUP
+   Root-cause fixes:
+   1) field icons were centered against the whole field-wrap
+      (label + input), not the input itself;
+   2) login/reset screens were still inside the authenticated
+      shell/header/nav layout;
+   3) accumulated !important layers created inconsistent density.
+   Visual/layout only — no API/business logic changes.
+========================================================= */
+
+/* ---------- GLOBAL DENSITY ---------- */
+.app-shell{
+  width:100% !important;
+  max-width:480px !important;
+  margin:0 auto !important;
+}
+
+.app-main{
+  width:100% !important;
+  max-width:480px !important;
+  margin:0 auto !important;
+  box-sizing:border-box !important;
+}
+
+.glass-card{
+  box-sizing:border-box !important;
+}
+
+/* ---------- THE FIELD ICON ROOT CAUSE ----------
+   .field-wrap contains:
+     label
+     icon
+     input
+   Therefore top:50% centers the icon in label+input.
+   We instead place it at the vertical center of the input:
+     label line-height + label gap + half input height.
+--------------------------------------------------- */
+.field-wrap > .field-icon{
+  top:calc(1.4em + 5px + 20px) !important;
+  left:12px !important;
+  right:auto !important;
+  transform:translateY(-50%) !important;
+}
+
+.field-wrap > .field-icon-right,
+.field-wrap > .field-action-icon{
+  top:calc(1.4em + 5px + 20px) !important;
+  right:12px !important;
+  left:auto !important;
+  transform:translateY(-50%) !important;
+}
+
+/* Login/reset use 44px fields and slightly different label spacing. */
+#screen-login .field-wrap > .field-icon,
+#screen-resetpw .field-wrap > .field-icon{
+  top:calc(1.4em + 6px + 22px) !important;
+}
+
+#screen-login .field-wrap > .field-icon-right,
+#screen-resetpw .field-wrap > .field-icon-right{
+  top:calc(1.4em + 6px + 22px) !important;
+}
+
+/* Text rail remains aligned with the actual input. */
+.field-wrap > .field-icon ~ .field-input,
+.field-wrap > .field-icon ~ .field-select,
+.field-wrap > .field-icon ~ textarea.field-input{
+  padding-left:42px !important;
+}
+
+#screen-login .field-wrap > .field-input,
+#screen-resetpw .field-wrap > .field-input{
+  padding-left:43px !important;
+}
+
+/* ---------- LOGIN / RESET ARE PUBLIC SCREENS ----------
+   Remove the authenticated shell chrome so there is no
+   duplicate header and no bottom navigation on these screens.
+--------------------------------------------------- */
+.app-shell:has(#screen-login.active) .app-header,
+.app-shell:has(#screen-resetpw.active) .app-header{
+  display:none !important;
+}
+
+.app-shell:has(#screen-login.active) .bottom-nav,
+.app-shell:has(#screen-resetpw.active) .bottom-nav,
+.bottom-nav.hidden-nav{
+  display:none !important;
+}
+
+.app-shell:has(#screen-login.active) .app-main,
+.app-shell:has(#screen-resetpw.active) .app-main{
+  padding-top:12px !important;
+  padding-bottom:18px !important;
+}
+
+/* Login card: compact without making the fields cramped. */
+#screen-login .login-professional-shell{
+  max-width:390px !important;
+  margin:0 auto !important;
+  border-radius:18px !important;
+}
+
+#screen-login .login-brand-panel{
+  padding:22px 18px 19px !important;
+}
+
+#screen-login .login-form-card{
+  padding:16px 15px 13px !important;
+}
+
+#screen-login .login-welcome-row{
+  margin-bottom:13px !important;
+  gap:8px !important;
+}
+
+#screen-login .login-welcome-title{
+  font-size:18px !important;
+}
+
+#screen-login .login-welcome-sub{
+  font-size:11px !important;
+}
+
+/* Reset screen follows the same compact public-screen rhythm. */
+#screen-resetpw .glass-card{
+  margin-bottom:9px !important;
+}
+
+/* ---------- BUTTON CONSISTENCY ---------- */
+button,
+.btn,
+.btn-primary,
+.btn-outline,
+input[type=button],
+input[type=submit],
+input[type=reset]{
+  box-sizing:border-box !important;
+  height:40px !important;
+  min-height:40px !important;
+  border-radius:10px !important;
+}
+
+button i[class*="ic-"],
+.btn i[class*="ic-"],
+button svg,
+.btn svg{
+  position:static !important;
+  top:auto !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:none !important;
+  margin:0 !important;
+}
+
+/* ---------- QUICK ACCESS ---------- */
+.app-shell .quick-access-grid{
+  gap:7px !important;
+  row-gap:9px !important;
+}
+
+.app-shell .quick-access-grid .quick-tile{
+  min-height:74px !important;
+  padding:7px 3px !important;
+  border-radius:11px !important;
+  gap:5px !important;
+}
+
+.app-shell .quick-access-grid .quick-tile .qt-icon{
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+  border-radius:9px !important;
+}
+
+.app-shell .quick-access-grid .quick-tile .qt-label{
+  font-size:9.5px !important;
+  line-height:1.1 !important;
+  font-weight:700 !important;
+}
+
+/* ---------- BOTTOM NAV ---------- */
+.app-shell .bottom-nav{
+  min-height:62px !important;
+  padding:3px 3px calc(3px + env(safe-area-inset-bottom)) !important;
+  gap:2px !important;
+  border-radius:18px 18px 0 0 !important;
+}
+
+.app-shell .bottom-nav .nav-btn{
+  height:50px !important;
+  min-height:50px !important;
+  padding:4px 1px 3px !important;
+  border-radius:9px !important;
+  gap:2px !important;
+}
+
+.app-shell .bottom-nav .nav-btn i[class*="ic-"],
+.app-shell .bottom-nav .nav-btn svg{
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  flex:0 0 17px !important;
+}
+
+.app-shell .bottom-nav .nav-btn span{
+  font-size:7.8px !important;
+  line-height:1 !important;
+}
+
+/* Scan stays primary, but does not distort the other six items. */
+.app-shell .bottom-nav .nav-btn-scan i[class*="ic-"],
+.app-shell .bottom-nav .nav-btn-scan svg{
+  width:26px !important;
+  height:26px !important;
+  min-width:26px !important;
+  min-height:26px !important;
+  flex-basis:26px !important;
+}
+
+/* ---------- TABLE / PIVOT ---------- */
+.table-wrap,
+.table-responsive,
+.recon-pivot-wrap{
+  max-width:100% !important;
+  overflow-x:auto !important;
+  -webkit-overflow-scrolling:touch !important;
+}
+
+table{
+  font-size:11px !important;
+}
+
+th,td{
+  padding:6px 7px !important;
+  line-height:1.25 !important;
+}
+
+/* ---------- MID-SIZE SMARTPHONE ---------- */
+@media (min-width:390px) and (max-width:430px){
+  .app-main{
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .glass-card{
+    padding:12px !important;
+  }
+}
+
+@media (max-width:389px){
+  .app-main{
+    padding-left:10px !important;
+    padding-right:10px !important;
+  }
+
+  .app-shell .quick-access-grid .quick-tile .qt-label{
+    font-size:9px !important;
+  }
+
+  .app-shell .bottom-nav .nav-btn span{
+    font-size:7.3px !important;
+  }
+}
+</style>
+
+
+<style id="v29-icon-layout">
+/* V29 — exact field-icon geometry.
+   The icon is positioned from the INPUT'S own box, not from
+   the complete field wrapper (which also contains the label). */
+.field-wrap{
+  --field-icon-center: 32px;
+}
+
+.field-wrap > .field-icon{
+  top:var(--field-icon-center) !important;
+  left:12px !important;
+  right:auto !important;
+  transform:translateY(-50%) !important;
+}
+
+.field-wrap > .field-icon-right,
+.field-wrap > .field-action-icon{
+  top:var(--field-icon-center) !important;
+  left:auto !important;
+  right:12px !important;
+  transform:translateY(-50%) !important;
+}
+
+#screen-login .field-wrap > .field-icon,
+#screen-resetpw .field-wrap > .field-icon{
+  top:var(--field-icon-center) !important;
+}
+
+#screen-login .field-wrap > .field-icon-right,
+#screen-resetpw .field-wrap > .field-icon-right{
+  top:var(--field-icon-center) !important;
+}
+
+/* Keep icon-safe text rails. */
+.field-wrap > .field-icon ~ .field-input,
+.field-wrap > .field-icon ~ .field-select,
+.field-wrap > .field-icon ~ textarea.field-input{
+  padding-left:42px !important;
+}
+
+#screen-login .field-wrap > .field-input,
+#screen-resetpw .field-wrap > .field-input{
+  padding-left:43px !important;
+}
+
+/* Login eye / right-side action gets its own text clearance. */
+.field-wrap > .field-icon-right ~ .field-input,
+.field-wrap > .field-action-icon ~ .field-input{
+  padding-right:43px !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -5756,5 +6081,63 @@ function allPresensiReady() {
   return false;
 }
 </script>
+
+<script id="v28-public-screen-init">
+window.addEventListener('DOMContentLoaded', function () {
+  var nav = document.querySelector('.bottom-nav');
+  var login = document.getElementById('screen-login');
+  var reset = document.getElementById('screen-resetpw');
+  if (nav && ((login && login.classList.contains('active')) ||
+              (reset && reset.classList.contains('active')))) {
+    nav.classList.add('hidden-nav');
+  }
+});
+</script>
+
+
+<script id="v29-icon-layout-js">
+(function(){
+  'use strict';
+
+  function syncFieldIcons(root){
+    (root || document).querySelectorAll('.field-wrap').forEach(function(wrap){
+      var control = wrap.querySelector('input.field-input, select.field-select, textarea.field-input');
+      if (!control) return;
+
+      /* offsetTop is relative to .field-wrap, so this centers the icon
+         precisely on the actual control regardless of label height,
+         font size, margin, or compact/mobile breakpoint. */
+      var center = control.offsetTop + (control.offsetHeight / 2);
+      if (center > 0) {
+        wrap.style.setProperty('--field-icon-center', center + 'px');
+      }
+    });
+  }
+
+  function schedule(){
+    requestAnimationFrame(function(){
+      syncFieldIcons(document);
+      requestAnimationFrame(function(){ syncFieldIcons(document); });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', schedule);
+  window.addEventListener('load', schedule);
+  window.addEventListener('resize', schedule);
+  window.addEventListener('orientationchange', schedule);
+
+  /* Screen activation changes layout visibility; resync only when a
+     .screen's active class changes. This does not touch app logic. */
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.screen').forEach(function(screen){
+      new MutationObserver(schedule).observe(screen, {
+        attributes:true,
+        attributeFilter:['class']
+      });
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
