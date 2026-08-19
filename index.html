@@ -653,7 +653,7 @@ body { position:relative; overscroll-behavior:none; }
   background:var(--surface); -webkit-overflow-scrolling:touch;
 }
 .recon-parameter-table {
-  width:100%; min-width:940px; border-collapse:collapse; table-layout:fixed; font-size:10.5px;
+  width:max-content; min-width:2200px; border-collapse:collapse; table-layout:fixed; font-size:10.5px;
 }
 .recon-parameter-table th,
 .recon-parameter-table td {
@@ -664,8 +664,8 @@ body { position:relative; overscroll-behavior:none; }
   background:var(--surface-soft); color:var(--text); font-size:9.5px; font-weight:800;
   text-transform:uppercase; letter-spacing:.1px; position:sticky; top:0; z-index:1;
 }
-.recon-parameter-table td:first-child,
-.recon-parameter-table th:first-child { text-align:center; width:34px; }
+.recon-parameter-table th:first-child,
+.recon-parameter-table td:first-child { min-width:150px; }
 .recon-parameter-table .rp-not-found td { background:var(--error-soft); }
 .recon-parameter-table .rp-empty { color:var(--text-muted); }
 .recon-parameter-badge {
@@ -1915,8 +1915,11 @@ body { background: var(--bg-deep); }
           <table class="recon-parameter-table">
             <thead>
               <tr>
-                <th>NO</th>
                 <th>NO INET</th>
+                <th>NIK TACTICAL</th>
+                <th>NAMA TACTICAL</th>
+                <th>PLOTTING TACTICAL</th>
+                <th>NAMA MITRA TACTICAL</th>
                 <th>STATUS TACTICAL</th>
                 <th>STATUS</th>
                 <th>NIK</th>
@@ -1926,6 +1929,16 @@ body { background: var(--bg-deep); }
                 <th>RESULT</th>
                 <th>STATUS PARAMETER</th>
                 <th>KET PARAMETER</th>
+                <th>LAST UPDATE</th>
+                <th>REKON ID</th>
+                <th>HSS</th>
+                <th>GROUP</th>
+                <th>BATCH</th>
+                <th>STATUS RAPEL</th>
+                <th>SUBMISSION DATE</th>
+                <th>TASK PAYMENT</th>
+                <th>STATUS PAYMENT</th>
+                <th>ESTIMATE PAYMENT</th>
               </tr>
             </thead>
             <tbody id="checkParameterTableBody"></tbody>
@@ -3754,8 +3767,11 @@ function _renderCheckParameterResult(res) {
       : '<span class="recon-parameter-badge not-found">NOT FOUND</span>';
 
     return '<tr' + notFoundClass + '>' +
-      '<td>' + _checkParameterCell(it.no) + '</td>' +
       '<td><strong>' + _checkParameterCell(it.noInet) + '</strong></td>' +
+      '<td>' + _checkParameterCell(it.nikTactical) + '</td>' +
+      '<td>' + _checkParameterCell(it.namaTactical) + '</td>' +
+      '<td>' + _checkParameterCell(it.plottingTactical) + '</td>' +
+      '<td>' + _checkParameterCell(it.namaMitraTactical) + '</td>' +
       '<td>' + _checkParameterCell(it.statusTactical) + '</td>' +
       '<td>' + _checkParameterCell(it.status) + '</td>' +
       '<td>' + _checkParameterCell(it.nik) + '</td>' +
@@ -3764,7 +3780,17 @@ function _renderCheckParameterResult(res) {
       '<td>' + _checkParameterCell(it.snNew) + '</td>' +
       '<td>' + _checkParameterCell(it.result) + '</td>' +
       '<td>' + _checkParameterCell(it.statusParameter) + '</td>' +
-      '<td>' + (it.found ? _checkParameterCell(it.ketParameter) : badge) + '</td>' +
+      '<td>' + _checkParameterCell(it.ketParameter) + '</td>' +
+      '<td>' + _checkParameterCell(it.lastUpdate) + '</td>' +
+      '<td>' + _checkParameterCell(it.rekonId) + '</td>' +
+      '<td>' + _checkParameterCell(it.hss) + '</td>' +
+      '<td>' + _checkParameterCell(it.group) + '</td>' +
+      '<td>' + _checkParameterCell(it.batch) + '</td>' +
+      '<td>' + _checkParameterCell(it.statusRapel) + '</td>' +
+      '<td>' + _checkParameterCell(it.submissionDate) + '</td>' +
+      '<td>' + _checkParameterCell(it.taskPayment) + '</td>' +
+      '<td>' + _checkParameterCell(it.statusPayment) + '</td>' +
+      '<td>' + (it.found ? _checkParameterCell(it.estimatePayment) : badge) + '</td>' +
       '</tr>';
   }).join('');
 
