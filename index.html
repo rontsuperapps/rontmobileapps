@@ -1955,6 +1955,11 @@ body { background: var(--bg-deep); }
             <div class="recon-dashboard-stat-number" id="reconPaymentNotYetNoInet">0</div>
             <div class="recon-dashboard-stat-detail">No Inet · HSS <strong id="reconPaymentNotYetHss">0</strong></div>
           </div>
+          <div class="recon-dashboard-stat total">
+            <div class="recon-dashboard-stat-label">TOTAL</div>
+            <div class="recon-dashboard-stat-number" id="reconPaymentTotalNoInet">0</div>
+            <div class="recon-dashboard-stat-detail">Semua No Inet · HSS <strong id="reconPaymentTotalHss">0</strong></div>
+          </div>
         </div>
       </div>
 
@@ -1984,22 +1989,6 @@ body { background: var(--bg-deep); }
         </div>
       </div>
 
-      <div class="glass-card recon-dashboard-card">
-        <div class="recon-dashboard-section-title">Detail · TASK PAYMENT × STATUS PAYMENT</div>
-        <div class="recon-dashboard-table-wrap">
-          <table class="recon-dashboard-table">
-            <thead>
-              <tr>
-                <th>Task Payment</th>
-                <th>Done</th>
-                <th>Not Yet</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody id="reconDashboardDetailBody"></tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
     <div id="screen-reconciliationCheck" class="screen">
@@ -3898,34 +3887,13 @@ function _renderReconciliationDashboard(res) {
   _reconDashboardSet('reconPaymentDoneHss', _reconDashboardFmt(res.statusPayment.done.hss));
   _reconDashboardSet('reconPaymentNotYetNoInet', _reconDashboardFmt(res.statusPayment.notYet.noInet));
   _reconDashboardSet('reconPaymentNotYetHss', _reconDashboardFmt(res.statusPayment.notYet.hss));
+  _reconDashboardSet('reconPaymentTotalNoInet', _reconDashboardFmt(res.taskPayment.total.noInet));
+  _reconDashboardSet('reconPaymentTotalHss', _reconDashboardFmt(res.taskPayment.total.hss));
 
   _reconDashboardStat(res.taskPayment.pending, 'reconTaskPendingNoInet', 'reconTaskPendingHss');
   _reconDashboardStat(res.taskPayment.process, 'reconTaskProcessNoInet', 'reconTaskProcessHss');
   _reconDashboardStat(res.taskPayment.success, 'reconTaskSuccessNoInet', 'reconTaskSuccessHss');
   _reconDashboardStat(res.taskPayment.total, 'reconTaskTotalNoInet', 'reconTaskTotalHss');
-
-  const d = res.detail || {};
-  const rows = [
-    ['PENDING', d.pending],
-    ['PROCESS', d.process],
-    ['SUCCESS', d.success]
-  ];
-  const body = document.getElementById('reconDashboardDetailBody');
-  if (body) {
-    body.innerHTML = rows.map(function(row) {
-      const pair = row[1] || {};
-      const done = pair.done || {noInet:0,hss:0};
-      const notYet = pair.notYet || {noInet:0,hss:0};
-      const total = {
-        noInet: Number(done.noInet || 0) + Number(notYet.noInet || 0),
-        hss: Number(done.hss || 0) + Number(notYet.hss || 0)
-      };
-      return '<tr><td><strong>' + row[0] + '</strong></td>' +
-        '<td>' + _reconDashboardDetailCell(done) + '</td>' +
-        '<td>' + _reconDashboardDetailCell(notYet) + '</td>' +
-        '<td>' + _reconDashboardDetailCell(total) + '</td></tr>';
-    }).join('');
-  }
 
   const updated = document.getElementById('reconDashboardUpdated');
   if (updated) {
