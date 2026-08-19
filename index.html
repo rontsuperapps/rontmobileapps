@@ -1687,10 +1687,36 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
   border-radius:999px !important; font-weight:800 !important; letter-spacing:.15px;
 }
 
-/* --- quick access tile: sentuhan hover/press halus --- */
+/* --- quick access tile: proporsi lebih seimbang dgn header/bottom-nav --- */
 .app-shell .quick-tile { transition:transform .12s ease, opacity .15s ease; }
 .app-shell .quick-tile:active { transform:scale(.94); }
-.app-shell .quick-access-grid .quick-tile .qt-icon { box-shadow:0 4px 10px -4px rgba(17,24,39,.18); }
+.app-shell .quick-access-grid { row-gap:14px !important; }
+.app-shell .quick-access-grid .quick-tile { min-height:82px !important; padding:6px 2px !important; gap:8px !important; }
+.app-shell .quick-access-grid .quick-tile .qt-icon {
+  width:48px !important; height:48px !important; border-radius:14px !important;
+  box-shadow:0 4px 10px -4px rgba(17,24,39,.18);
+}
+.app-shell .quick-access-grid .quick-tile .qt-icon i[class*="ic-"] {
+  width:21px !important; height:21px !important; min-width:21px !important; min-height:21px !important;
+  line-height:21px !important; font-size:21px !important;
+}
+.app-shell .quick-access-grid .quick-tile .qt-label { font-size:11px !important; font-weight:700 !important; min-height:0 !important; }
+@media (max-width:360px) {
+  .app-shell .quick-access-grid .quick-tile .qt-icon { width:44px !important; height:44px !important; }
+  .app-shell .quick-access-grid .quick-tile .qt-icon i[class*="ic-"] { width:19px !important; height:19px !important; line-height:19px !important; font-size:19px !important; }
+  .app-shell .quick-access-grid .quick-tile .qt-label { font-size:10.5px !important; }
+}
+
+/* --- list item (Reconciliation/Presensi/Request/Setting): ikon lebih tegas --- */
+.app-shell .recon-list-icon,
+.app-shell .presensi-home-icon {
+  width:44px !important; height:44px !important; border-radius:13px !important;
+}
+.app-shell .recon-list-title { font-size:14.5px !important; }
+.app-shell .recon-list-sub { font-size:11.5px !important; }
+.app-shell .setting-menu-item .menu-icon-wrap { width:44px !important; height:44px !important; border-radius:13px !important; font-size:18px !important; }
+.app-shell .setting-menu-item .menu-item-title { font-size:14.5px !important; }
+.app-shell .setting-menu-item .menu-item-sub { font-size:11.5px !important; }
 
 /* --- bottom nav: indikator aktif lebih jelas, tetap kompak --- */
 .app-shell .bottom-nav {
