@@ -2606,6 +2606,74 @@ th,td{
 }
 </style>
 
+
+<style id="v32-scan-nav-consistency">
+/* V32 — Scan SN follows the exact visual grammar of the other bottom-nav items.
+   No special blue tile; the navbar itself is the blue container. */
+.app-shell .bottom-nav .nav-btn-scan{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:2px !important;
+  color:#fff !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border-radius:9px !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan .scan-sn-icon{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  max-width:17px !important;
+  max-height:17px !important;
+  flex:0 0 17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  color:#fff !important;
+  opacity:1 !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan .scan-sn-icon svg{
+  display:block !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  max-width:17px !important;
+  max-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  color:#fff !important;
+  stroke:currentColor !important;
+  opacity:1 !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan > span:last-child{
+  color:#fff !important;
+  font-size:7.8px !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* Active state uses the same treatment as the other nav buttons. */
+.app-shell .bottom-nav .nav-btn-scan.active,
+.app-shell .bottom-nav .nav-btn-scan[aria-current="page"]{
+  background:rgba(255,255,255,.12) !important;
+}
+</style>
+
 </head>
 <body>
 
