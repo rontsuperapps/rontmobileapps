@@ -2782,6 +2782,224 @@ th,td{
 }
 </style>
 
+
+<style id="v37-logout-shadow-clean">
+/* V37 — Logout button: keep danger color, remove red glow only. */
+.btn-primary.btn-danger{
+  box-shadow:none !important;
+}
+</style>
+
+
+<style id="v38-semantic-button-system">
+/* =========================================================
+   V38 — GLOBAL SEMANTIC BUTTON COLOR SYSTEM
+   Visual-only layer. Existing onclick/functions are untouched.
+   Priority: danger > success > warning > info > export > primary > neutral.
+========================================================= */
+
+:root{
+  --btn-primary:#2563eb;
+  --btn-primary-hover:#1d4ed8;
+  --btn-success:#16a34a;
+  --btn-success-hover:#15803d;
+  --btn-warning:#d97706;
+  --btn-warning-hover:#b45309;
+  --btn-danger:#dc2626;
+  --btn-danger-hover:#b91c1c;
+  --btn-info:#7c3aed;
+  --btn-info-hover:#6d28d9;
+  --btn-export:#0f766e;
+  --btn-export-hover:#0d6259;
+  --btn-neutral:#64748b;
+  --btn-neutral-hover:#475569;
+}
+
+/* Base: preserve existing sizing/layout, standardize only color semantics. */
+button.btn-primary,
+button.btn-outline,
+button[class*="btn-"]{
+  transition:
+    background-color .15s ease,
+    border-color .15s ease,
+    color .15s ease,
+    box-shadow .15s ease,
+    transform .08s ease !important;
+}
+
+/* ---------- PRIMARY / MAIN ACTION ---------- */
+button.btn-primary:not(.btn-danger):not(.btn-success):not(.btn-warning):not(.btn-info):not(.btn-export),
+button.btn-main,
+button.btn-action,
+button[data-action="primary"]{
+  background:var(--btn-primary) !important;
+  border-color:var(--btn-primary) !important;
+  color:#fff !important;
+}
+
+button.btn-primary:not(.btn-danger):not(.btn-success):not(.btn-warning):not(.btn-info):not(.btn-export):hover,
+button.btn-main:hover,
+button.btn-action:hover,
+button[data-action="primary"]:hover{
+  background:var(--btn-primary-hover) !important;
+  border-color:var(--btn-primary-hover) !important;
+}
+
+/* ---------- SUCCESS / SAVE / CONFIRM ---------- */
+button.btn-success,
+button[data-action="save"],
+button[data-action="success"],
+button.btn-save{
+  background:var(--btn-success) !important;
+  border-color:var(--btn-success) !important;
+  color:#fff !important;
+}
+
+button.btn-success:hover,
+button[data-action="save"]:hover,
+button[data-action="success"]:hover,
+button.btn-save:hover{
+  background:var(--btn-success-hover) !important;
+  border-color:var(--btn-success-hover) !important;
+}
+
+/* ---------- WARNING ---------- */
+button.btn-warning,
+button[data-action="warning"],
+button.btn-process,
+button.btn-manual{
+  background:var(--btn-warning) !important;
+  border-color:var(--btn-warning) !important;
+  color:#fff !important;
+}
+
+button.btn-warning:hover,
+button[data-action="warning"]:hover,
+button.btn-process:hover,
+button.btn-manual:hover{
+  background:var(--btn-warning-hover) !important;
+  border-color:var(--btn-warning-hover) !important;
+}
+
+/* ---------- DANGER ---------- */
+button.btn-danger,
+button[data-action="delete"],
+button[data-action="danger"],
+button.btn-delete,
+button.btn-logout{
+  background:var(--btn-danger) !important;
+  border-color:var(--btn-danger) !important;
+  color:#fff !important;
+  box-shadow:none !important;
+}
+
+button.btn-danger:hover,
+button[data-action="delete"]:hover,
+button[data-action="danger"]:hover,
+button.btn-delete:hover,
+button.btn-logout:hover{
+  background:var(--btn-danger-hover) !important;
+  border-color:var(--btn-danger-hover) !important;
+}
+
+/* ---------- INFO / VIEW / DETAIL ---------- */
+button.btn-info,
+button[data-action="view"],
+button[data-action="detail"],
+button.btn-view,
+button.btn-detail{
+  background:var(--btn-info) !important;
+  border-color:var(--btn-info) !important;
+  color:#fff !important;
+}
+
+button.btn-info:hover,
+button[data-action="view"]:hover,
+button[data-action="detail"]:hover,
+button.btn-view:hover,
+button.btn-detail:hover{
+  background:var(--btn-info-hover) !important;
+  border-color:var(--btn-info-hover) !important;
+}
+
+/* ---------- EXPORT / DOWNLOAD ---------- */
+button.btn-export,
+button[data-action="export"],
+button[data-action="download"],
+button.btn-download{
+  background:var(--btn-export) !important;
+  border-color:var(--btn-export) !important;
+  color:#fff !important;
+}
+
+button.btn-export:hover,
+button[data-action="export"]:hover,
+button[data-action="download"]:hover,
+button.btn-download:hover{
+  background:var(--btn-export-hover) !important;
+  border-color:var(--btn-export-hover) !important;
+}
+
+/* ---------- CANCEL / BACK / CLOSE ----------
+   Neutral outline so it never competes with the main action. */
+button.btn-cancel,
+button.btn-back,
+button.btn-close,
+button[data-action="cancel"],
+button[data-action="back"],
+button[data-action="close"]{
+  background:transparent !important;
+  border:1px solid var(--field-border) !important;
+  color:var(--text-muted) !important;
+  box-shadow:none !important;
+}
+
+button.btn-cancel:hover,
+button.btn-back:hover,
+button.btn-close:hover,
+button[data-action="cancel"]:hover,
+button[data-action="back"]:hover,
+button[data-action="close"]:hover{
+  background:rgba(148,163,184,.10) !important;
+  border-color:var(--neutral,#64748b) !important;
+  color:var(--text-white) !important;
+}
+
+/* ---------- ICON + LABEL CONSISTENCY ----------
+   Never allow button icons to inherit positioning from field icons. */
+button[class*="btn-"] > i,
+button[class*="btn-"] > svg,
+button[class*="btn-"] > span > i,
+button[class*="btn-"] > span > svg{
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  margin:0 !important;
+  flex:0 0 auto !important;
+}
+
+button[class*="btn-"]{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+}
+
+/* Keep the compact height already established by V28. */
+button[class*="btn-"]{
+  min-height:40px !important;
+}
+
+/* Mobile: preserve readability without making buttons oversized. */
+@media (max-width:430px){
+  button[class*="btn-"]{
+    min-height:38px !important;
+    height:38px !important;
+    gap:6px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
