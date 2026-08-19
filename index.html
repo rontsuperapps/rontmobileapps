@@ -632,6 +632,53 @@ body { position:relative; overscroll-behavior:none; }
 .recon-list-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
 .recon-list-chevron { color:var(--text-muted); font-size:13px; flex-shrink:0; transform:rotate(180deg); opacity:.55; }
 
+.recon-parameter-card { padding:14px 14px 16px; }
+.recon-parameter-title { font-size:13px; font-weight:800; margin-bottom:5px; }
+.recon-parameter-sub { font-size:11px; color:var(--text-muted); line-height:1.5; margin-bottom:12px; }
+.recon-parameter-textarea {
+  width:100%; box-sizing:border-box; min-height:112px; resize:vertical;
+  border:1px solid var(--field-border); background:var(--field-bg); color:var(--text-white);
+  border-radius:12px; padding:12px 13px; font-family:'Inter',sans-serif; font-size:13px;
+  outline:none; line-height:1.55;
+}
+.recon-parameter-textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+.recon-parameter-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+.recon-parameter-meta {
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  margin:14px 0 8px; font-size:11px; color:var(--text-muted);
+}
+.recon-parameter-meta strong { color:var(--text); }
+.recon-parameter-table-wrap {
+  width:100%; overflow:auto; border:1px solid var(--border); border-radius:12px;
+  background:var(--surface); -webkit-overflow-scrolling:touch;
+}
+.recon-parameter-table {
+  width:100%; min-width:940px; border-collapse:collapse; table-layout:fixed; font-size:10.5px;
+}
+.recon-parameter-table th,
+.recon-parameter-table td {
+  border:1px solid var(--border); padding:7px 7px; text-align:left; vertical-align:middle;
+  color:var(--text); white-space:normal; word-break:break-word;
+}
+.recon-parameter-table th {
+  background:var(--surface-soft); color:var(--text); font-size:9.5px; font-weight:800;
+  text-transform:uppercase; letter-spacing:.1px; position:sticky; top:0; z-index:1;
+}
+.recon-parameter-table td:first-child,
+.recon-parameter-table th:first-child { text-align:center; width:34px; }
+.recon-parameter-table .rp-not-found td { background:var(--error-soft); }
+.recon-parameter-table .rp-empty { color:var(--text-muted); }
+.recon-parameter-badge {
+  display:inline-flex; align-items:center; justify-content:center; padding:4px 7px;
+  border-radius:999px; font-size:9px; font-weight:800; white-space:nowrap;
+}
+.recon-parameter-badge.found { background:var(--success-soft); color:var(--success); }
+.recon-parameter-badge.not-found { background:var(--error-soft); color:var(--error); }
+@media (max-width:380px) {
+  .recon-parameter-actions { grid-template-columns:1fr; }
+  .recon-parameter-table { font-size:10px; }
+}
+
 /* ================================================================
    BOTTOM NAV - BRAND BLUE
 ================================================================ */
@@ -1835,11 +1882,54 @@ body { background: var(--bg-deep); }
     </div>
 
     <div id="screen-reconciliationParameter" class="screen">
-      <div class="glass-card">
-        <div class="coming-soon-wrap">
-          <div class="coming-soon-icon"><i class="ic-settings"></i></div>
-          <div class="coming-soon-title">Check Parameter</div>
-          <div class="coming-soon-text">Check Parameter siap digunakan untuk pemeriksaan parameter reconciliation.</div>
+      <div class="glass-card recon-parameter-card">
+        <div class="recon-parameter-title">Check Massal No Inet</div>
+        <div class="recon-parameter-sub">
+          Masukkan beberapa No Inet sekaligus. Bisa satu No Inet per baris, atau dipisahkan dengan koma / titik koma.
+        </div>
+
+        <textarea id="checkParameterNoInets"
+          class="recon-parameter-textarea"
+          placeholder="Contoh:
+26080015
+26080016
+26080017"></textarea>
+
+        <div class="recon-parameter-actions">
+          <button type="button" class="btn-outline" id="btnCheckParameterReset" onclick="resetCheckParameterForm()">
+            <i class="ic-close"></i><span>Batal</span>
+          </button>
+          <button type="button" class="btn-primary" id="btnCheckParameter" onclick="handleCheckParameter()">
+            <span class="btn-inner"><i class="ic-search"></i><span id="checkParameterBtnText">Check Massal</span><span class="btn-spinner" id="checkParameterSpinner"></span></span>
+          </button>
+        </div>
+      </div>
+
+      <div id="checkParameterResultCard" class="glass-card" style="display:none; padding:14px;">
+        <div class="recon-parameter-meta">
+          <div>Hasil pemeriksaan: <strong id="checkParameterTotal">0</strong></div>
+          <div id="checkParameterFoundSummary">Ditemukan 0 · Tidak ditemukan 0</div>
+        </div>
+
+        <div class="recon-parameter-table-wrap">
+          <table class="recon-parameter-table">
+            <thead>
+              <tr>
+                <th>NO</th>
+                <th>NO INET</th>
+                <th>STATUS TACTICAL</th>
+                <th>STATUS</th>
+                <th>NIK</th>
+                <th>TICKET</th>
+                <th>SN OLD</th>
+                <th>SN NEW</th>
+                <th>RESULT</th>
+                <th>STATUS PARAMETER</th>
+                <th>KET PARAMETER</th>
+              </tr>
+            </thead>
+            <tbody id="checkParameterTableBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -3626,6 +3716,94 @@ function resetJustifikasiForm() {
 /* ============================================================
  *  RECONCILIATION HUB + LIHAT JUSTIFIKASI (riwayat)
  * ============================================================ */
+
+/* ============================================================
+ *  RECONCILIATION > CHECK PARAMETER
+ * ============================================================ */
+function resetCheckParameterForm() {
+  const input = document.getElementById('checkParameterNoInets');
+  const card = document.getElementById('checkParameterResultCard');
+  const body = document.getElementById('checkParameterTableBody');
+  if (input) input.value = '';
+  if (body) body.innerHTML = '';
+  if (card) card.style.display = 'none';
+  const total = document.getElementById('checkParameterTotal');
+  const summary = document.getElementById('checkParameterFoundSummary');
+  if (total) total.textContent = '0';
+  if (summary) summary.textContent = 'Ditemukan 0 · Tidak ditemukan 0';
+}
+
+function _checkParameterCell(value) {
+  const v = String(value == null ? '' : value);
+  return v ? _escHtml(v) : '<span class="rp-empty">-</span>';
+}
+
+function _renderCheckParameterResult(res) {
+  const card = document.getElementById('checkParameterResultCard');
+  const body = document.getElementById('checkParameterTableBody');
+  const total = document.getElementById('checkParameterTotal');
+  const summary = document.getElementById('checkParameterFoundSummary');
+
+  if (!card || !body) return;
+
+  const items = (res && Array.isArray(res.items)) ? res.items : [];
+  body.innerHTML = items.map(function (it) {
+    const notFoundClass = it.found ? '' : ' class="rp-not-found"';
+    const badge = it.found
+      ? '<span class="recon-parameter-badge found">FOUND</span>'
+      : '<span class="recon-parameter-badge not-found">NOT FOUND</span>';
+
+    return '<tr' + notFoundClass + '>' +
+      '<td>' + _checkParameterCell(it.no) + '</td>' +
+      '<td><strong>' + _checkParameterCell(it.noInet) + '</strong></td>' +
+      '<td>' + _checkParameterCell(it.statusTactical) + '</td>' +
+      '<td>' + _checkParameterCell(it.status) + '</td>' +
+      '<td>' + _checkParameterCell(it.nik) + '</td>' +
+      '<td>' + _checkParameterCell(it.ticket) + '</td>' +
+      '<td>' + _checkParameterCell(it.snOld) + '</td>' +
+      '<td>' + _checkParameterCell(it.snNew) + '</td>' +
+      '<td>' + _checkParameterCell(it.result) + '</td>' +
+      '<td>' + _checkParameterCell(it.statusParameter) + '</td>' +
+      '<td>' + (it.found ? _checkParameterCell(it.ketParameter) : badge) + '</td>' +
+      '</tr>';
+  }).join('');
+
+  total.textContent = String(res.total || items.length);
+  summary.textContent = 'Ditemukan ' + String(res.found || 0) +
+    ' · Tidak ditemukan ' + String(res.notFound || 0);
+  card.style.display = 'block';
+}
+
+function handleCheckParameter() {
+  const input = document.getElementById('checkParameterNoInets');
+  const raw = input ? input.value.trim() : '';
+
+  if (!raw) {
+    showToast('error', 'Masukkan minimal 1 No Inet.');
+    return;
+  }
+
+  setLoading('btnCheckParameter', 'checkParameterSpinner', 'checkParameterBtnText', 'Memeriksa...');
+
+  apiGet({
+    action: 'checkParameterMassal',
+    noInets: raw,
+    _t: Date.now()
+  }).then(function (res) {
+    if (!res || !res.success) {
+      showToast('error', (res && res.message) || 'Gagal memeriksa parameter.');
+      return;
+    }
+
+    _renderCheckParameterResult(res);
+    showToast('success', 'Pemeriksaan selesai. ' + res.total + ' No Inet diproses.');
+  }).catch(function (err) {
+    showToast('error', 'Gagal memeriksa parameter: ' + err.message);
+  }).finally(function () {
+    resetLoading('btnCheckParameter', 'checkParameterSpinner', 'checkParameterBtnText', 'Check Massal');
+  });
+}
+
 
 const JUST_JENIS_BADGE_CLASS = { 'Uang Masuk': 'sc-close', 'Uang Keluar': 'sc-unpicked' };
 
