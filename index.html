@@ -1426,599 +1426,119 @@ body { background: var(--bg-deep); }
 }
 </style>
 
-<style id="v19-ui-system">
-/* ================================================================
-   V19 — GLOBAL MOBILE UI SYSTEM
-   Compact, responsive, consistent typography, controls and actions.
-   Logic intentionally untouched.
-================================================================ */
-
-/* ---------- Typography ---------- */
-html, body,
-button, input, select, textarea,
-table, th, td,
-.card, .glass-card, .panel,
-.field-label, .field-input, .field-select,
-.btn, .btn-primary, .btn-outline,
-.menu-item-title, .menu-item-sub,
-.quick-tile, .qt-label,
-.bottom-nav, .nav-btn {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-}
-
-body {
-  font-size: 14px;
-  line-height: 1.4;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-.screen-title {
-  font-size: 18px !important;
-  line-height: 1.25 !important;
-  margin-bottom: 12px !important;
-  letter-spacing: -0.2px !important;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-  letter-spacing: -0.15px;
-}
-
-/* ---------- Shell / spacing ---------- */
-.app-shell,
-.app-header {
-  max-width: 480px;
-}
-
-.app-main {
-  padding: 72px 12px 78px !important;
-}
-
-.glass-card {
-  border-radius: 15px !important;
-  padding: 14px !important;
-  margin-bottom: 9px !important;
-  box-shadow: 0 2px 8px -5px var(--shadow-soft) !important;
-}
-
-.glass-card > *:last-child {
-  margin-bottom: 0;
-}
-
-/* ---------- Forms ---------- */
-.field-wrap {
-  margin-bottom: 10px !important;
-}
-
-.field-label {
-  font-size: 12px !important;
-  line-height: 1.25 !important;
-  margin-bottom: 5px !important;
-}
-
-.field-input,
-.field-select {
-  min-height: 42px !important;
-  height: 42px;
-  border-radius: 10px !important;
-  font-size: 14px !important;
-  padding-top: 9px !important;
-  padding-bottom: 9px !important;
-}
-
-.field-icon {
-  left: 12px !important;
-  font-size: 14px !important;
-}
-
-.field-input.has-scan {
-  padding-right: 40px !important;
-}
-
-textarea.field-input,
-textarea {
-  height: auto;
-  min-height: 88px !important;
-  line-height: 1.4;
-}
-
-.view-only-box {
-  min-height: 42px;
-  border-radius: 10px !important;
-  padding: 9px 12px !important;
-}
-
-.voi-label {
-  font-size: 11px !important;
-  margin-bottom: 3px !important;
-}
-
-.voi-value {
-  font-size: 14px !important;
-  line-height: 1.35 !important;
-}
-
-/* ---------- Buttons: one consistent touch target ---------- */
-button,
-.btn,
-.btn-primary,
-.btn-outline,
-input[type="button"],
-input[type="submit"],
-input[type="reset"] {
-  min-height: 42px !important;
-  height: 42px;
-  border-radius: 10px !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-  font-size: 13.5px !important;
-  font-weight: 700;
-  line-height: 1 !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  box-sizing: border-box;
-}
-
-button i[class*="ic-"],
-.btn i[class*="ic-"],
-button .icon,
-.btn .icon,
-button svg,
-.btn svg {
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
-  flex: 0 0 16px;
-}
-
-.btn-inner {
-  min-height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-
-/* Functional color hierarchy */
-.btn-primary {
-  background: var(--accent) !important;
-  color: #fff !important;
-  border: 1px solid var(--accent) !important;
-  box-shadow: 0 5px 12px -8px rgba(21,94,239,.65);
-}
-
-.btn-outline {
-  background: var(--glass-bg) !important;
-  color: var(--accent) !important;
-  border: 1px solid var(--field-border) !important;
-  box-shadow: none !important;
-}
-
-.btn-danger,
-.btn-delete {
-  background: var(--error) !important;
-  color: #fff !important;
-  border-color: var(--error) !important;
-}
-
-.btn-success {
-  background: var(--success) !important;
-  color: #fff !important;
-  border-color: var(--success) !important;
-}
-
-/* Disabled remains readable */
-button:disabled,
-.btn:disabled {
-  opacity: .55 !important;
-}
-
-/* ---------- Quick menu ---------- */
-.quick-access-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 5px 4px !important;
-}
-
-.quick-access-grid .quick-tile {
-  min-height: 70px !important;
-  padding: 7px 2px 6px !important;
-  border-radius: 11px !important;
-}
-
-.quick-access-grid .quick-tile .qt-icon {
-  width: 36px !important;
-  height: 36px !important;
-  border-radius: 10px !important;
-  font-size: 15px !important;
-}
-
-.quick-access-grid .quick-tile .qt-label {
-  font-size: 9px !important;
-  line-height: 1.15 !important;
-  min-height: 21px !important;
-}
-
-/* ---------- Header ---------- */
-.app-header {
-  padding: calc(11px + env(safe-area-inset-top)) 13px 13px !important;
-  border-radius: 0 0 16px 16px !important;
-}
-
-.header-icon {
-  width: 34px !important;
-  height: 34px !important;
-  border-radius: 10px !important;
-}
-
-.header-text .brand-title {
-  font-size: 14px !important;
-}
-
-.header-text .brand-sub {
-  font-size: 10px !important;
-}
-
-.header-actions {
-  gap: 6px !important;
-}
-
-.theme-toggle {
-  width: 34px !important;
-  height: 34px !important;
-  border-radius: 9px !important;
-}
-
-/* ---------- Bottom navigation ---------- */
-.bottom-nav {
-  min-height: 64px !important;
-  padding: 5px 2px calc(5px + env(safe-area-inset-bottom)) !important;
-}
-
-.bottom-nav .nav-btn {
-  min-height: 52px !important;
-  height: 52px !important;
-  padding: 5px 0 2px !important;
-  gap: 3px !important;
-  font-size: 9px !important;
-}
-
-.bottom-nav .nav-btn i {
-  font-size: 19px !important;
-}
-
-.bottom-nav .nav-btn span {
-  font-size: 8.5px !important;
-}
-
-/* ---------- Tables / reconciliation ---------- */
-.table-wrap,
-.table-responsive,
-.recon-pivot-wrap {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto !important;
-  -webkit-overflow-scrolling: touch;
-  border-radius: 10px;
-}
-
-table {
-  font-size: 12px !important;
-}
-
-th, td {
-  padding: 7px 8px !important;
-  line-height: 1.3 !important;
-}
-
-.recon-dashboard-card {
-  border-radius: 15px !important;
-  padding: 14px !important;
-}
-
-.recon-dashboard-head-actions {
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 6px !important;
-}
-
-.recon-dashboard-head-actions button,
-.recon-dashboard-head-actions .btn {
-  width: 44px;
-  min-width: 44px !important;
-  padding: 0 10px !important;
-}
-
-.recon-dashboard-head-actions .recon-export-btn,
-.recon-dashboard-head-actions [data-action="export"] {
-  width: auto;
-  min-width: 86px !important;
-}
-
-/* ---------- Cards/stat blocks ---------- */
-.stat-card,
-.recon-dashboard-stat,
-.presensi-summary-card {
-  border-radius: 13px !important;
-}
-
-.stat-number,
-.recon-dashboard-stat-number,
-.presensi-summary-number {
-  line-height: 1.05 !important;
-}
-
-/* ---------- Mobile breakpoints ---------- */
-@media (max-width: 480px) {
-  .app-main {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-  }
-
-  .glass-card {
-    padding: 12px !important;
-    border-radius: 14px !important;
-  }
-
-  .modal-actions {
-    gap: 7px !important;
-  }
-
-  .modal-actions .btn-outline,
-  .modal-actions .btn-primary {
-    min-height: 42px !important;
-    height: 42px !important;
-    padding: 0 10px !important;
-  }
-
-  .recon-dashboard-head-actions {
-    gap: 5px !important;
-  }
-}
-
-@media (max-width: 380px) {
-  .app-main {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-  }
-
-  .glass-card {
-    padding: 11px !important;
-  }
-
-  .quick-access-grid {
-    gap: 4px 2px !important;
-  }
-
-  .quick-access-grid .quick-tile {
-    min-height: 67px !important;
-  }
-
-  .quick-access-grid .quick-tile .qt-icon {
-    width: 34px !important;
-    height: 34px !important;
-  }
-
-  .btn-primary,
-  .btn-outline {
-    font-size: 13px !important;
-  }
-}
-
-/* ---------- Desktop/tablet: don't over-expand the mobile app ---------- */
-@media (min-width: 481px) {
-  .app-main {
-    padding-left: 14px !important;
-    padding-right: 14px !important;
-  }
-}
-</style>
-
-
-<style id="v20-compact-modern">
-/* =========================================================
-   V20 — COMPACT MODERN MOBILE REDESIGN
-   UI-only. JavaScript/business logic intentionally untouched.
-========================================================= */
+<style id="v21-compact-modern-system">
+/* V21: single coherent UI layer. Keep business logic untouched. */
 :root{
-  --v20-control-h: 38px;
-  --v20-radius: 9px;
-  --v20-gap: 8px;
+  --ui-control:38px;
+  --ui-radius:9px;
+  --ui-space:8px;
 }
 
 /* Typography */
-body,
-button,input,select,textarea,table,th,td{
+html,body,button,input,select,textarea,table,th,td{
   font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
 }
 body{font-size:13px;line-height:1.35;}
-h1,h2,h3,h4,h5,h6{letter-spacing:-.2px;}
+.screen-title{font-size:17px !important;line-height:1.2 !important;margin:0 0 9px !important;}
 
-/* App shell */
-.app-main{
-  padding:68px 9px 70px !important;
-}
-.glass-card{
-  padding:11px !important;
-  margin-bottom:7px !important;
-  border-radius:13px !important;
-}
-.screen-title{
-  font-size:17px !important;
-  margin:0 0 8px !important;
-}
+/* Main shell */
+.app-main{padding:68px 10px 70px !important;}
+.glass-card{padding:11px !important;margin-bottom:7px !important;border-radius:13px !important;}
 
 /* Header */
-.app-header{
-  padding:8px 10px 9px !important;
-  border-radius:0 0 14px 14px !important;
-}
-.header-icon,.theme-toggle{
-  width:32px !important;
-  height:32px !important;
-  min-height:32px !important;
-  border-radius:9px !important;
-}
+.app-header{padding:8px 10px 9px !important;border-radius:0 0 14px 14px !important;}
+.header-icon,.theme-toggle{width:32px !important;height:32px !important;min-height:32px !important;border-radius:9px !important;}
 .header-text .brand-title{font-size:13.5px !important;}
 .header-text .brand-sub{font-size:9px !important;}
 
-/* Forms */
+/* Form controls */
 .field-wrap{margin-bottom:8px !important;}
-.field-label{
-  font-size:11.5px !important;
-  margin-bottom:4px !important;
+.field-label{font-size:11px !important;line-height:1.2 !important;margin-bottom:4px !important;}
+.field-input,.field-select{
+  min-height:38px !important;height:38px !important;
+  padding:7px 10px !important;border-radius:9px !important;font-size:13px !important;
 }
-.field-input,.field-select,.view-only-box{
-  min-height:38px !important;
-  height:38px !important;
-  padding:7px 10px !important;
+.field-select{padding-right:32px !important;background-position:right 10px center !important;background-size:14px !important;}
+textarea.field-input,textarea{height:auto !important;min-height:76px !important;line-height:1.35 !important;}
+.view-only-box{min-height:38px !important;height:auto !important;padding:8px 10px !important;border-radius:9px !important;}
+.voi-label{font-size:9.5px !important;margin-bottom:2px !important;}
+.voi-value{font-size:13px !important;line-height:1.3 !important;}
+
+/* One button standard across the whole app */
+button,.btn,input[type=button],input[type=submit],input[type=reset]{
+  box-sizing:border-box !important;
+  min-height:38px !important;height:38px !important;
+  padding:0 11px !important;
   border-radius:9px !important;
-  font-size:13px !important;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+  font-size:12px !important;font-weight:700 !important;line-height:1 !important;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
 }
-.view-only-box{height:auto !important;min-height:38px !important;}
-.voi-label{font-size:10px !important;}
-.voi-value{font-size:13px !important;}
-textarea.field-input,textarea{
-  min-height:76px !important;
-  height:auto !important;
+button i[class*="ic-"],.btn i[class*="ic-"],button svg,.btn svg{
+  width:14px !important;height:14px !important;font-size:14px !important;
+  flex:0 0 14px !important;
 }
+.modal-actions{display:flex !important;gap:6px !important;}
+.modal-actions .btn-outline,.modal-actions .btn-primary{flex:1 1 0 !important;padding:0 8px !important;margin:0 !important;}
 
-/* Buttons — deliberately smaller than V19 */
-button,
-.btn,
-.btn-primary,
-.btn-outline,
-input[type=button],
-input[type=submit],
-input[type=reset]{
-  min-height:var(--v20-control-h) !important;
-  height:var(--v20-control-h) !important;
-  padding:0 12px !important;
-  border-radius:9px !important;
-  font-size:12.5px !important;
-  font-weight:700 !important;
-  line-height:1 !important;
-  gap:6px !important;
-  box-shadow:none !important;
-}
-button svg,.btn svg,
-button i[class*="ic-"],.btn i[class*="ic-"],
-button .icon,.btn .icon{
-  width:15px !important;
-  height:15px !important;
-  font-size:15px !important;
-  flex:0 0 15px !important;
-}
-.modal-actions{gap:6px !important;}
+/* Semantic colors */
+.btn-primary{background:var(--accent) !important;color:#fff !important;border-color:var(--accent) !important;box-shadow:none !important;}
+.btn-outline{background:transparent !important;color:var(--accent) !important;border:1px solid var(--field-border) !important;box-shadow:none !important;}
+.btn-primary.btn-danger,.btn-danger,.btn-delete{background:var(--error) !important;color:#fff !important;border-color:var(--error) !important;}
+.btn-primary.btn-ready,.btn-success{background:var(--success) !important;color:#fff !important;border-color:var(--success) !important;}
+button:disabled,.btn:disabled{opacity:.5 !important;}
 
-/* Make paired action buttons balanced */
-.modal-actions > button,
-.modal-actions > .btn{
-  flex:1 1 0;
-  min-width:0;
-}
+/* Quick menu */
+.quick-access-grid{grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:4px !important;}
+.quick-access-grid .quick-tile{min-height:61px !important;padding:5px 1px !important;border-radius:9px !important;}
+.quick-access-grid .quick-tile .qt-icon{width:30px !important;height:30px !important;border-radius:8px !important;font-size:13px !important;}
+.quick-access-grid .quick-tile .qt-label{font-size:8px !important;line-height:1.1 !important;min-height:17px !important;}
 
-/* Compact quick menu */
-.quick-access-grid{
-  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
-  gap:4px 3px !important;
-}
-.quick-access-grid .quick-tile{
-  min-height:61px !important;
-  padding:5px 1px !important;
-  border-radius:9px !important;
-}
-.quick-access-grid .quick-tile .qt-icon{
-  width:30px !important;
-  height:30px !important;
-  border-radius:8px !important;
-  font-size:13px !important;
-}
-.quick-access-grid .quick-tile .qt-label{
-  font-size:8px !important;
-  line-height:1.1 !important;
-  min-height:18px !important;
-}
-
-/* Compact status/stat cards */
-.stat-card,.recon-dashboard-stat,.presensi-summary-card{
-  padding:10px !important;
-  border-radius:11px !important;
-}
-.stat-number,.recon-dashboard-stat-number,.presensi-summary-number{
-  font-size:22px !important;
-}
-
-/* Chips/badges */
-.badge,.status-badge,.chip{
-  min-height:22px !important;
-  padding:3px 8px !important;
-  border-radius:999px !important;
-  font-size:10px !important;
-}
+/* Lists/cards */
+.recon-list-item,.skeleton-order-item{min-height:54px !important;padding:8px !important;}
+.recon-list-icon{width:32px !important;height:32px !important;border-radius:8px !important;}
+.recon-list-title{font-size:12px !important;}
+.recon-list-sub{font-size:10px !important;}
 
 /* Tables */
-.table-wrap,.table-responsive,.recon-pivot-wrap{
-  border-radius:9px !important;
-}
+.table-wrap,.table-responsive,.recon-pivot-wrap{width:100%;max-width:100%;overflow-x:auto !important;-webkit-overflow-scrolling:touch;}
 table{font-size:11px !important;}
-th,td{
-  padding:6px 7px !important;
-  line-height:1.25 !important;
-}
+th,td{padding:6px 7px !important;line-height:1.25 !important;white-space:nowrap;}
 
-/* Dashboard reconciliation action row */
-.recon-dashboard-head-actions{
-  gap:5px !important;
+/* Reconciliation dashboard */
+.recon-dashboard-card{padding:11px !important;border-radius:13px !important;}
+.recon-dashboard-head{gap:8px !important;margin-bottom:9px !important;}
+.recon-dashboard-head-actions{display:flex !important;flex-direction:row !important;align-items:center !important;gap:5px !important;}
+.recon-dashboard-head-actions .recon-dashboard-refresh{
+  width:38px !important;min-width:38px !important;height:38px !important;min-height:38px !important;padding:0 !important;
 }
-.recon-dashboard-head-actions button,
-.recon-dashboard-head-actions .btn{
-  min-height:38px !important;
-  height:38px !important;
-  width:38px !important;
-  min-width:38px !important;
-  padding:0 8px !important;
+.recon-dashboard-head-actions .recon-dashboard-export{
+  width:auto !important;min-width:72px !important;height:38px !important;min-height:38px !important;
+  padding:0 9px !important;font-size:11px !important;
 }
-.recon-dashboard-head-actions .recon-export-btn,
-.recon-dashboard-head-actions [data-action=export]{
-  width:auto !important;
-  min-width:76px !important;
-  padding:0 10px !important;
-}
+.recon-dashboard-title{font-size:14px !important;}
+.recon-dashboard-sub{font-size:10px !important;line-height:1.25 !important;}
+.recon-dashboard-section-title{font-size:12px !important;}
 
-/* Bottom navigation */
-.bottom-nav{
-  min-height:58px !important;
-  padding:3px 1px calc(3px + env(safe-area-inset-bottom)) !important;
-}
-.bottom-nav .nav-btn{
-  min-height:48px !important;
-  height:48px !important;
-  padding:4px 0 1px !important;
-  gap:2px !important;
-}
+/* Badges */
+.badge,.status-badge,.chip{min-height:21px !important;padding:3px 7px !important;border-radius:999px !important;font-size:9.5px !important;}
+
+/* Bottom nav */
+.bottom-nav{min-height:58px !important;padding:3px 1px calc(3px + env(safe-area-inset-bottom)) !important;}
+.bottom-nav .nav-btn{min-height:48px !important;height:48px !important;padding:4px 0 1px !important;gap:2px !important;}
 .bottom-nav .nav-btn i{font-size:17px !important;}
 .bottom-nav .nav-btn span{font-size:7.5px !important;}
 
-/* Prevent long text from forcing cards wider */
-.glass-card,.field-wrap,.view-only-box,.quick-tile{
-  min-width:0;
-}
-.glass-card *{max-width:100%;}
-.voi-value,.field-input{overflow-wrap:anywhere;}
-
-/* Phone sizes */
-@media(max-width:380px){
-  .app-main{padding-left:7px !important;padding-right:7px !important;}
+/* Mobile */
+@media(max-width:480px){
+  .app-main{padding-left:8px !important;padding-right:8px !important;}
   .glass-card{padding:10px !important;}
-  button,.btn,.btn-primary,.btn-outline{
-    padding-left:10px !important;
-    padding-right:10px !important;
-    font-size:12px !important;
-  }
-  .quick-access-grid .quick-tile{min-height:58px !important;}
+}
+@media(max-width:380px){
+  .app-main{padding-left:6px !important;padding-right:6px !important;}
+  .glass-card{padding:9px !important;}
+  button,.btn{padding-left:9px !important;padding-right:9px !important;font-size:11.5px !important;}
+  .quick-access-grid{gap:3px !important;}
 }
 </style>
 
