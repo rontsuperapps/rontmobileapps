@@ -1749,6 +1749,32 @@ body { background: var(--bg-deep); }
     <!-- RECONCILIATION HUB -->
     <div id="screen-reconciliation" class="screen">
       <div class="glass-card" style="padding:6px 14px;">
+        <div class="recon-group-title">Reconciliation</div>
+        <div class="recon-list-item" onclick="goTo('reconciliationDashboard')">
+          <div class="recon-list-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-clipboard"></i></div>
+          <div class="recon-list-text">
+            <div class="recon-list-title">Dashboard Reconciliation</div>
+            <div class="recon-list-sub">Ringkasan dan monitoring reconciliation</div>
+          </div>
+          <i class="ic-arrow-left recon-list-chevron"></i>
+        </div>
+        <div class="recon-list-item" onclick="goTo('reconciliationCheck')">
+          <div class="recon-list-icon" style="background:var(--purple-soft); color:var(--accent-2);"><i class="ic-search"></i></div>
+          <div class="recon-list-text">
+            <div class="recon-list-title">Check Reconciliation</div>
+            <div class="recon-list-sub">Pemeriksaan data reconciliation</div>
+          </div>
+          <i class="ic-arrow-left recon-list-chevron"></i>
+        </div>
+        <div class="recon-list-item" onclick="goTo('reconciliationParameter')">
+          <div class="recon-list-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-settings"></i></div>
+          <div class="recon-list-text">
+            <div class="recon-list-title">Check Parameter</div>
+            <div class="recon-list-sub">Pemeriksaan parameter reconciliation</div>
+          </div>
+          <i class="ic-arrow-left recon-list-chevron"></i>
+        </div>
+
         <div class="recon-group-title">Claim</div>
         <div class="recon-list-item" onclick="goTo('claim')">
           <div class="recon-list-icon" style="background:var(--accent-soft); color:var(--accent);"><i class="ic-receipt"></i></div>
@@ -1783,6 +1809,37 @@ body { background: var(--bg-deep); }
             <div class="recon-list-sub">Riwayat justifikasi</div>
           </div>
           <i class="ic-arrow-left recon-list-chevron"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECONCILIATION SCREENS -->
+    <div id="screen-reconciliationDashboard" class="screen">
+      <div class="glass-card">
+        <div class="coming-soon-wrap">
+          <div class="coming-soon-icon"><i class="ic-clipboard"></i></div>
+          <div class="coming-soon-title">Dashboard Reconciliation</div>
+          <div class="coming-soon-text">Dashboard Reconciliation siap digunakan untuk menampilkan ringkasan dan monitoring reconciliation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-reconciliationCheck" class="screen">
+      <div class="glass-card">
+        <div class="coming-soon-wrap">
+          <div class="coming-soon-icon"><i class="ic-search"></i></div>
+          <div class="coming-soon-title">Check Reconciliation</div>
+          <div class="coming-soon-text">Check Reconciliation siap digunakan untuk pemeriksaan data reconciliation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-reconciliationParameter" class="screen">
+      <div class="glass-card">
+        <div class="coming-soon-wrap">
+          <div class="coming-soon-icon"><i class="ic-settings"></i></div>
+          <div class="coming-soon-title">Check Parameter</div>
+          <div class="coming-soon-text">Check Parameter siap digunakan untuk pemeriksaan parameter reconciliation.</div>
         </div>
       </div>
     </div>
@@ -2263,6 +2320,9 @@ const HEADER_CONFIG = {
   presensiInput:  { mode:'title', title:'Input Presensi', back:'presensi' },
   presensiHistory:{ mode:'title', title:'View Presensi', back:'presensi' },
   reconciliation: { mode:'title', title:'Reconciliation', back:'menu' },
+  reconciliationDashboard: { mode:'title', title:'Dashboard Reconciliation', back:'reconciliation' },
+  reconciliationCheck: { mode:'title', title:'Check Reconciliation', back:'reconciliation' },
+  reconciliationParameter: { mode:'title', title:'Check Parameter', back:'reconciliation' },
   justifikasi:    { mode:'title', title:'Input Justifikasi', back:'reconciliation' },
   justifikasiHistory: { mode:'title', title:'View Justifikasi', back:'reconciliation' },
   claim:          { mode:'title', title:'Input Claim', back:'reconciliation' },
@@ -2628,7 +2688,7 @@ function handleDarkModeSwitch() {
 const PRESENSI_SCREENS = ['presensi', 'presensiInput', 'presensiHistory'];
 const ORDER_SCREENS = ['orderDashboard', 'orderDetail', 'orderUpdate'];
 const SETTING_SCREENS = ['akun', 'ubahProfil', 'ubahPassword', 'modeTampilan'];
-const RECON_SCREENS = ['reconciliation', 'claim', 'claimHistory', 'justifikasi', 'justifikasiHistory'];
+const RECON_SCREENS = ['reconciliation', 'reconciliationDashboard', 'reconciliationCheck', 'reconciliationParameter', 'claim', 'claimHistory', 'justifikasi', 'justifikasiHistory'];
 const REQUEST_SCREENS = ['request', 'requestConfig', 'requestTicket'];
 
 function goTo(screen) {
