@@ -2718,6 +2718,45 @@ th,td{
 }
 </style>
 
+
+<style id="v34-scan-inactive-state">
+/* V34 — Scan SN is NOT an active screen by itself.
+   Its inactive color must be identical to the other inactive nav items.
+   The active indicator belongs to the currently active data-screen
+   (e.g. Reconciliation), not to Scan SN. */
+.app-shell .bottom-nav .nav-btn-scan:not(.active-nav){
+  color:rgba(255,255,255,0.72) !important;
+  font-weight:600 !important;
+  background:transparent !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan:not(.active-nav) .scan-sn-icon,
+.app-shell .bottom-nav .nav-btn-scan:not(.active-nav) .scan-sn-icon svg{
+  color:rgba(255,255,255,0.72) !important;
+  stroke:currentColor !important;
+  filter:none !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan:not(.active-nav) > span:last-child{
+  color:rgba(255,255,255,0.72) !important;
+  font-weight:600 !important;
+}
+
+/* If Scan SN ever becomes active, it uses the exact same active state
+   as the other nav buttons. */
+.app-shell .bottom-nav .nav-btn-scan.active-nav{
+  color:#fff !important;
+  font-weight:700 !important;
+  background:transparent !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan.active-nav .scan-sn-icon,
+.app-shell .bottom-nav .nav-btn-scan.active-nav .scan-sn-icon svg,
+.app-shell .bottom-nav .nav-btn-scan.active-nav > span:last-child{
+  color:#fff !important;
+}
+</style>
+
 </head>
 <body>
 
