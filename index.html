@@ -643,6 +643,30 @@ body { position:relative; overscroll-behavior:none; }
   justify-content:center; cursor:pointer; flex-shrink:0;
 }
 .recon-dashboard-refresh:active { opacity:.7; }
+
+.recon-dashboard-head-actions {
+  display:flex; flex-direction:column; align-items:stretch; gap:7px; flex-shrink:0;
+}
+.recon-dashboard-export {
+  min-width:92px; height:34px; border:1px solid var(--field-border); border-radius:10px;
+  background:var(--field-bg); color:var(--accent); display:flex; align-items:center;
+  justify-content:center; gap:6px; cursor:pointer; font-size:10.5px; font-weight:800; padding:0 10px;
+}
+.recon-dashboard-export:active { opacity:.7; }
+.recon-dashboard-export:disabled { opacity:.55; cursor:not-allowed; }
+.recon-dashboard-pivot-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.recon-dashboard-pivot { width:100%; border-collapse:collapse; font-size:10.5px; }
+.recon-dashboard-pivot th, .recon-dashboard-pivot td {
+  padding:9px 8px; border-bottom:1px solid var(--glass-border); text-align:right; white-space:nowrap;
+}
+.recon-dashboard-pivot th:first-child, .recon-dashboard-pivot td:first-child { text-align:left; }
+.recon-dashboard-pivot th { color:var(--text-muted); font-weight:800; background:var(--field-bg); }
+.recon-dashboard-pivot tfoot td { font-weight:800; }
+.ic-download {
+  display:inline-block; width:15px; height:15px; flex:0 0 15px; background:currentColor;
+  -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cpath d='M5 21h14'/%3E%3C/svg%3E");
+  mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3v12'/%3E%3Cpolyline points='7 10 12 15 17 10'/%3E%3Cpath d='M5 21h14'/%3E%3C/svg%3E");
+}
 .recon-dashboard-filter {
   display:flex; flex-wrap:wrap; gap:7px; margin-bottom:12px;
 }
@@ -1931,9 +1955,14 @@ body { background: var(--bg-deep); }
             <div class="recon-dashboard-title">Dashboard Reconciliation</div>
             <div class="recon-dashboard-sub">Filter otomatis berdasarkan NIK login dan STATUS = OK.</div>
           </div>
-          <button type="button" class="recon-dashboard-refresh" id="btnReconDashboardRefresh" onclick="loadReconciliationDashboard(true)" title="Refresh">
-            <i class="ic-refresh"></i>
-          </button>
+          <div class="recon-dashboard-head-actions">
+            <button type="button" class="recon-dashboard-refresh" id="btnReconDashboardRefresh" onclick="loadReconciliationDashboard(true)" title="Refresh">
+              <i class="ic-refresh"></i>
+            </button>
+            <button type="button" class="recon-dashboard-export" id="btnReconDashboardExport" onclick="exportReconciliationDashboard()" title="Export data">
+              <i class="ic-download"></i><span>Export</span>
+            </button>
+          </div>
         </div>
         <div class="recon-dashboard-filter">
           <span class="recon-dashboard-filter-badge"><i class="ic-user"></i> NIK: <strong id="reconDashboardNik">-</strong></span>
@@ -1986,6 +2015,24 @@ body { background: var(--bg-deep); }
             <div class="recon-dashboard-stat-number" id="reconTaskTotalNoInet">0</div>
             <div class="recon-dashboard-stat-detail">Semua No Inet · HSS <strong id="reconTaskTotalHss">0</strong></div>
           </div>
+        </div>
+      </div>
+
+      <div class="glass-card recon-dashboard-card">
+        <div class="recon-dashboard-section-title">Pivot · ESTIMATE PAYMENT</div>
+        <div class="recon-dashboard-sub" style="margin-bottom:9px;">Rows: ESTIMATE PAYMENT · Columns: NO INET dan HSS</div>
+        <div class="recon-dashboard-pivot-wrap">
+          <table class="recon-dashboard-pivot">
+            <thead><tr><th>ESTIMATE PAYMENT</th><th>NO INET</th><th>HSS</th></tr></thead>
+            <tbody id="reconDashboardPivotBody">
+              <tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Memuat data...</td></tr>
+            </tbody>
+            <tfoot><tr>
+              <td>TOTAL</td>
+              <td id="reconDashboardPivotTotalNoInet">0</td>
+              <td id="reconDashboardPivotTotalHss">Rp. 0</td>
+            </tr></tfoot>
+          </table>
         </div>
       </div>
 
@@ -3903,6 +3950,22 @@ function _renderReconciliationDashboard(res) {
   _reconDashboardStat(res.taskPayment.success, 'reconTaskSuccessNoInet', 'reconTaskSuccessHss');
   _reconDashboardStat(res.taskPayment.total, 'reconTaskTotalNoInet', 'reconTaskTotalHss');
 
+  const pivotBody = document.getElementById('reconDashboardPivotBody');
+  if (pivotBody) {
+    const pivotRows = Array.isArray(res.estimatePaymentPivot) ? res.estimatePaymentPivot : [];
+    if (!pivotRows.length) {
+      pivotBody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Tidak ada data.</td></tr>';
+    } else {
+      pivotBody.innerHTML = pivotRows.map(function(row) {
+        return '<tr><td>' + _escHtml(row.estimatePayment || '-') + '</td>' +
+          '<td>' + _reconDashboardFmt(row.noInet) + '</td>' +
+          '<td>' + _reconDashboardCurrency(row.hss) + '</td></tr>';
+      }).join('');
+    }
+  }
+  _reconDashboardSet('reconDashboardPivotTotalNoInet', _reconDashboardFmt(res.estimatePaymentPivotTotal ? res.estimatePaymentPivotTotal.noInet : 0));
+  _reconDashboardSet('reconDashboardPivotTotalHss', _reconDashboardCurrency(res.estimatePaymentPivotTotal ? res.estimatePaymentPivotTotal.hss : 0));
+
   const updated = document.getElementById('reconDashboardUpdated');
   if (updated) {
     const now = new Date();
@@ -3934,6 +3997,38 @@ function loadReconciliationDashboard(force) {
     _reconDashboardLoading = false;
     if (refreshBtn) refreshBtn.disabled = false;
   });
+}
+
+function _reconDashboardCsvCell(value) {
+  const v = value == null ? '' : String(value);
+  return '"' + v.replace(/"/g, '""') + '"';
+}
+function _reconDashboardDownloadCsv(headers, rows) {
+  const lines = [headers.map(_reconDashboardCsvCell).join(',')];
+  rows.forEach(function(row) { lines.push(row.map(_reconDashboardCsvCell).join(',')); });
+  const blob = new Blob(['\ufeff' + lines.join('\r\n')], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const now = new Date();
+  const stamp = [now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0'),
+    String(now.getHours()).padStart(2,'0'),String(now.getMinutes()).padStart(2,'0')].join('');
+  a.href=url; a.download='reconciliation_' + (getSession().nik || 'NIK') + '_' + stamp + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+}
+function exportReconciliationDashboard() {
+  const session=getSession(); if(!session || !session.sessionToken)return;
+  const btn=document.getElementById('btnReconDashboardExport');
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="ic-refresh"></i><span>Export...</span>';}
+  apiGet({action:'reconciliationDashboardExport',sessionToken:session.sessionToken})
+    .then(function(res){
+      if(!res || !res.success) throw new Error((res&&res.message)||'Data export tidak tersedia.');
+      _reconDashboardDownloadCsv(res.headers||[],res.rows||[]);
+      showToast('success','Export berhasil.');
+    }).catch(function(err){showToast('error',err.message||'Gagal export data.');})
+    .finally(function(){
+      if(btn){btn.disabled=false;btn.innerHTML='<i class="ic-download"></i><span>Export</span>';}
+    });
 }
 
 /* ============================================================
