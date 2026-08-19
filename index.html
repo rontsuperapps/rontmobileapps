@@ -1591,6 +1591,128 @@ button[aria-label]:not(:has(span)),
 }
 </style>
 
+<style id="v24-design-refresh">
+/* ================================================================
+   v24 — DESIGN REFRESH
+   Lapisan penyempurnaan visual akhir: menyatukan token radius/
+   shadow, merapikan header, card, tombol, badge, form & bottom
+   nav supaya konsisten modern-profesional di semua layar.
+   TIDAK mengubah struktur HTML, id/class, atau logika JS apa pun.
+================================================================ */
+:root {
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --shadow-card: 0 1px 2px rgba(17,24,39,.05), 0 10px 22px -12px var(--shadow-soft);
+  --shadow-float: 0 16px 34px -14px var(--shadow-strong);
+  --ring: 0 0 0 3.5px var(--accent-soft);
+}
+
+/* --- nuansa global --- */
+html, body { -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; text-rendering:optimizeLegibility; }
+::selection { background:var(--accent); color:#fff; }
+button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [tabindex]:focus-visible {
+  outline:2px solid var(--accent); outline-offset:2px;
+}
+::-webkit-scrollbar { width:8px; height:8px; }
+::-webkit-scrollbar-thumb { background:var(--glass-border); border-radius:99px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; transition-duration:.01ms !important; }
+}
+
+/* --- header: lebih berlapis, tidak flat --- */
+.app-shell .app-header {
+  border-radius:0 0 26px 26px !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.14) inset, 0 14px 30px -12px rgba(11,63,199,.5) !important;
+}
+.app-shell .header-icon,
+.app-shell .theme-toggle,
+.app-shell .notif-btn,
+.app-shell .header-titlebar .back-circle {
+  border-radius:12px !important;
+  transition:transform .15s ease, opacity .15s ease;
+}
+.app-shell .theme-toggle:active,
+.app-shell .notif-btn:active,
+.app-shell .header-titlebar .back-circle:active { transform:scale(.92); }
+
+/* --- kartu: kedalaman lebih halus & konsisten --- */
+.app-shell .glass-card {
+  border-radius:var(--radius-lg) !important;
+  box-shadow:var(--shadow-card) !important;
+  transition:box-shadow .2s ease;
+}
+.app-shell .home-profile-card { border-radius:20px !important; box-shadow:var(--shadow-float) !important; }
+
+/* --- label section: heading kecil yang lebih tegas --- */
+.app-shell .section-label {
+  font-size:11.5px !important; font-weight:800 !important; text-transform:uppercase;
+  letter-spacing:.6px !important; color:var(--text-muted) !important;
+}
+
+/* --- tombol: micro-interaction & shadow lebih premium --- */
+.app-shell .btn-primary {
+  border-radius:var(--radius-md) !important;
+  box-shadow:0 10px 22px -8px rgba(21,94,239,.55) !important;
+  transition:transform .12s ease, opacity .15s ease, box-shadow .15s ease;
+}
+.app-shell .btn-primary:active:not(:disabled) { transform:scale(.98); }
+.app-shell .btn-primary.btn-danger { box-shadow:0 10px 22px -10px rgba(220,38,38,.5) !important; }
+.app-shell .btn-outline {
+  border-radius:var(--radius-md) !important;
+  transition:transform .12s ease, opacity .15s ease, border-color .15s ease;
+}
+.app-shell .btn-outline:active { transform:scale(.98); }
+.app-shell .btn-pill-primary { box-shadow:0 8px 18px -6px rgba(21,94,239,.5) !important; }
+
+/* --- form field: focus ring lembut & konsisten --- */
+.app-shell .field-input,
+.app-shell .field-select,
+.app-shell .recon-parameter-textarea {
+  border-radius:12px !important;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.app-shell .field-input:focus,
+.app-shell .field-select:focus,
+.app-shell .recon-parameter-textarea:focus {
+  box-shadow:var(--ring) !important;
+}
+
+/* --- badge & chip: bentuk pil konsisten --- */
+.app-shell .badge-mitra,
+.app-shell .presensi-home-badge,
+.app-shell .recon-dashboard-filter-badge,
+.app-shell .recon-parameter-badge,
+.app-shell .badge-manja {
+  border-radius:999px !important; font-weight:800 !important; letter-spacing:.15px;
+}
+
+/* --- quick access tile: sentuhan hover/press halus --- */
+.app-shell .quick-tile { transition:transform .12s ease, opacity .15s ease; }
+.app-shell .quick-tile:active { transform:scale(.94); }
+.app-shell .quick-access-grid .quick-tile .qt-icon { box-shadow:0 4px 10px -4px rgba(17,24,39,.18); }
+
+/* --- bottom nav: indikator aktif lebih jelas, tetap kompak --- */
+.app-shell .bottom-nav {
+  border-radius:26px 26px 0 0 !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.14) inset, 0 -14px 30px -12px rgba(11,63,199,.48) !important;
+}
+.app-shell .bottom-nav .nav-btn { border-radius:12px !important; transition:transform .15s ease, color .15s ease; }
+.app-shell .bottom-nav .nav-btn.active-nav { position:relative; }
+.app-shell .bottom-nav .nav-btn.active-nav::before {
+  content:''; position:absolute; top:-2px; left:50%; transform:translateX(-50%);
+  width:16px; height:3px; border-radius:99px; background:#fff;
+}
+
+/* --- modal & toast: nuansa "glass" modern --- */
+.modal-overlay.show { backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+.modal-box { border-radius:22px !important; box-shadow:0 20px 50px -14px var(--shadow-strong) !important; }
+.toast-box { border-radius:14px !important; }
+
+/* --- skeleton loader: sudut lebih rapi --- */
+.skeleton-line { border-radius:8px; }
+</style>
+
 </head>
 <body>
 
