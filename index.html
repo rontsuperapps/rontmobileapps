@@ -2674,6 +2674,50 @@ th,td{
 }
 </style>
 
+
+<style id="v33-scan-geometry">
+/* V33 — Scan SN visual grammar aligned with the other bottom-nav icons. */
+.app-shell .bottom-nav .nav-btn-scan .scan-sn-icon{
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  max-width:17px !important;
+  max-height:17px !important;
+  flex:0 0 17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  color:currentColor !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan .scan-sn-icon svg{
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  max-width:16px !important;
+  max-height:16px !important;
+  margin:0 !important;
+  padding:0 !important;
+  stroke:currentColor !important;
+  stroke-width:2 !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan > span:last-child{
+  font-weight:700 !important;
+}
+
+/* Do not give Scan SN a unique active background. */
+.app-shell .bottom-nav .nav-btn-scan.active,
+.app-shell .bottom-nav .nav-btn-scan[aria-current="page"]{
+  background:transparent !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -3777,7 +3821,7 @@ th,td{
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i><span>Order</span></button>
     <button class="nav-btn" data-screen="reconciliation" onclick="goTo('reconciliation')"><i class="ic-receipt"></i><span>Reconciliation</span></button>
     <button class="nav-btn" data-screen="request" onclick="goTo('request')"><i class="ic-inbox"></i><span>Request</span></button>
-    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><span class="scan-sn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8"/><path d="M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8"/><path d="M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16"/><path d="M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><line x1="4.5" y1="12" x2="19.5" y2="12"/></svg></span><span>Scan SN</span></button>
+    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><span class="scan-sn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H6A2 2 0 0 0 4 6V8"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M20 16v2a2 2 0 0 1-2 2h-2"/><path d="M8 20H6a2 2 0 0 1-2-2v-2"/></svg></span><span>Scan SN</span></button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i><span>Setting</span></button>
   </div>
 
