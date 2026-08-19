@@ -2757,6 +2757,31 @@ th,td{
 }
 </style>
 
+
+<style id="v35-dashboard-metric-20">
+/* V35 — Dashboard Reconciliation compact metric values */
+.dashboard-reconciliation .metric-value,
+.dashboard-reconciliation .stat-value,
+.dashboard-reconciliation .payment-value,
+.dashboard-reconciliation .task-value,
+.dashboard-reconciliation .total-value{
+  font-size:20px !important;
+  line-height:1.1 !important;
+  font-weight:800 !important;
+}
+</style>
+
+
+<style id="v36-dashboard-metric-20-correct">
+/* V36 — Correct selector for Dashboard Reconciliation metric numbers.
+   The actual markup uses .recon-dashboard-stat-number. */
+.recon-dashboard-card .recon-dashboard-stat-number{
+  font-size:20px !important;
+  line-height:1.1 !important;
+  font-weight:800 !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -3390,9 +3415,9 @@ th,td{
         <textarea id="checkParameterNoInets"
           class="recon-parameter-textarea"
           placeholder="Contoh:
-152301226416
-152301240745
-152301231650"></textarea>
+26080015
+26080016
+26080017"></textarea>
 
         <div class="recon-parameter-actions">
           <button type="button" class="btn-outline" id="btnCheckParameterReset" onclick="resetCheckParameterForm()">
