@@ -1739,6 +1739,452 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 .skeleton-line { border-radius:8px; }
 </style>
 
+
+<style id="v25-final-ui">
+/* V25 — FINAL UI/UX: compact, modern, professional, mid-size smartphone */
+:root{--v25-control:40px;--v25-radius:11px;--v25-page:12px}
+html,body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;-webkit-font-smoothing:antialiased!important}
+body,button,input,select,textarea,table,th,td{font-family:inherit!important;font-size:13px!important;line-height:1.4!important}
+.app-shell{max-width:480px!important;margin:0 auto!important}
+.app-main{padding:70px 12px 76px!important;max-width:480px!important;margin:0 auto!important}
+.glass-card{padding:13px!important;margin-bottom:9px!important;border-radius:14px!important}
+.screen-title{font-size:18px!important;line-height:1.25!important;margin:0 0 11px!important}
+.app-shell .app-header{min-height:58px!important;padding:9px 12px 10px!important;border-radius:0 0 16px 16px!important}
+.app-shell .header-icon,.app-shell .theme-toggle,.app-shell .notif-btn,.app-shell .header-titlebar .back-circle{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;border-radius:10px!important}
+.header-icon i[class*="ic-"],.theme-toggle i[class*="ic-"],.notif-btn i[class*="ic-"],.app-header svg{position:static!important;display:inline-flex!important;width:16px!important;height:16px!important;min-width:16px!important;min-height:16px!important;margin:0!important;transform:none!important;align-items:center!important;justify-content:center!important}
+.field-wrap{margin-bottom:10px!important}.field-label{font-size:11.5px!important;margin-bottom:5px!important}
+.field-input,.field-select{box-sizing:border-box!important;width:100%!important;height:40px!important;min-height:40px!important;border-radius:10px!important;padding:8px 11px!important;font-size:13px!important}
+textarea.field-input,textarea{height:auto!important;min-height:84px!important}
+.view-only-box{min-height:40px!important;padding:8px 11px!important;border-radius:10px!important}
+.voi-label{font-size:10px!important;margin-bottom:3px!important}.voi-value{font-size:13px!important}
+.field-wrap .field-icon,.field-icon{position:absolute!important;top:50%!important;left:11px!important;width:16px!important;height:16px!important;min-width:16px!important;min-height:16px!important;margin:0!important;transform:translateY(-50%)!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:2!important;pointer-events:none!important}
+.field-icon i[class*="ic-"],.field-icon svg{position:static!important;width:16px!important;height:16px!important;min-width:16px!important;min-height:16px!important;margin:0!important;transform:none!important}
+button,.btn,.btn-primary,.btn-outline,input[type=button],input[type=submit],input[type=reset]{box-sizing:border-box!important;height:40px!important;min-height:40px!important;border-radius:10px!important;padding:0 13px!important;font-size:13px!important;font-weight:700!important;line-height:1!important;gap:7px!important;white-space:nowrap!important;display:inline-flex!important;align-items:center!important;justify-content:center!important}
+button i[class*="ic-"],.btn i[class*="ic-"],button svg,.btn svg,button .icon,.btn .icon{position:static!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 15px!important;width:15px!important;min-width:15px!important;height:15px!important;min-height:15px!important;margin:0!important;transform:none!important;line-height:15px!important}
+.modal-actions{display:flex!important;gap:8px!important}.modal-actions>*{flex:1 1 0!important;min-width:0!important}
+.btn-primary{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;box-shadow:none!important}
+.btn-outline{background:transparent!important;color:var(--accent)!important;box-shadow:none!important}
+.quick-access-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}
+.quick-access-grid .quick-tile{min-height:72px!important;padding:8px 3px!important;border-radius:11px!important}
+.quick-access-grid .quick-tile .qt-icon{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;border-radius:9px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.quick-access-grid .quick-tile .qt-icon i[class*="ic-"]{position:static!important;width:17px!important;height:17px!important;margin:0!important;transform:none!important}
+.quick-access-grid .quick-tile .qt-label{font-size:9px!important;line-height:1.15!important}
+.stat-card,.recon-dashboard-stat,.presensi-summary-card{padding:12px!important;border-radius:12px!important}
+.stat-number,.recon-dashboard-stat-number,.presensi-summary-number{font-size:24px!important;line-height:1.05!important}
+.table-wrap,.table-responsive,.recon-pivot-wrap{width:100%!important;max-width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+table{font-size:11.5px!important}th,td{padding:7px 8px!important;line-height:1.3!important}
+.recon-dashboard-head{gap:10px!important;margin-bottom:10px!important}.recon-dashboard-head-actions{display:flex!important;align-items:center!important;gap:7px!important;flex-shrink:0!important}
+.recon-dashboard-head-actions .recon-dashboard-refresh{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;padding:0!important}
+.recon-dashboard-head-actions .recon-dashboard-export{width:auto!important;min-width:82px!important;height:40px!important;min-height:40px!important;padding:0 11px!important}
+.badge,.status-badge,.chip{min-height:22px!important;padding:3px 8px!important;border-radius:999px!important;font-size:10px!important}
+.app-shell .bottom-nav{min-height:64px!important;height:auto!important;padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important;display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:2px!important;align-items:end!important}
+.app-shell .bottom-nav .nav-btn{position:relative!important;width:100%!important;min-width:0!important;height:52px!important;min-height:52px!important;padding:5px 1px 3px!important;border-radius:10px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;overflow:visible!important}
+.app-shell .bottom-nav .nav-btn i[class*="ic-"],.app-shell .bottom-nav .nav-btn svg{position:static!important;width:18px!important;height:18px!important;min-width:18px!important;min-height:18px!important;margin:0!important;transform:none!important;line-height:18px!important;flex:0 0 18px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.app-shell .bottom-nav .nav-btn span{display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:8px!important;line-height:1!important}
+.app-shell .bottom-nav .nav-btn.active::after{content:""!important;position:absolute!important;left:50%!important;bottom:2px!important;width:20px!important;height:3px!important;border-radius:99px!important;background:var(--accent)!important;transform:translateX(-50%)!important}
+.app-shell .bottom-nav .nav-btn-scan{color:var(--accent)!important}
+.app-shell .bottom-nav .nav-btn-scan i[class*="ic-"]{width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;border-radius:9px!important;background:var(--accent)!important;color:#fff!important;box-shadow:0 5px 12px -8px var(--accent)!important}
+.app-shell .bottom-nav .nav-btn-scan span{font-weight:800!important}
+@media(max-width:389px){.app-main{padding-left:10px!important;padding-right:10px!important}.glass-card{padding:12px!important}.bottom-nav .nav-btn span{font-size:7.5px!important}}
+</style>
+
+<style id="v27-icon-system">
+/* =========================================================
+   V27 — GLOBAL ICON SYSTEM
+   Goal: every icon is aligned beside its label/text.
+   Visual CSS only. No JS/API/business logic changes.
+========================================================= */
+
+/* 1. Generic icon + text controls */
+button,
+.btn,
+.btn-primary,
+.btn-outline,
+a.btn,
+.nav-btn,
+.quick-tile{
+  align-items:center !important;
+}
+
+button i[class*="ic-"],
+button .icon,
+button svg,
+.btn i[class*="ic-"],
+.btn .icon,
+.btn svg,
+.nav-btn i[class*="ic-"],
+.nav-btn svg,
+.quick-tile i[class*="ic-"],
+.quick-tile svg{
+  position:static !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  transform:none !important;
+  float:none !important;
+  margin:0 !important;
+  flex:0 0 auto !important;
+  vertical-align:middle !important;
+}
+
+/* 2. Buttons are always horizontal icon + text */
+button,
+.btn,
+.btn-primary,
+.btn-outline,
+a.btn{
+  display:inline-flex !important;
+  flex-direction:row !important;
+  justify-content:center !important;
+  gap:7px !important;
+  white-space:nowrap !important;
+}
+
+button i[class*="ic-"],
+.btn i[class*="ic-"],
+button svg,
+.btn svg{
+  width:15px !important;
+  height:15px !important;
+  min-width:15px !important;
+  min-height:15px !important;
+  max-width:15px !important;
+  max-height:15px !important;
+  line-height:15px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+/* 3. Field icon system
+      Icon occupies a fixed left rail.
+      Text starts after that rail.
+*/
+.field-wrap{
+  position:relative !important;
+}
+
+.field-wrap > .field-icon{
+  position:absolute !important;
+  top:50% !important;
+  left:12px !important;
+  right:auto !important;
+  bottom:auto !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  max-width:16px !important;
+  max-height:16px !important;
+  padding:0 !important;
+  margin:0 !important;
+  transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:3 !important;
+  pointer-events:none !important;
+}
+
+.field-wrap > .field-icon i[class*="ic-"],
+.field-wrap > .field-icon svg{
+  position:static !important;
+  top:auto !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:none !important;
+  display:block !important;
+}
+
+/* Text must never occupy the icon rail. */
+.field-wrap > .field-icon ~ .field-input,
+.field-wrap > .field-icon ~ .field-select{
+  padding-left:42px !important;
+}
+
+/* Textareas with a leading icon keep the same safe rail. */
+.field-wrap > .field-icon ~ textarea.field-input{
+  padding-left:42px !important;
+}
+
+/* 4. Right-side field action icon (eye/copy/scan/etc.) */
+.field-wrap > .field-icon-right,
+.field-wrap > .field-action-icon{
+  position:absolute !important;
+  top:50% !important;
+  left:auto !important;
+  right:12px !important;
+  bottom:auto !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:4 !important;
+}
+
+.field-wrap > .field-icon-right i[class*="ic-"],
+.field-wrap > .field-icon-right svg,
+.field-wrap > .field-action-icon i[class*="ic-"],
+.field-wrap > .field-action-icon svg{
+  position:static !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  margin:0 !important;
+  transform:none !important;
+}
+
+/* 5. Icon + text utility rows */
+.icon-text,
+.icon-label,
+.label-with-icon,
+.row-icon-text,
+.list-item-icon,
+.menu-item,
+.action-row{
+  display:flex !important;
+  align-items:center !important;
+}
+
+.icon-text > i[class*="ic-"],
+.icon-label > i[class*="ic-"],
+.label-with-icon > i[class*="ic-"],
+.row-icon-text > i[class*="ic-"],
+.list-item-icon > i[class*="ic-"],
+.menu-item > i[class*="ic-"],
+.action-row > i[class*="ic-"]{
+  position:static !important;
+  transform:none !important;
+  flex:0 0 16px !important;
+  width:16px !important;
+  height:16px !important;
+  margin:0 7px 0 0 !important;
+}
+
+/* 6. Quick menu: icon above its label is intentional.
+      This is a tile, not an inline text control. */
+.quick-access-grid .quick-tile{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:4px !important;
+}
+.quick-access-grid .quick-tile .qt-icon{
+  position:static !important;
+  transform:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 32px !important;
+  width:32px !important;
+  height:32px !important;
+}
+.quick-access-grid .quick-tile .qt-icon i[class*="ic-"],
+.quick-access-grid .quick-tile .qt-icon svg{
+  position:static !important;
+  transform:none !important;
+  width:16px !important;
+  height:16px !important;
+  margin:0 !important;
+}
+
+/* 7. Bottom navigation: icon above tiny label is intentional. */
+.app-shell .bottom-nav .nav-btn{
+  position:relative !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:2px !important;
+}
+.app-shell .bottom-nav .nav-btn i[class*="ic-"],
+.app-shell .bottom-nav .nav-btn svg{
+  position:static !important;
+  transform:none !important;
+  width:18px !important;
+  height:18px !important;
+  min-width:18px !important;
+  min-height:18px !important;
+  margin:0 !important;
+  flex:0 0 18px !important;
+}
+.app-shell .bottom-nav .nav-btn-scan i[class*="ic-"],
+.app-shell .bottom-nav .nav-btn-scan svg{
+  width:28px !important;
+  height:28px !important;
+  min-width:28px !important;
+  min-height:28px !important;
+  flex-basis:28px !important;
+}
+
+/* 8. Header icons: icon beside title/action, never floating over text. */
+.app-header button,
+.app-header .header-icon,
+.app-header .theme-toggle,
+.app-header .notif-btn,
+.app-header .back-circle{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.app-header i[class*="ic-"],
+.app-header svg{
+  position:static !important;
+  top:auto !important;
+  left:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:none !important;
+  margin:0 !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+}
+
+/* 9. Icon-only controls remain centered. */
+.icon-only,
+button[data-icon-only="true"],
+.btn-icon{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0 !important;
+  padding:0 !important;
+}
+.icon-only i[class*="ic-"],
+.btn-icon i[class*="ic-"]{
+  margin:0 !important;
+}
+
+/* 10. Do not let legacy inline offsets win. */
+.field-icon[style],
+.field-icon-right[style],
+button i[class*="ic-"][style],
+.btn i[class*="ic-"][style]{
+  top:auto !important;
+  bottom:auto !important;
+  left:auto !important;
+  right:auto !important;
+  transform:none !important;
+}
+
+/* Re-apply the intended field wrapper position after the legacy rule. */
+.field-wrap > .field-icon[style]{
+  top:50% !important;
+  left:12px !important;
+  transform:translateY(-50%) !important;
+}
+.field-wrap > .field-icon-right[style],
+.field-wrap > .field-action-icon[style]{
+  top:50% !important;
+  right:12px !important;
+  transform:translateY(-50%) !important;
+}
+</style>
+
+
+<style id="v27-1-login-and-field-fix">
+/* V27.1 — login-specific visual corrections */
+
+/* Never show authenticated bottom navigation on login/reset screens,
+   including the very first page load before goTo() runs. */
+.bottom-nav.hidden-nav,
+.app-shell:has(#screen-login.active) .bottom-nav,
+.app-shell:has(#screen-resetpw.active) .bottom-nav{
+  display:none !important;
+}
+
+/* Login/reset fields: fixed icon rail + text rail. */
+#screen-login .field-wrap,
+#screen-resetpw .field-wrap{
+  position:relative !important;
+}
+
+#screen-login .field-wrap > .field-icon,
+#screen-resetpw .field-wrap > .field-icon{
+  position:absolute !important;
+  left:13px !important;
+  top:50% !important;
+  right:auto !important;
+  bottom:auto !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:5 !important;
+  pointer-events:none !important;
+}
+
+#screen-login .field-wrap > .field-icon i[class*="ic-"],
+#screen-resetpw .field-wrap > .field-icon i[class*="ic-"],
+#screen-login .field-wrap > .field-icon svg,
+#screen-resetpw .field-wrap > .field-icon svg{
+  position:static !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:none !important;
+}
+
+#screen-login .field-wrap > .field-input,
+#screen-resetpw .field-wrap > .field-input,
+#screen-login .field-wrap > .field-select,
+#screen-resetpw .field-wrap > .field-select{
+  padding-left:43px !important;
+}
+
+#screen-login .field-wrap > .field-icon-right,
+#screen-resetpw .field-wrap > .field-icon-right{
+  position:absolute !important;
+  left:auto !important;
+  right:13px !important;
+  top:50% !important;
+  bottom:auto !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:5 !important;
+}
+
+#screen-login .field-wrap > .field-input:has(+ .field-icon-right),
+#screen-resetpw .field-wrap > .field-input:has(+ .field-icon-right){
+  padding-right:43px !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -1919,15 +2365,15 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 
           <div class="field-wrap">
             <label class="field-label">NIK Teknisi</label>
-            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-badge field-icon"></i>
             <input id="loginNik" type="text" placeholder="Masukkan NIK" class="field-input">
           </div>
 
           <div class="field-wrap">
             <label class="field-label">Password</label>
-            <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-lock field-icon"></i>
             <input id="loginPassword" type="password" placeholder="Masukkan Password" class="field-input" autocomplete="new-password" name="ront_login_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') handleLogin(event)">
-            <i class="ic-eye field-icon-right" id="loginEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('loginPassword','loginEyeIcon')"></i>
+            <i class="ic-eye field-icon-right" id="loginEyeIcon" onclick="togglePwd('loginPassword','loginEyeIcon')"></i>
           </div>
 
           <div class="remember-row" onclick="toggleRemember()">
@@ -1984,7 +2430,7 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
           </div>
           <div class="field-wrap">
             <label class="field-label">NIK Teknisi</label>
-            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-badge field-icon"></i>
             <input id="resetNik" type="text" placeholder="Masukkan NIK" class="field-input">
           </div>
           <button id="btnResetLookup" onclick="handleRequestOtp(event)" class="btn-primary" style="margin-top:4px;">
@@ -2004,13 +2450,13 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
           </div>
           <div class="field-wrap">
             <label class="field-label">Password Baru</label>
-            <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-lock field-icon"></i>
             <input id="resetPasswordNew" type="password" placeholder="Min. 4 karakter" class="field-input" autocomplete="new-password" name="ront_reset_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
-            <i class="ic-eye field-icon-right" id="resetPwEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('resetPasswordNew','resetPwEyeIcon')"></i>
+            <i class="ic-eye field-icon-right" id="resetPwEyeIcon" onclick="togglePwd('resetPasswordNew','resetPwEyeIcon')"></i>
           </div>
           <div class="field-wrap">
             <label class="field-label">Konfirmasi Password Baru</label>
-            <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-lock field-icon"></i>
             <input id="resetPasswordConfirm" type="password" placeholder="Ulangi password baru" class="field-input" autocomplete="new-password" name="ront_reset_pwd_confirm" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
           </div>
           <button id="btnResetSubmit" onclick="handleVerifyOtpReset(event)" class="btn-primary" style="margin-top:4px;">
@@ -2094,7 +2540,7 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 
         <div class="field-wrap">
           <label class="field-label">STO</label>
-          <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-layers field-icon"></i>
           <select id="presSto" onchange="cekRequirement()" class="field-select">
             <option value="">-- Pilih STO --</option>
           </select>
@@ -2464,20 +2910,20 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 
         <div class="field-wrap" style="margin-top:16px;">
           <label class="field-label">Tanggal</label>
-          <i class="ic-calendar field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-calendar field-icon"></i>
           <input id="justTanggalPicker" type="date" onchange="syncTanggalDisplay()" class="field-input">
           <p class="field-hint">Format tersimpan: <span id="justTanggalPreview">-</span> (DD/MM/YYYY)</p>
         </div>
 
         <div class="field-wrap">
           <label class="field-label">Nominal</label>
-          <i class="ic-coins field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-coins field-icon"></i>
           <input id="justNominal" type="text" inputmode="numeric" placeholder="Rp 0" oninput="formatRupiah(this)" class="field-input">
         </div>
 
         <div class="field-wrap">
           <label class="field-label">Jenis Transaksi</label>
-          <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-layers field-icon"></i>
           <select id="justJenisTransaksi" class="field-select">
             <option value="">-- Pilih Jenis Transaksi --</option>
             <option value="Uang Masuk">Uang Masuk</option>
@@ -2487,7 +2933,7 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 
         <div class="field-wrap">
           <label class="field-label">Keterangan</label>
-          <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-clipboard field-icon"></i>
           <input id="justKeterangan" type="text" placeholder="Keterangan (opsional)" class="field-input">
         </div>
 
@@ -2549,7 +2995,7 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
       <div class="glass-card">
         <label class="field-label" style="margin-bottom:8px; display:block;">Cari Order (No Inet)</label>
         <div class="field-wrap" style="margin-bottom:0;">
-          <i class="ic-search field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-search field-icon"></i>
           <input id="dashSearchNoInet" type="text" placeholder="Masukkan No Inet" class="field-input"
                  onkeydown="if(event.key==='Enter'){searchOrderByNoInet();}">
         </div>
@@ -2583,31 +3029,31 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 
         <div class="field-wrap">
           <label class="field-label">Nama Pelanggan</label>
-          <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-user field-icon"></i>
           <input id="updNamaPelanggan" type="text" placeholder="Opsional" class="field-input">
         </div>
         <div class="field-wrap">
           <label class="field-label">Nomor HP</label>
-          <i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-user field-icon"></i>
           <input id="updNomorHp" type="text" placeholder="Opsional" class="field-input">
         </div>
         <div class="field-wrap">
           <label class="field-label">Koordinat Pelanggan</label>
-          <i class="ic-location field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-location field-icon"></i>
           <input id="updKoordinatPelanggan" type="text" placeholder="lat, long" class="field-input">
         </div>
         <button type="button" class="btn-outline" onclick="ambilLokasiOrderUpdate()"><i class="ic-location"></i> Get Sistem Koordinat (GPS)</button>
 
         <div class="field-wrap">
           <label class="field-label">Alamat</label>
-          <i class="ic-location field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-location field-icon"></i>
           <input id="updAlamat" type="text" placeholder="Opsional" class="field-input">
         </div>
         <button type="button" class="btn-outline" onclick="ambilAlamatOrderUpdate()"><i class="ic-location"></i> Get Sistem Alamat by Koordinat</button>
 
         <div class="field-wrap" style="margin-bottom:0;">
           <label class="field-label">Status Pelanggan</label>
-          <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-badge field-icon"></i>
           <input id="updStatusPelanggan" type="text" placeholder="View only" class="field-input" readonly aria-readonly="true">
         </div>
       </div>
@@ -2618,12 +3064,12 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 
         <div class="field-wrap">
           <label class="field-label">Paket Speed</label>
-          <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-layers field-icon"></i>
           <input id="updPaketSpeed" type="text" placeholder="View only" class="field-input" readonly aria-readonly="true">
         </div>
         <div class="field-wrap" style="margin-bottom:0;">
           <label class="field-label">Target Produk ONT</label>
-          <i class="ic-layers field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-layers field-icon"></i>
           <input id="updTargetProdukOnt" type="text" placeholder="View only" class="field-input" readonly aria-readonly="true">
         </div>
       </div>
@@ -2634,14 +3080,14 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
 
         <div class="field-wrap">
           <label class="field-label">WO ID</label>
-          <i class="ic-inbox field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-inbox field-icon"></i>
           <input id="updWoId" type="text" placeholder="WO ID" class="field-input" readonly aria-readonly="true" style="padding-right:46px;">
-          <i class="ic-copy field-icon-right" style="top:calc(50% + 10px);" onclick="copyOrderUpdateWoId(event)" title="Copy WO ID" aria-label="Copy WO ID"></i>
+          <i class="ic-copy field-icon-right" onclick="copyOrderUpdateWoId(event)" title="Copy WO ID" aria-label="Copy WO ID"></i>
         </div>
 
         <div class="field-wrap">
           <label class="field-label">TICKET ID DISPATCH</label>
-          <i class="ic-ticket field-icon" style="top:calc(50% + 10px);" aria-hidden="true"></i>
+          <i class="ic-ticket field-icon" aria-hidden="true"></i>
           <input id="updTicketIdDispatch" type="text" placeholder="TICKET ID DISPATCH" class="field-input" readonly aria-readonly="true">
         </div>
 
@@ -2663,17 +3109,17 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
         <div id="wrapManjaFields" style="display:none;">
           <div class="field-wrap">
             <label class="field-label">Manja Date</label>
-            <i class="ic-calendar field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-calendar field-icon"></i>
             <input id="updManjaDatePicker" type="date" class="field-input" oninput="validateUpdateForm()">
           </div>
           <div class="field-wrap">
             <label class="field-label">Jam Manja</label>
-            <i class="ic-clock field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-clock field-icon"></i>
             <input id="updJamManjaPicker" type="time" class="field-input" oninput="validateUpdateForm()">
           </div>
           <div class="field-wrap" style="margin-bottom:0;">
             <label class="field-label">Keterangan Manja</label>
-            <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-clipboard field-icon"></i>
             <input id="updKeteranganManja" type="text" placeholder="Wajib diisi" class="field-input" oninput="validateUpdateForm()">
           </div>
         </div>
@@ -2682,7 +3128,7 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
         <div id="wrapKendalaFields" style="display:none;">
           <div class="field-wrap">
             <label class="field-label">Kendala</label>
-            <i class="ic-alert field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-alert field-icon"></i>
             <select id="updKendalaReason" class="field-select" onchange="onKendalaReasonChange()">
               <option value="">-- Pilih Kendala --</option>
               <option value="BUKAN PEMILIK">Bukan Pemilik</option>
@@ -2697,7 +3143,7 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
           </div>
           <div class="field-wrap" id="wrapKendalaLain" style="display:none; margin-bottom:0;">
             <label class="field-label">Kendala Lain</label>
-            <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-clipboard field-icon"></i>
             <input id="updKendalaLainText" type="text" placeholder="Wajib diisi" class="field-input" oninput="validateUpdateForm()">
           </div>
         </div>
@@ -2706,24 +3152,24 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
         <div id="wrapCloseFields" style="display:none;">
           <div class="field-wrap">
             <label class="field-label">SN ONT Lama</label>
-            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-badge field-icon"></i>
             <input id="updSnOntLama" type="text" placeholder="Wajib diisi" class="field-input has-scan" oninput="validateUpdateForm()">
-            <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntLama')" title="Scan barcode SN ONT"></i>
+            <i class="ic-scan field-icon-right scan-trigger" onclick="openBarcodeScanner('field','updSnOntLama')" title="Scan barcode SN ONT"></i>
           </div>
           <div class="field-wrap">
             <label class="field-label">SN ONT Baru</label>
-            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-badge field-icon"></i>
             <input id="updSnOntBaru" type="text" placeholder="Wajib diisi" class="field-input has-scan" oninput="validateUpdateForm()">
-            <i class="ic-scan field-icon-right scan-trigger" style="top:calc(50% + 10px);" onclick="openBarcodeScanner('field','updSnOntBaru')" title="Scan barcode SN ONT"></i>
+            <i class="ic-scan field-icon-right scan-trigger" onclick="openBarcodeScanner('field','updSnOntBaru')" title="Scan barcode SN ONT"></i>
           </div>
           <div class="field-wrap">
             <label class="field-label">Valins ID</label>
-            <i class="ic-badge field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-badge field-icon"></i>
             <input id="updValinsId" type="text" inputmode="numeric" placeholder="Wajib diisi angka" class="field-input" oninput="validateUpdateForm()">
           </div>
           <div class="field-wrap" style="margin-bottom:0;">
             <label class="field-label">Keterangan Close (Opsional)</label>
-            <i class="ic-clipboard field-icon" style="top:calc(50% + 10px);"></i>
+            <i class="ic-clipboard field-icon"></i>
             <input id="updKeteranganClose" type="text" placeholder="Opsional" class="field-input">
           </div>
         </div>
@@ -2797,19 +3243,19 @@ button:focus-visible, .field-input:focus-visible, .field-select:focus-visible, [
       <div class="glass-card">
         <div class="field-wrap">
           <label class="field-label">Password Lama</label>
-          <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-lock field-icon"></i>
           <input id="oldPasswordChange" type="password" placeholder="Masukkan password lama" class="field-input" autocomplete="new-password" name="ront_old_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
-          <i class="ic-eye field-icon-right" id="oldPwEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('oldPasswordChange','oldPwEyeIcon')"></i>
+          <i class="ic-eye field-icon-right" id="oldPwEyeIcon" onclick="togglePwd('oldPasswordChange','oldPwEyeIcon')"></i>
         </div>
         <div class="field-wrap">
           <label class="field-label">Password Baru</label>
-          <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-lock field-icon"></i>
           <input id="newPasswordChange" type="password" placeholder="Min. 4 karakter" class="field-input" autocomplete="new-password" name="ront_new_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
-          <i class="ic-eye field-icon-right" id="newPwEyeIcon" style="top:calc(50% + 10px);" onclick="togglePwd('newPasswordChange','newPwEyeIcon')"></i>
+          <i class="ic-eye field-icon-right" id="newPwEyeIcon" onclick="togglePwd('newPasswordChange','newPwEyeIcon')"></i>
         </div>
         <div class="field-wrap">
           <label class="field-label">Konfirmasi Password Baru</label>
-          <i class="ic-lock field-icon" style="top:calc(50% + 10px);"></i>
+          <i class="ic-lock field-icon"></i>
           <input id="confirmPasswordChange" type="password" placeholder="Ulangi password baru" class="field-input" autocomplete="new-password" name="ront_confirm_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
         </div>
         <button id="btnChangePassword" onclick="handleChangePassword(event)" class="btn-primary" style="margin-top:4px;">
@@ -3133,7 +3579,7 @@ function loadProfileDetail() {
       '</div>' +
       '<div class="field-wrap">' +
         '<label class="field-label">Nama Teknisi</label>' +
-        '<i class="ic-user field-icon" style="top:calc(50% + 10px);"></i>' +
+        '<i class="ic-user field-icon"></i>' +
         '<input id="upNamaTeknisi" type="text" placeholder="Nama Teknisi" class="field-input" oninput="validateProfileForm()">' +
       '</div>' +
       '<div class="view-only-box">' +
