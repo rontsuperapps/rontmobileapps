@@ -2558,6 +2558,54 @@ th,td{
 }
 </style>
 
+
+<style id="v31-scan-sn-clean">
+/* V31 — replace the fragile mask icon with a real SVG icon.
+   This is scoped to Scan SN only; scanner behavior is unchanged. */
+.app-shell .bottom-nav .nav-btn-scan{
+  color:#fff !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan .scan-sn-icon{
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:30px !important;
+  height:30px !important;
+  min-width:30px !important;
+  min-height:30px !important;
+  flex:0 0 30px !important;
+  border-radius:9px !important;
+  background:var(--accent) !important;
+  color:#fff !important;
+  box-shadow:0 4px 10px -7px var(--accent) !important;
+  opacity:1 !important;
+  transform:none !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan .scan-sn-icon svg{
+  display:block !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  max-width:17px !important;
+  max-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  color:#fff !important;
+  stroke:currentColor !important;
+  opacity:1 !important;
+  transform:none !important;
+}
+
+.app-shell .bottom-nav .nav-btn-scan > span:last-child{
+  color:#fff !important;
+  font-weight:800 !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -3661,7 +3709,7 @@ th,td{
     <button class="nav-btn" data-screen="orderDashboard" onclick="goTo('orderDashboard')"><i class="ic-clipboard"></i><span>Order</span></button>
     <button class="nav-btn" data-screen="reconciliation" onclick="goTo('reconciliation')"><i class="ic-receipt"></i><span>Reconciliation</span></button>
     <button class="nav-btn" data-screen="request" onclick="goTo('request')"><i class="ic-inbox"></i><span>Request</span></button>
-    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><i class="ic-scan"></i><span>Scan SN</span></button>
+    <button class="nav-btn nav-btn-scan" data-screen="scan" onclick="openBarcodeScanner('display')"><span class="scan-sn-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8"/><path d="M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8"/><path d="M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16"/><path d="M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><line x1="4.5" y1="12" x2="19.5" y2="12"/></svg></span><span>Scan SN</span></button>
     <button class="nav-btn" data-screen="akun" onclick="goTo('akun')"><i class="ic-settings"></i><span>Setting</span></button>
   </div>
 
