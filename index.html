@@ -1816,6 +1816,212 @@ th, td {
 }
 </style>
 
+
+<style id="v20-compact-modern">
+/* =========================================================
+   V20 — COMPACT MODERN MOBILE REDESIGN
+   UI-only. JavaScript/business logic intentionally untouched.
+========================================================= */
+:root{
+  --v20-control-h: 38px;
+  --v20-radius: 9px;
+  --v20-gap: 8px;
+}
+
+/* Typography */
+body,
+button,input,select,textarea,table,th,td{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif !important;
+}
+body{font-size:13px;line-height:1.35;}
+h1,h2,h3,h4,h5,h6{letter-spacing:-.2px;}
+
+/* App shell */
+.app-main{
+  padding:68px 9px 70px !important;
+}
+.glass-card{
+  padding:11px !important;
+  margin-bottom:7px !important;
+  border-radius:13px !important;
+}
+.screen-title{
+  font-size:17px !important;
+  margin:0 0 8px !important;
+}
+
+/* Header */
+.app-header{
+  padding:8px 10px 9px !important;
+  border-radius:0 0 14px 14px !important;
+}
+.header-icon,.theme-toggle{
+  width:32px !important;
+  height:32px !important;
+  min-height:32px !important;
+  border-radius:9px !important;
+}
+.header-text .brand-title{font-size:13.5px !important;}
+.header-text .brand-sub{font-size:9px !important;}
+
+/* Forms */
+.field-wrap{margin-bottom:8px !important;}
+.field-label{
+  font-size:11.5px !important;
+  margin-bottom:4px !important;
+}
+.field-input,.field-select,.view-only-box{
+  min-height:38px !important;
+  height:38px !important;
+  padding:7px 10px !important;
+  border-radius:9px !important;
+  font-size:13px !important;
+}
+.view-only-box{height:auto !important;min-height:38px !important;}
+.voi-label{font-size:10px !important;}
+.voi-value{font-size:13px !important;}
+textarea.field-input,textarea{
+  min-height:76px !important;
+  height:auto !important;
+}
+
+/* Buttons — deliberately smaller than V19 */
+button,
+.btn,
+.btn-primary,
+.btn-outline,
+input[type=button],
+input[type=submit],
+input[type=reset]{
+  min-height:var(--v20-control-h) !important;
+  height:var(--v20-control-h) !important;
+  padding:0 12px !important;
+  border-radius:9px !important;
+  font-size:12.5px !important;
+  font-weight:700 !important;
+  line-height:1 !important;
+  gap:6px !important;
+  box-shadow:none !important;
+}
+button svg,.btn svg,
+button i[class*="ic-"],.btn i[class*="ic-"],
+button .icon,.btn .icon{
+  width:15px !important;
+  height:15px !important;
+  font-size:15px !important;
+  flex:0 0 15px !important;
+}
+.modal-actions{gap:6px !important;}
+
+/* Make paired action buttons balanced */
+.modal-actions > button,
+.modal-actions > .btn{
+  flex:1 1 0;
+  min-width:0;
+}
+
+/* Compact quick menu */
+.quick-access-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:4px 3px !important;
+}
+.quick-access-grid .quick-tile{
+  min-height:61px !important;
+  padding:5px 1px !important;
+  border-radius:9px !important;
+}
+.quick-access-grid .quick-tile .qt-icon{
+  width:30px !important;
+  height:30px !important;
+  border-radius:8px !important;
+  font-size:13px !important;
+}
+.quick-access-grid .quick-tile .qt-label{
+  font-size:8px !important;
+  line-height:1.1 !important;
+  min-height:18px !important;
+}
+
+/* Compact status/stat cards */
+.stat-card,.recon-dashboard-stat,.presensi-summary-card{
+  padding:10px !important;
+  border-radius:11px !important;
+}
+.stat-number,.recon-dashboard-stat-number,.presensi-summary-number{
+  font-size:22px !important;
+}
+
+/* Chips/badges */
+.badge,.status-badge,.chip{
+  min-height:22px !important;
+  padding:3px 8px !important;
+  border-radius:999px !important;
+  font-size:10px !important;
+}
+
+/* Tables */
+.table-wrap,.table-responsive,.recon-pivot-wrap{
+  border-radius:9px !important;
+}
+table{font-size:11px !important;}
+th,td{
+  padding:6px 7px !important;
+  line-height:1.25 !important;
+}
+
+/* Dashboard reconciliation action row */
+.recon-dashboard-head-actions{
+  gap:5px !important;
+}
+.recon-dashboard-head-actions button,
+.recon-dashboard-head-actions .btn{
+  min-height:38px !important;
+  height:38px !important;
+  width:38px !important;
+  min-width:38px !important;
+  padding:0 8px !important;
+}
+.recon-dashboard-head-actions .recon-export-btn,
+.recon-dashboard-head-actions [data-action=export]{
+  width:auto !important;
+  min-width:76px !important;
+  padding:0 10px !important;
+}
+
+/* Bottom navigation */
+.bottom-nav{
+  min-height:58px !important;
+  padding:3px 1px calc(3px + env(safe-area-inset-bottom)) !important;
+}
+.bottom-nav .nav-btn{
+  min-height:48px !important;
+  height:48px !important;
+  padding:4px 0 1px !important;
+  gap:2px !important;
+}
+.bottom-nav .nav-btn i{font-size:17px !important;}
+.bottom-nav .nav-btn span{font-size:7.5px !important;}
+
+/* Prevent long text from forcing cards wider */
+.glass-card,.field-wrap,.view-only-box,.quick-tile{
+  min-width:0;
+}
+.glass-card *{max-width:100%;}
+.voi-value,.field-input{overflow-wrap:anywhere;}
+
+/* Phone sizes */
+@media(max-width:380px){
+  .app-main{padding-left:7px !important;padding-right:7px !important;}
+  .glass-card{padding:10px !important;}
+  button,.btn,.btn-primary,.btn-outline{
+    padding-left:10px !important;
+    padding-right:10px !important;
+    font-size:12px !important;
+  }
+  .quick-access-grid .quick-tile{min-height:58px !important;}
+}
+</style>
+
 </head>
 <body>
 
