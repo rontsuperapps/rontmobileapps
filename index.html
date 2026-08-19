@@ -1425,6 +1425,143 @@ body { background: var(--bg-deep); }
   }
 }
 </style>
+
+<style id="v18-responsive-compact-normalization">
+/* V18: compact mobile + responsive normalization */
+:root {
+  --v18-control-h: 44px;
+  --v18-btn-h: 44px;
+  --v18-radius: 12px;
+  --v18-gap: 10px;
+}
+button,
+.btn,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  min-height: var(--v18-btn-h);
+  box-sizing: border-box;
+  border-radius: var(--v18-radius);
+  font-size: 14px;
+  line-height: 1.2;
+}
+button .icon,
+.btn .icon,
+button svg,
+.btn svg {
+  flex: 0 0 auto;
+}
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  box-sizing: border-box;
+  min-height: var(--v18-control-h);
+  border-radius: var(--v18-radius);
+}
+textarea {
+  min-height: 96px;
+}
+.card,
+.panel,
+.form-card,
+.section-card {
+  box-sizing: border-box;
+}
+table {
+  max-width: 100%;
+}
+.table-wrap,
+.table-responsive,
+.recon-pivot-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+  .container,
+  .page-container,
+  .content,
+  main {
+    max-width: 100%;
+  }
+  .card,
+  .panel,
+  .form-card,
+  .section-card {
+    margin-bottom: 10px;
+  }
+  .recon-dashboard-head-actions {
+    flex-direction: row;
+    align-items: center;
+    gap: 7px;
+  }
+  .recon-dashboard-head-actions button,
+  .recon-dashboard-head-actions .btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+@media (max-width: 480px) {
+  :root {
+    --v18-btn-h: 42px;
+    --v18-control-h: 42px;
+  }
+  button,
+  .btn,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"] {
+    width: auto;
+    min-height: var(--v18-btn-h);
+    padding: 0 14px;
+  }
+  .recon-dashboard-head-actions {
+    width: auto;
+  }
+  .recon-dashboard-head-actions button,
+  .recon-dashboard-head-actions .btn {
+    min-height: 42px;
+  }
+}
+/* Functional color semantics: retain existing brand blue, add clear states. */
+button.primary,
+.btn-primary,
+button[data-action="save"],
+button[data-action="update"],
+.btn-save,
+.btn-update {
+  background: #2563eb;
+  color: #fff;
+}
+button.secondary,
+.btn-secondary,
+button[data-action="cancel"],
+.btn-cancel {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+button.danger,
+.btn-danger,
+button[data-action="delete"] {
+  background: #dc2626;
+  color: #fff;
+}
+button.success,
+.btn-success {
+  background: #16a34a;
+  color: #fff;
+}
+button:disabled,
+.btn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+</style>
+
 </head>
 <body>
 
