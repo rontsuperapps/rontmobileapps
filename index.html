@@ -1947,18 +1947,18 @@ body { background: var(--bg-deep); }
         <div class="recon-dashboard-grid">
           <div class="recon-dashboard-stat done">
             <div class="recon-dashboard-stat-label">DONE</div>
-            <div class="recon-dashboard-stat-number" id="reconPaymentDoneNoInet">0</div>
-            <div class="recon-dashboard-stat-detail">No Inet · HSS <strong id="reconPaymentDoneHss">0</strong></div>
+            <div class="recon-dashboard-stat-number" id="reconPaymentDoneHss">Rp. 0</div>
+            <div class="recon-dashboard-stat-detail">No Inet <strong id="reconPaymentDoneNoInet">0</strong></div>
           </div>
           <div class="recon-dashboard-stat notyet">
             <div class="recon-dashboard-stat-label">NOT YET</div>
-            <div class="recon-dashboard-stat-number" id="reconPaymentNotYetNoInet">0</div>
-            <div class="recon-dashboard-stat-detail">No Inet · HSS <strong id="reconPaymentNotYetHss">0</strong></div>
+            <div class="recon-dashboard-stat-number" id="reconPaymentNotYetHss">Rp. 0</div>
+            <div class="recon-dashboard-stat-detail">No Inet <strong id="reconPaymentNotYetNoInet">0</strong></div>
           </div>
           <div class="recon-dashboard-stat total">
             <div class="recon-dashboard-stat-label">TOTAL</div>
-            <div class="recon-dashboard-stat-number" id="reconPaymentTotalNoInet">0</div>
-            <div class="recon-dashboard-stat-detail">Semua No Inet · HSS <strong id="reconPaymentTotalHss">0</strong></div>
+            <div class="recon-dashboard-stat-number" id="reconPaymentTotalHss">Rp. 0</div>
+            <div class="recon-dashboard-stat-detail">Semua No Inet <strong id="reconPaymentTotalNoInet">0</strong></div>
           </div>
         </div>
       </div>
@@ -3862,6 +3862,14 @@ function _reconDashboardFmt(value) {
   return n.toLocaleString('id-ID', { maximumFractionDigits: 2 });
 }
 
+function _reconDashboardCurrency(value) {
+  const n = Number(value || 0);
+  return 'Rp. ' + n.toLocaleString('id-ID', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+}
+
 function _reconDashboardSet(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
@@ -3883,12 +3891,12 @@ function _renderReconciliationDashboard(res) {
   if (!res || !res.success) throw new Error((res && res.message) || 'Data dashboard tidak tersedia.');
 
   _reconDashboardSet('reconDashboardNik', res.nik || '-');
+  _reconDashboardSet('reconPaymentDoneHss', _reconDashboardCurrency(res.statusPayment.done.hss));
   _reconDashboardSet('reconPaymentDoneNoInet', _reconDashboardFmt(res.statusPayment.done.noInet));
-  _reconDashboardSet('reconPaymentDoneHss', _reconDashboardFmt(res.statusPayment.done.hss));
+  _reconDashboardSet('reconPaymentNotYetHss', _reconDashboardCurrency(res.statusPayment.notYet.hss));
   _reconDashboardSet('reconPaymentNotYetNoInet', _reconDashboardFmt(res.statusPayment.notYet.noInet));
-  _reconDashboardSet('reconPaymentNotYetHss', _reconDashboardFmt(res.statusPayment.notYet.hss));
+  _reconDashboardSet('reconPaymentTotalHss', _reconDashboardCurrency(res.taskPayment.total.hss));
   _reconDashboardSet('reconPaymentTotalNoInet', _reconDashboardFmt(res.taskPayment.total.noInet));
-  _reconDashboardSet('reconPaymentTotalHss', _reconDashboardFmt(res.taskPayment.total.hss));
 
   _reconDashboardStat(res.taskPayment.pending, 'reconTaskPendingNoInet', 'reconTaskPendingHss');
   _reconDashboardStat(res.taskPayment.process, 'reconTaskProcessNoInet', 'reconTaskProcessHss');
