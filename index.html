@@ -6629,5 +6629,121 @@ window.addEventListener('DOMContentLoaded', function () {
 })();
 </script>
 
+
+<script id="v39-android-back-navigation">
+/* =========================================================
+   V39 — Android/PWA Back Navigation
+   Adds browser-history entries on top of the existing goTo()
+   navigation without replacing existing menu functions.
+========================================================= */
+(function () {
+  'use strict';
+
+  var V39 = {
+    enabled: true,
+    initialized: false,
+    internalBack: false,
+
+    getCurrentScreen: function () {
+      var active = document.querySelector('.screen.active');
+      return active ? active.id.replace(/^screen-/, '') : null;
+    },
+
+    isPublicScreen: function (screen) {
+      return screen === 'login' || screen === 'resetpw';
+    },
+
+    push: function (screen, replace) {
+      if (!this.enabled || !screen) return;
+
+      var state = {
+        v39: true,
+        screen: screen
+      };
+
+      var url = location.pathname + location.search +
+        (screen ? '#/' + encodeURIComponent(screen) : '');
+
+      if (replace) {
+        history.replaceState(state, '', url);
+      } else {
+        history.pushState(state, '', url);
+      }
+    },
+
+    restore: function (screen) {
+      if (!screen) return;
+
+      /* Use the application's existing navigation function.
+         No business logic is duplicated here. */
+      if (typeof window.goTo === 'function') {
+        this.internalBack = true;
+        try {
+          window.goTo(screen);
+        } finally {
+          this.internalBack = false;
+        }
+      }
+    },
+
+    init: function () {
+      if (this.initialized) return;
+      this.initialized = true;
+
+      var initial = this.getCurrentScreen() || 'login';
+
+      /* Establish the first history state without creating
+         an extra Back step. */
+      if (!history.state || !history.state.v39) {
+        this.push(initial, true);
+      }
+
+      window.addEventListener('popstate', function (event) {
+        var state = event.state;
+
+        if (state && state.v39 && state.screen) {
+          V39.restore(state.screen);
+          return;
+        }
+
+        /* If the browser reaches a history entry that predates
+           the app, allow the normal browser/PWA behavior. */
+      });
+
+      /* Watch the active screen. Existing goTo() remains the
+         source of truth; this observer only records navigation. */
+      var last = initial;
+      var observer = new MutationObserver(function () {
+        if (V39.internalBack) return;
+
+        var current = V39.getCurrentScreen();
+        if (!current || current === last) return;
+
+        last = current;
+
+        /* Public auth screens should not create an app-menu
+           history chain. Replace instead of push. */
+        V39.push(current, V39.isPublicScreen(current));
+      });
+
+      document.querySelectorAll('.screen').forEach(function (screen) {
+        observer.observe(screen, {
+          attributes: true,
+          attributeFilter: ['class']
+        });
+      });
+    }
+  };
+
+  window.addEventListener('DOMContentLoaded', function () {
+    /* Wait one frame so the existing app can establish its
+       initial active screen first. */
+    requestAnimationFrame(function () {
+      V39.init();
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
