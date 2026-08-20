@@ -3000,6 +3000,42 @@ button[class*="btn-"]{
 }
 </style>
 
+
+<style id="v40-order-update-ux">
+/* V40 — visual distinction between view-only and edit states. */
+#screen-orderUpdate.order-update-view-mode .field-input[readonly],
+#screen-orderUpdate.order-update-view-mode .field-select:disabled{
+  background:var(--surface-2, rgba(148,163,184,.08)) !important;
+  color:var(--text-main, inherit) !important;
+  opacity:.82 !important;
+  cursor:default !important;
+}
+
+#screen-orderUpdate.order-update-view-mode .order-edit-only-control,
+#screen-orderUpdate.order-update-view-mode .scan-trigger{
+  display:none !important;
+}
+
+/* Exactly two actions are visible in each state. */
+#screen-orderUpdate #btnCancelUpdateOrder,
+#screen-orderUpdate #btnEditOrder,
+#screen-orderUpdate #btnSaveOrder{
+  flex:1 1 0 !important;
+  min-width:0 !important;
+}
+
+#screen-orderUpdate #btnEditOrder,
+#screen-orderUpdate #btnSaveOrder{
+  margin:0 !important;
+}
+
+@media (max-width:430px){
+  #screen-orderUpdate .order-action-row{
+    gap:8px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -3857,14 +3893,14 @@ button[class*="btn-"]{
           <i class="ic-location field-icon"></i>
           <input id="updKoordinatPelanggan" type="text" placeholder="lat, long" class="field-input">
         </div>
-        <button type="button" class="btn-outline" onclick="ambilLokasiOrderUpdate()"><i class="ic-location"></i> Get Sistem Koordinat (GPS)</button>
+        <button type="button" id="btnGetOrderGps" class="btn-outline order-edit-only-control" onclick="ambilLokasiOrderUpdate()"><i class="ic-location"></i> Get Sistem Koordinat (GPS)</button>
 
         <div class="field-wrap">
           <label class="field-label">Alamat</label>
           <i class="ic-location field-icon"></i>
           <input id="updAlamat" type="text" placeholder="Opsional" class="field-input">
         </div>
-        <button type="button" class="btn-outline" onclick="ambilAlamatOrderUpdate()"><i class="ic-location"></i> Get Sistem Alamat by Koordinat</button>
+        <button type="button" id="btnGetOrderAddress" class="btn-outline order-edit-only-control" onclick="ambilAlamatOrderUpdate()"><i class="ic-location"></i> Get Sistem Alamat by Koordinat</button>
 
         <div class="field-wrap" style="margin-bottom:0;">
           <label class="field-label">Status Pelanggan</label>
@@ -3989,7 +4025,7 @@ button[class*="btn-"]{
           </div>
         </div>
 
-        <div style="display:flex; gap:10px; margin-top:16px;">
+        <div class="order-action-row" style="display:flex; gap:10px; margin-top:16px;">
           <button type="button" id="btnCancelUpdateOrder" class="btn-outline" style="flex:1; margin:0;" onclick="cancelUpdateOrder()">
             <i class="ic-arrow-left"></i> Batal
           </button>
@@ -6741,6 +6777,107 @@ window.addEventListener('DOMContentLoaded', function () {
     requestAnimationFrame(function () {
       V39.init();
     });
+  });
+})();
+</script>
+
+
+<script id="v40-order-update-mode">
+/* =========================================================
+   V40 — Order Update two-step UX
+   Step 1: View-only (Batal + Update)
+   Step 2: Edit mode (Batal + Simpan)
+   Existing API/save logic remains untouched.
+========================================================= */
+(function () {
+  'use strict';
+
+  function applyOrderViewMode(editMode) {
+    var ids = [
+      'updNamaPelanggan',
+      'updNomorHp',
+      'updKoordinatPelanggan',
+      'updAlamat',
+      'updTicketIdDispatch',
+      'updManjaDatePicker',
+      'updJamManjaPicker',
+      'updKeteranganManja',
+      'updKendalaLainText',
+      'updSnOntLama',
+      'updSnOntBaru',
+      'updValinsId',
+      'updKeteranganClose'
+    ];
+
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.readOnly = !editMode;
+        el.setAttribute('aria-readonly', editMode ? 'false' : 'true');
+      }
+    });
+
+    ['updStatusPelanggan', 'updPaketSpeed', 'updTargetProdukOnt'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) {
+        el.readOnly = true;
+        el.setAttribute('aria-readonly', 'true');
+      }
+    });
+
+    var reason = document.getElementById('updKendalaReason');
+    if (reason) reason.disabled = !editMode;
+
+    ['btnGetOrderGps', 'btnGetOrderAddress'].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn) btn.style.display = editMode ? 'inline-flex' : 'none';
+    });
+
+    document.querySelectorAll('#screen-orderUpdate .scan-trigger').forEach(function (el) {
+      el.style.display = editMode ? '' : 'none';
+    });
+
+    var editBtn = document.getElementById('btnEditOrder');
+    var saveBtn = document.getElementById('btnSaveOrder');
+    var cancelBtn = document.getElementById('btnCancelUpdateOrder');
+
+    if (editBtn) editBtn.style.display = editMode ? 'none' : 'inline-flex';
+    if (saveBtn) saveBtn.style.display = editMode ? 'inline-flex' : 'none';
+    if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+
+    var statusEditor = document.getElementById('updateStatusEditor');
+    if (statusEditor) statusEditor.style.display = editMode ? 'block' : 'none';
+
+    var screen = document.getElementById('screen-orderUpdate');
+    if (screen) screen.classList.toggle('order-update-view-mode', !editMode);
+  }
+
+  function patchModeFunction() {
+    if (typeof window.setOrderUpdateMode !== 'function' || window.__v40Patched) return;
+    var original = window.setOrderUpdateMode;
+
+    window.setOrderUpdateMode = function (editMode, currentStatus) {
+      original.call(this, editMode, currentStatus);
+      applyOrderViewMode(!!editMode);
+    };
+
+    window.__v40Patched = true;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    patchModeFunction();
+
+    /* Initial state is explicitly view-only. */
+    applyOrderViewMode(false);
+
+    /* Existing openUpdate is retained; this only guarantees that the
+       screen never exposes edit controls while the data is loading. */
+    var screen = document.getElementById('screen-orderUpdate');
+    if (screen) {
+      new MutationObserver(function () {
+        patchModeFunction();
+      }).observe(screen, { attributes: true, attributeFilter: ['class'] });
+    }
   });
 })();
 </script>
