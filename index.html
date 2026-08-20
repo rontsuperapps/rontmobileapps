@@ -3036,6 +3036,35 @@ button[class*="btn-"]{
 }
 </style>
 
+
+<style id="v41-order-update-button-state-fix">
+/* =========================================================
+   V41 — Order Update: exactly 2 action buttons per state.
+   Fixes V38 global button {display:inline-flex!important}
+   overriding setOrderUpdateMode() inline display.
+========================================================= */
+
+/* VIEW-ONLY STATE: Batal + Update */
+#screen-orderUpdate:not(.order-update-edit-mode) #btnCancelUpdateOrder,
+#screen-orderUpdate:not(.order-update-edit-mode) #btnEditOrder{
+  display:inline-flex !important;
+}
+
+#screen-orderUpdate:not(.order-update-edit-mode) #btnSaveOrder{
+  display:none !important;
+}
+
+/* EDIT STATE: Batal + Simpan */
+#screen-orderUpdate.order-update-edit-mode #btnCancelUpdateOrder,
+#screen-orderUpdate.order-update-edit-mode #btnSaveOrder{
+  display:inline-flex !important;
+}
+
+#screen-orderUpdate.order-update-edit-mode #btnEditOrder{
+  display:none !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -6160,6 +6189,11 @@ function openUpdate(noInet) {
 
 function setOrderUpdateMode(editMode, currentStatus) {
   orderUpdateEditMode = !!editMode;
+  const orderUpdateScreen = document.getElementById('screen-orderUpdate');
+  if (orderUpdateScreen) {
+    orderUpdateScreen.classList.toggle('order-update-edit-mode', orderUpdateEditMode);
+    orderUpdateScreen.classList.toggle('order-update-view-mode', !orderUpdateEditMode);
+  }
 
   const editableFields = ['updNamaPelanggan','updNomorHp','updKoordinatPelanggan','updAlamat','updTicketIdDispatch','updManjaDatePicker','updJamManjaPicker','updKeteranganManja','updKendalaLainText','updSnOntLama','updSnOntBaru','updValinsId','updKeteranganClose'];
   editableFields.forEach(id => { const el = document.getElementById(id); if (el) el.readOnly = !orderUpdateEditMode; });
@@ -6849,7 +6883,10 @@ window.addEventListener('DOMContentLoaded', function () {
     if (statusEditor) statusEditor.style.display = editMode ? 'block' : 'none';
 
     var screen = document.getElementById('screen-orderUpdate');
-    if (screen) screen.classList.toggle('order-update-view-mode', !editMode);
+    if (screen) {
+      screen.classList.toggle('order-update-view-mode', !editMode);
+      screen.classList.toggle('order-update-edit-mode', !!editMode);
+    }
   }
 
   function patchModeFunction() {
