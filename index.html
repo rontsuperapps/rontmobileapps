@@ -3204,6 +3204,570 @@ button[class*="btn-"]{
 }
 </style>
 
+
+<style id="v42-4-notification-system">
+/* =========================================================
+   V42.4 — Unified Notification System
+   - No native browser alert/confirm/prompt.
+   - Toast stays compact and inside the PWA visual width.
+   - Telegram registration uses one in-app modal only.
+========================================================= */
+
+/* Toast: never stretch across the desktop viewport. */
+#toastWrap{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:calc(78px + env(safe-area-inset-bottom)) !important;
+  transform:translateX(-50%) !important;
+  width:min(420px, calc(100vw - 32px)) !important;
+  max-width:420px !important;
+  min-width:0 !important;
+  z-index:100000 !important;
+  pointer-events:none !important;
+  box-sizing:border-box !important;
+}
+#toast{
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  overflow:hidden !important;
+}
+#toastMsg{
+  min-width:0 !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+
+/* Public/login screen: toast remains inside compact app width on desktop. */
+@media (min-width:481px){
+  #toastWrap{
+    width:420px !important;
+  }
+}
+
+/* In-app confirmation for Telegram registration. */
+#telegramRegisterOverlay{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:100001 !important;
+  display:none;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:16px !important;
+  box-sizing:border-box !important;
+  background:rgba(15,23,42,.48) !important;
+  backdrop-filter:blur(3px) !important;
+  -webkit-backdrop-filter:blur(3px) !important;
+}
+#telegramRegisterOverlay.show{
+  display:flex !important;
+}
+#telegramRegisterDialog{
+  width:min(390px, calc(100vw - 32px)) !important;
+  max-width:390px !important;
+  box-sizing:border-box !important;
+  background:var(--glass-bg, #fff) !important;
+  color:var(--text-main, #111827) !important;
+  border:1px solid var(--glass-border, #e5e7eb) !important;
+  border-radius:18px !important;
+  padding:18px !important;
+  box-shadow:0 22px 55px rgba(15,23,42,.24) !important;
+}
+#telegramRegisterIcon{
+  width:42px !important;
+  height:42px !important;
+  margin:0 0 12px !important;
+  border-radius:12px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:var(--accent-soft, #eaf1ff) !important;
+  color:var(--accent, #155EEF) !important;
+  font-size:20px !important;
+}
+#telegramRegisterTitle{
+  font-size:16px !important;
+  line-height:1.25 !important;
+  font-weight:800 !important;
+  margin:0 0 6px !important;
+}
+#telegramRegisterText{
+  font-size:12px !important;
+  line-height:1.5 !important;
+  color:var(--text-muted, #667085) !important;
+  margin:0 !important;
+}
+#telegramRegisterActions{
+  display:flex !important;
+  gap:8px !important;
+  margin-top:16px !important;
+}
+#telegramRegisterActions button{
+  flex:1 1 0 !important;
+  min-width:0 !important;
+}
+#telegramRegisterCancel{
+  background:transparent !important;
+  color:var(--accent, #155EEF) !important;
+}
+@media (max-width:360px){
+  #telegramRegisterDialog{padding:15px !important;border-radius:16px !important;}
+  #telegramRegisterActions{gap:7px !important;}
+}
+
+/* Prevent stale toast when an in-app modal is opened. */
+body.telegram-register-open #toastWrap{
+  display:none !important;
+}
+</style>
+
+
+<style id="v42-5-icon-system-consolidated">
+/* =========================================================
+   V42.5 — CONSOLIDATED ICON SYSTEM
+   Visual-only cleanup. Existing JS/API/business logic is kept.
+   One source of truth for icon geometry; no icon is allowed to
+   float over a label/value.
+========================================================= */
+
+/* ---- 1. Common inline icon + text controls ---- */
+button, .btn, .btn-primary, .btn-outline, a.btn,
+.modal-actions > *, .recon-dashboard-head-actions > * {
+  box-sizing:border-box !important;
+  align-items:center !important;
+}
+
+button:not(.nav-btn):not(.quick-tile),
+.btn:not(.nav-btn):not(.quick-tile),
+.btn-primary:not(.nav-btn):not(.quick-tile),
+.btn-outline:not(.nav-btn):not(.quick-tile),
+a.btn {
+  display:inline-flex !important;
+  flex-direction:row !important;
+  justify-content:center !important;
+  gap:7px !important;
+  white-space:nowrap !important;
+}
+
+button:not(.nav-btn):not(.quick-tile) > i[class*="ic-"],
+button:not(.nav-btn):not(.quick-tile) > svg,
+button:not(.nav-btn):not(.quick-tile) > .icon,
+.btn:not(.nav-btn):not(.quick-tile) > i[class*="ic-"],
+.btn:not(.nav-btn):not(.quick-tile) > svg,
+.btn:not(.nav-btn):not(.quick-tile) > .icon,
+a.btn > i[class*="ic-"], a.btn > svg,
+.modal-actions > * > i[class*="ic-"],
+.recon-dashboard-head-actions > * > i[class*="ic-"] {
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  float:none !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 15px !important;
+  width:15px !important;
+  min-width:15px !important;
+  max-width:15px !important;
+  height:15px !important;
+  min-height:15px !important;
+  max-height:15px !important;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:1 !important;
+  vertical-align:middle !important;
+}
+
+/* ---- 2. Field icons: center against the INPUT, not the whole field-wrap ---- */
+.field-wrap{
+  position:relative !important;
+  --field-icon-center:30px;
+}
+
+.field-wrap > .field-icon,
+.field-wrap > .field-icon-right,
+.field-wrap > .field-action-icon{
+  position:absolute !important;
+  top:var(--field-icon-center) !important;
+  bottom:auto !important;
+  transform:translateY(-50%) !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  max-width:16px !important;
+  max-height:16px !important;
+  margin:0 !important;
+  padding:0 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:4 !important;
+  line-height:1 !important;
+}
+
+.field-wrap > .field-icon{
+  left:12px !important;
+  right:auto !important;
+  pointer-events:none !important;
+}
+
+.field-wrap > .field-icon-right,
+.field-wrap > .field-action-icon{
+  left:auto !important;
+  right:12px !important;
+}
+
+.field-wrap > .field-icon i[class*="ic-"],
+.field-wrap > .field-icon svg,
+.field-wrap > .field-icon-right i[class*="ic-"],
+.field-wrap > .field-icon-right svg,
+.field-wrap > .field-action-icon i[class*="ic-"],
+.field-wrap > .field-action-icon svg{
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  display:block !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  max-width:16px !important;
+  max-height:16px !important;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:1 !important;
+}
+
+.field-wrap > .field-icon ~ .field-input,
+.field-wrap > .field-icon ~ .field-select,
+.field-wrap > .field-icon ~ textarea.field-input{
+  padding-left:42px !important;
+}
+
+.field-wrap > .field-icon-right ~ .field-input,
+.field-wrap > .field-action-icon ~ .field-input{
+  padding-right:42px !important;
+}
+
+/* Login/reset use the same geometry; only the control height changes the computed center. */
+#screen-login .field-wrap,
+#screen-resetpw .field-wrap{
+  position:relative !important;
+}
+#screen-login .field-wrap > .field-icon,
+#screen-resetpw .field-wrap > .field-icon{
+  left:13px !important;
+}
+#screen-login .field-wrap > .field-icon-right,
+#screen-resetpw .field-wrap > .field-icon-right{
+  right:13px !important;
+}
+#screen-login .field-wrap > .field-input,
+#screen-resetpw .field-wrap > .field-input{
+  padding-left:43px !important;
+}
+#screen-login .field-wrap > .field-input:has(+ .field-icon-right),
+#screen-resetpw .field-wrap > .field-input:has(+ .field-icon-right){
+  padding-right:43px !important;
+}
+
+/* ---- 3. Header/action icons: centered inside their own button ---- */
+.app-header .header-icon,
+.app-header .theme-toggle,
+.app-header .notif-btn,
+.app-header .back-circle{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+.app-header .header-icon > i[class*="ic-"],
+.app-header .theme-toggle > i[class*="ic-"],
+.app-header .notif-btn > i[class*="ic-"],
+.app-header .back-circle > i[class*="ic-"],
+.app-header svg{
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  min-height:16px !important;
+  margin:0 !important;
+}
+
+/* ---- 4. Icon + text rows/cards ---- */
+.icon-text, .icon-label, .label-with-icon, .row-icon-text,
+.list-item-icon, .menu-item, .action-row{
+  display:flex !important;
+  align-items:center !important;
+}
+
+.icon-text > i[class*="ic-"], .icon-label > i[class*="ic-"],
+.label-with-icon > i[class*="ic-"], .row-icon-text > i[class*="ic-"],
+.list-item-icon > i[class*="ic-"], .menu-item > i[class*="ic-"],
+.action-row > i[class*="ic-"]{
+  position:static !important;
+  transform:none !important;
+  flex:0 0 16px !important;
+  width:16px !important;
+  height:16px !important;
+  margin:0 7px 0 0 !important;
+}
+
+/* ---- 5. Quick menu: icon-above-label is intentional, but centered consistently ---- */
+.quick-access-grid .quick-tile{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  gap:5px !important;
+}
+.quick-access-grid .quick-tile .qt-icon{
+  position:static !important;
+  transform:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 34px !important;
+  width:34px !important;
+  height:34px !important;
+  min-width:34px !important;
+  min-height:34px !important;
+}
+.quick-access-grid .quick-tile .qt-icon i[class*="ic-"],
+.quick-access-grid .quick-tile .qt-icon svg{
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  display:block !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  margin:0 !important;
+}
+
+/* ---- 6. Bottom nav: all 7 items share identical geometry ---- */
+.app-shell .bottom-nav{
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(0,1fr)) !important;
+  align-items:end !important;
+  gap:2px !important;
+}
+.app-shell .bottom-nav .nav-btn{
+  position:relative !important;
+  width:100% !important;
+  min-width:0 !important;
+  height:50px !important;
+  min-height:50px !important;
+  padding:4px 1px 3px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  overflow:visible !important;
+  border-radius:10px !important;
+}
+.app-shell .bottom-nav .nav-btn > i[class*="ic-"],
+.app-shell .bottom-nav .nav-btn > svg{
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  flex:0 0 18px !important;
+  width:18px !important;
+  min-width:18px !important;
+  max-width:18px !important;
+  height:18px !important;
+  min-height:18px !important;
+  max-height:18px !important;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:18px !important;
+}
+.app-shell .bottom-nav .nav-btn > span{
+  display:block !important;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  white-space:nowrap !important;
+  text-align:center !important;
+  font-size:8px !important;
+  line-height:1 !important;
+}
+
+/* Scan SN must NOT become a different-sized floating button. */
+.app-shell .bottom-nav .nav-btn-scan,
+.app-shell .bottom-nav .nav-btn-scan:hover,
+.app-shell .bottom-nav .nav-btn-scan:focus,
+.app-shell .bottom-nav .nav-btn-scan:active{
+  transform:none !important;
+  color:inherit !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+.app-shell .bottom-nav .nav-btn-scan > i[class*="ic-"],
+.app-shell .bottom-nav .nav-btn-scan > svg,
+.app-shell .bottom-nav .nav-btn-scan > i.ic-scan{
+  position:static !important;
+  inset:auto !important;
+  transform:none !important;
+  display:flex !important;
+  flex:0 0 18px !important;
+  width:18px !important;
+  min-width:18px !important;
+  height:18px !important;
+  min-height:18px !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:inherit !important;
+  box-shadow:none !important;
+  -webkit-mask-image:none !important;
+  mask-image:none !important;
+}
+.app-shell .bottom-nav .nav-btn-scan > i.ic-scan::before{
+  content:none !important;
+}
+.app-shell .bottom-nav .nav-btn-scan > span{
+  font-weight:700 !important;
+}
+
+/* ---- 7. Icon-only controls stay centered and do not inherit text gaps ---- */
+.icon-only, button[data-icon-only="true"], .btn-icon{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:0 !important;
+}
+.icon-only > i[class*="ic-"], .btn-icon > i[class*="ic-"]{
+  position:static !important;
+  transform:none !important;
+  margin:0 !important;
+}
+
+/* ---- 8. Remove legacy inline offsets from icons, then restore only the correct class geometry ---- */
+button i[class*="ic-"][style], .btn i[class*="ic-"][style],
+.field-icon[style], .field-icon-right[style], .field-action-icon[style]{
+  bottom:auto !important;
+  left:auto !important;
+  right:auto !important;
+  transform:none !important;
+}
+.field-wrap > .field-icon[style]{
+  left:12px !important;
+  top:var(--field-icon-center) !important;
+  transform:translateY(-50%) !important;
+}
+.field-wrap > .field-icon-right[style],
+.field-wrap > .field-action-icon[style]{
+  right:12px !important;
+  top:var(--field-icon-center) !important;
+  transform:translateY(-50%) !important;
+}
+
+@media (max-width:389px){
+  .app-shell .bottom-nav .nav-btn > span{font-size:7.5px !important;}
+}
+</style>
+
+
+<style id="v42-6-login-icon-geometry">
+/* =========================================================
+   V42.6 — LOGIN/RESET ICON GEOMETRY
+   The auth field now has a dedicated control wrapper.
+   Icons are positioned against the actual input box, not the
+   label + input field-wrap. This removes all legacy cascade/JS
+   positioning ambiguity on the public authentication screens.
+========================================================= */
+#screen-login .login-auth-field,
+#screen-resetpw .login-auth-field{
+  position:relative !important;
+}
+
+#screen-login .login-field-control,
+#screen-resetpw .login-field-control{
+  position:relative !important;
+  width:100% !important;
+  height:44px !important;
+  min-height:44px !important;
+}
+
+#screen-login .login-field-control > .field-input,
+#screen-resetpw .login-field-control > .field-input{
+  box-sizing:border-box !important;
+  width:100% !important;
+  height:44px !important;
+  min-height:44px !important;
+  padding-left:43px !important;
+}
+
+#screen-login .login-field-control > .field-input:has(+ .field-icon-right),
+#screen-resetpw .login-field-control > .field-input:has(+ .field-icon-right){
+  padding-right:43px !important;
+}
+
+#screen-login .login-field-control > .field-icon,
+#screen-resetpw .login-field-control > .field-icon,
+#screen-login .login-field-control > .field-icon-right,
+#screen-resetpw .login-field-control > .field-icon-right{
+  position:absolute !important;
+  top:50% !important;
+  bottom:auto !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  max-width:17px !important;
+  max-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(-50%) !important;
+  display:block !important;
+  z-index:5 !important;
+  line-height:1 !important;
+  vertical-align:initial !important;
+}
+
+#screen-login .login-field-control > .field-icon,
+#screen-resetpw .login-field-control > .field-icon{
+  left:13px !important;
+  right:auto !important;
+  pointer-events:none !important;
+}
+
+#screen-login .login-field-control > .field-icon-right,
+#screen-resetpw .login-field-control > .field-icon-right{
+  left:auto !important;
+  right:13px !important;
+  cursor:pointer !important;
+}
+
+/* The icon itself is the mask element; do not apply positioning to a
+   nested child because there is no nested SVG/element. */
+#screen-login .login-field-control > i[class*="ic-"],
+#screen-resetpw .login-field-control > i[class*="ic-"]{
+  background-color:currentColor !important;
+  -webkit-mask-position:center !important;
+  mask-position:center !important;
+  -webkit-mask-repeat:no-repeat !important;
+  mask-repeat:no-repeat !important;
+  -webkit-mask-size:contain !important;
+  mask-size:contain !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -3215,6 +3779,22 @@ button[class*="btn-"]{
 </script>
 
 <div id="toastWrap"><div class="toast-box" id="toast"><i id="toastIcon" class="ic-check"></i><span id="toastMsg"></span></div></div>
+
+<!-- V42.4: in-app Telegram registration confirmation (replaces native confirm()) -->
+<div id="telegramRegisterOverlay" role="dialog" aria-modal="true" aria-labelledby="telegramRegisterTitle">
+  <div id="telegramRegisterDialog">
+    <div id="telegramRegisterIcon" aria-hidden="true"><i class="ic-send"></i></div>
+    <h3 id="telegramRegisterTitle">Telegram ID belum terdaftar</h3>
+    <p id="telegramRegisterText">
+      NIK Anda ditemukan, tetapi Telegram ID belum terhubung. Silakan daftar terlebih dahulu melalui Bot Telegram.
+    </p>
+    <div id="telegramRegisterActions">
+      <button type="button" class="btn-outline" id="telegramRegisterCancel">Batal</button>
+      <button type="button" class="btn-primary" id="telegramRegisterOpen">Daftar via Bot</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- Foto Justifikasi TETAP boleh dari galeri (dokumen bukti transaksi, bukan selfie) -->
 <input type="file" id="justifikasiPhotoInput" accept="image/*" style="display:none;" onchange="handleJustifikasiPhoto(event)">
@@ -3382,17 +3962,21 @@ button[class*="btn-"]{
             <div class="login-access-label">AKSES TEKNISI</div>
           </div>
 
-          <div class="field-wrap">
+          <div class="field-wrap login-auth-field">
             <label class="field-label">NIK Teknisi</label>
-            <i class="ic-badge field-icon"></i>
-            <input id="loginNik" type="text" placeholder="Masukkan NIK" class="field-input">
+            <div class="login-field-control">
+              <i class="ic-badge field-icon" aria-hidden="true"></i>
+              <input id="loginNik" type="text" placeholder="Masukkan NIK" class="field-input">
+            </div>
           </div>
 
-          <div class="field-wrap">
+          <div class="field-wrap login-auth-field">
             <label class="field-label">Password</label>
-            <i class="ic-lock field-icon"></i>
-            <input id="loginPassword" type="password" placeholder="Masukkan Password" class="field-input" autocomplete="new-password" name="ront_login_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') handleLogin(event)">
-            <i class="ic-eye field-icon-right" id="loginEyeIcon" onclick="togglePwd('loginPassword','loginEyeIcon')"></i>
+            <div class="login-field-control">
+              <i class="ic-lock field-icon" aria-hidden="true"></i>
+              <input id="loginPassword" type="password" placeholder="Masukkan Password" class="field-input" autocomplete="new-password" name="ront_login_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') handleLogin(event)">
+              <i class="ic-eye field-icon-right" id="loginEyeIcon" onclick="togglePwd('loginPassword','loginEyeIcon')" aria-label="Tampilkan password" role="button" tabindex="0"></i>
+            </div>
           </div>
 
           <div class="remember-row" onclick="toggleRemember()">
@@ -3447,10 +4031,12 @@ button[class*="btn-"]{
             <div class="reset-card-title">Verifikasi Akun</div>
             <div class="reset-card-sub">Masukkan NIK teknisi. Kode OTP akan dikirim ke Telegram yang terdaftar.</div>
           </div>
-          <div class="field-wrap">
+          <div class="field-wrap login-auth-field">
             <label class="field-label">NIK Teknisi</label>
-            <i class="ic-badge field-icon"></i>
-            <input id="resetNik" type="text" placeholder="Masukkan NIK" class="field-input">
+            <div class="login-field-control">
+              <i class="ic-badge field-icon" aria-hidden="true"></i>
+              <input id="resetNik" type="text" placeholder="Masukkan NIK" class="field-input">
+            </div>
           </div>
           <button id="btnResetLookup" onclick="handleRequestOtp(event)" class="btn-primary" style="margin-top:4px;">
             <div class="btn-inner"><div class="btn-spinner" id="resetLookupSpinner"></div><span id="resetLookupText">Kirim Kode OTP</span></div>
@@ -3467,16 +4053,20 @@ button[class*="btn-"]{
             <label class="field-label">Kode OTP</label>
             <input id="resetOtp" type="text" inputmode="numeric" maxlength="6" placeholder="••••••" class="field-input otp-input">
           </div>
-          <div class="field-wrap">
+          <div class="field-wrap login-auth-field">
             <label class="field-label">Password Baru</label>
-            <i class="ic-lock field-icon"></i>
-            <input id="resetPasswordNew" type="password" placeholder="Min. 4 karakter" class="field-input" autocomplete="new-password" name="ront_reset_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
-            <i class="ic-eye field-icon-right" id="resetPwEyeIcon" onclick="togglePwd('resetPasswordNew','resetPwEyeIcon')"></i>
+            <div class="login-field-control">
+              <i class="ic-lock field-icon" aria-hidden="true"></i>
+              <input id="resetPasswordNew" type="password" placeholder="Min. 4 karakter" class="field-input" autocomplete="new-password" name="ront_reset_pwd" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+              <i class="ic-eye field-icon-right" id="resetPwEyeIcon" onclick="togglePwd('resetPasswordNew','resetPwEyeIcon')" aria-label="Tampilkan password" role="button" tabindex="0"></i>
+            </div>
           </div>
-          <div class="field-wrap">
+          <div class="field-wrap login-auth-field">
             <label class="field-label">Konfirmasi Password Baru</label>
-            <i class="ic-lock field-icon"></i>
-            <input id="resetPasswordConfirm" type="password" placeholder="Ulangi password baru" class="field-input" autocomplete="new-password" name="ront_reset_pwd_confirm" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+            <div class="login-field-control">
+              <i class="ic-lock field-icon" aria-hidden="true"></i>
+              <input id="resetPasswordConfirm" type="password" placeholder="Ulangi password baru" class="field-input" autocomplete="new-password" name="ront_reset_pwd_confirm" data-lpignore="true" data-1p-ignore="true" data-form-type="other">
+            </div>
           </div>
           <button id="btnResetSubmit" onclick="handleVerifyOtpReset(event)" class="btn-primary" style="margin-top:4px;">
             <div class="btn-inner"><div class="btn-spinner" id="resetSubmitSpinner"></div><span id="resetSubmitText">Simpan Password Baru</span></div>
@@ -4741,6 +5331,9 @@ const RECON_SCREENS = ['reconciliation', 'reconciliationDashboard', 'reconciliat
 const REQUEST_SCREENS = ['request', 'requestConfig', 'requestTicket'];
 
 function goTo(screen) {
+  if (screen === 'login' || screen === 'resetpw') {
+    if (typeof closeTelegramRegisterModal === 'function') closeTelegramRegisterModal();
+  }
   // Matikan kamera presensi kalau user pindah dari layar presensi
   const leavingPresensi = document.getElementById('screen-presensiInput').classList.contains('active') && screen !== 'presensiInput';
   if (leavingPresensi) stopPresensiCamera();
@@ -4874,6 +5467,64 @@ function toggleRemember() {
 /* ============================================================
  *  LOGIN
  * ============================================================ */
+
+/* ============================================================
+ *  V42.4 — IN-APP TELEGRAM REGISTRATION MODAL
+ * ============================================================ */
+let _telegramRegisterUrl = '';
+
+function showTelegramRegisterModal(registerUrl) {
+  const overlay = document.getElementById('telegramRegisterOverlay');
+  const openBtn = document.getElementById('telegramRegisterOpen');
+  const cancelBtn = document.getElementById('telegramRegisterCancel');
+  if (!overlay || !openBtn || !cancelBtn) {
+    /* Safe fallback: keep one notification only. */
+    showToast('error', 'Telegram ID Anda belum terdaftar. Silakan daftar terlebih dahulu melalui Bot Telegram.');
+    return;
+  }
+
+  _telegramRegisterUrl = String(registerUrl || '').trim();
+  document.body.classList.add('telegram-register-open');
+  overlay.classList.add('show');
+  openBtn.focus();
+}
+
+function closeTelegramRegisterModal() {
+  const overlay = document.getElementById('telegramRegisterOverlay');
+  if (overlay) overlay.classList.remove('show');
+  document.body.classList.remove('telegram-register-open');
+  _telegramRegisterUrl = '';
+}
+
+function openTelegramRegister() {
+  const url = _telegramRegisterUrl;
+  closeTelegramRegisterModal();
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const overlay = document.getElementById('telegramRegisterOverlay');
+  const openBtn = document.getElementById('telegramRegisterOpen');
+  const cancelBtn = document.getElementById('telegramRegisterCancel');
+
+  if (openBtn) openBtn.addEventListener('click', openTelegramRegister);
+  if (cancelBtn) cancelBtn.addEventListener('click', closeTelegramRegisterModal);
+
+  if (overlay) {
+    overlay.addEventListener('click', function (event) {
+      if (event.target === overlay) closeTelegramRegisterModal();
+    });
+  }
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && overlay && overlay.classList.contains('show')) {
+      closeTelegramRegisterModal();
+    }
+  });
+});
+
 function handleLogin(e) {
   const btn = document.getElementById('btnLogin');
   if (!btn) return;
@@ -4933,30 +5584,18 @@ function handleLogin(e) {
         message = 'Telegram ID Anda belum terdaftar. Silakan daftar terlebih dahulu melalui Bot Telegram.';
       }
 
-      showToast('error', message);
+      /* Telegram registration is a single in-app notification.
+         Do NOT show both toast + native confirm. */
+      if (res && res.code === 'TELEGRAM_NOT_REGISTERED') {
+        showTelegramRegisterModal(res.registerUrl || '');
+      } else {
+        showToast('error', message);
+      }
 
       shakeEl(
         btn.closest('.login-form-card') ||
         document.getElementById('screen-login')
       );
-
-      /* If Telegram is not linked, offer the technician a direct
-         route to the registration bot without changing the layout. */
-      if (
-        res &&
-        res.code === 'TELEGRAM_NOT_REGISTERED' &&
-        res.registerUrl
-      ) {
-        setTimeout(() => {
-          const goRegister = window.confirm(
-            'Telegram ID Anda belum terdaftar.\n\n' +
-            'Daftar terlebih dahulu melalui Bot Telegram?'
-          );
-          if (goRegister) {
-            window.open(res.registerUrl, '_blank', 'noopener,noreferrer');
-          }
-        }, 250);
-      }
     })
     .catch(err => {
       resetLoading('btnLogin', 'loginSpinner', 'loginBtnText', 'Login');
@@ -7142,6 +7781,62 @@ window.addEventListener('DOMContentLoaded', function () {
       }).observe(screen, { attributes: true, attributeFilter: ['class'] });
     }
   });
+})();
+</script>
+
+
+<script id="v42-5-icon-system-js">
+/* =========================================================
+   V42.5 — FIELD ICON GEOMETRY SYNC
+   Measures the real input/select/textarea box and stores its
+   vertical center on the containing .field-wrap. This avoids
+   hard-coded calc() values and remains correct when labels,
+   font sizes or mobile breakpoints change.
+========================================================= */
+(function(){
+  'use strict';
+
+  function syncFieldIcons(root){
+    var scope = root || document;
+    scope.querySelectorAll('.field-wrap').forEach(function(wrap){
+      var control = wrap.querySelector('input.field-input, select.field-select, textarea.field-input');
+      if (!control) return;
+
+      var wrapRect = wrap.getBoundingClientRect();
+      var controlRect = control.getBoundingClientRect();
+      var center = (controlRect.top - wrapRect.top) + (controlRect.height / 2);
+      if (isFinite(center) && center > 0) {
+        wrap.style.setProperty('--field-icon-center', center + 'px');
+      }
+    });
+  }
+
+  function schedule(){
+    requestAnimationFrame(function(){
+      syncFieldIcons(document);
+      requestAnimationFrame(function(){ syncFieldIcons(document); });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', schedule);
+  window.addEventListener('load', schedule);
+  window.addEventListener('resize', schedule, {passive:true});
+  window.addEventListener('orientationchange', schedule, {passive:true});
+
+  /* Recalculate after a screen changes visibility/layout. */
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.screen').forEach(function(screen){
+      new MutationObserver(schedule).observe(screen, {
+        attributes:true,
+        attributeFilter:['class']
+      });
+    });
+  });
+
+  /* Fonts loading can change metrics after first paint. */
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(schedule).catch(function(){});
+  }
 })();
 </script>
 
