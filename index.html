@@ -3066,6 +3066,144 @@ button[class*="btn-"]{
 }
 </style>
 
+
+<style id="v42-3-frontend-login-safety">
+/* =========================================================
+   V42.3 — FRONTEND LOGIN / ICON SAFETY
+   No business/API logic changes.
+   Fixes:
+   1) null.classList crash from shakeEl()
+   2) login error feedback targets the actual login card
+   3) public login/reset screens never show authenticated nav
+   4) field icons stay in a fixed icon rail beside the text
+========================================================= */
+
+/* Public screens: authenticated navigation/header must stay hidden. */
+.app-shell:has(#screen-login.active) .bottom-nav,
+.app-shell:has(#screen-resetpw.active) .bottom-nav,
+.app-shell:has(#screen-login.active) .app-header,
+.app-shell:has(#screen-resetpw.active) .app-header,
+.bottom-nav.hidden-nav{
+  display:none !important;
+}
+
+.app-shell:has(#screen-login.active) .app-main,
+.app-shell:has(#screen-resetpw.active) .app-main{
+  padding-top:0 !important;
+}
+
+/* Login/reset field geometry: icon beside text, never over text. */
+#screen-login .field-wrap,
+#screen-resetpw .field-wrap{
+  position:relative !important;
+}
+
+#screen-login .field-wrap > .field-icon,
+#screen-resetpw .field-wrap > .field-icon{
+  position:absolute !important;
+  left:13px !important;
+  right:auto !important;
+  top:calc(1.4em + 6px + 22px) !important;
+  bottom:auto !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:5 !important;
+  pointer-events:none !important;
+}
+
+#screen-login .field-wrap > .field-icon-right,
+#screen-resetpw .field-wrap > .field-icon-right{
+  position:absolute !important;
+  left:auto !important;
+  right:13px !important;
+  top:calc(1.4em + 6px + 22px) !important;
+  bottom:auto !important;
+  width:17px !important;
+  height:17px !important;
+  min-width:17px !important;
+  min-height:17px !important;
+  margin:0 !important;
+  padding:0 !important;
+  transform:translateY(-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  z-index:5 !important;
+  cursor:pointer !important;
+}
+
+#screen-login .field-wrap > .field-icon i[class*="ic-"],
+#screen-login .field-wrap > .field-icon-right,
+#screen-resetpw .field-wrap > .field-icon i[class*="ic-"],
+#screen-resetpw .field-wrap > .field-icon-right{
+  line-height:1 !important;
+}
+
+#screen-login .field-wrap > .field-input,
+#screen-resetpw .field-wrap > .field-input{
+  padding-left:43px !important;
+}
+
+#screen-login .field-wrap > .field-input:has(+ .field-icon-right),
+#screen-resetpw .field-wrap > .field-input:has(+ .field-icon-right){
+  padding-right:43px !important;
+}
+
+/* Error feedback should not create a red glow on unrelated controls. */
+#screen-login .login-form-card.card-shake{
+  animation:cardShakeV423 .28s ease-in-out;
+}
+
+@keyframes cardShakeV423{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  75%{transform:translateX(4px)}
+}
+
+/* Keep button icons beside labels and centered. */
+#screen-login button,
+#screen-resetpw button{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:7px !important;
+}
+
+#screen-login button i[class*="ic-"],
+#screen-resetpw button i[class*="ic-"],
+#screen-login button svg,
+#screen-resetpw button svg{
+  position:static !important;
+  flex:0 0 15px !important;
+  width:15px !important;
+  height:15px !important;
+  min-width:15px !important;
+  min-height:15px !important;
+  margin:0 !important;
+  transform:none !important;
+}
+
+/* Toast text can wrap cleanly on narrow smartphones. */
+#toastWrap{
+  max-width:calc(100% - 28px) !important;
+}
+
+#toast{
+  width:auto !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  line-height:1.35 !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -4688,17 +4826,23 @@ function showToast(type, msg) {
  *  RIPPLE + SHAKE HELPER
  * ============================================================ */
 function addRipple(btn, e) {
-  if (!e) return;
+  if (!btn || !e) return;
   const rect = btn.getBoundingClientRect();
   const d = Math.max(btn.clientWidth, btn.clientHeight);
   const rip = document.createElement('span');
   rip.className = 'ripple';
   rip.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX-rect.left-d/2}px;top:${e.clientY-rect.top-d/2}px`;
   btn.appendChild(rip);
-  setTimeout(() => rip.remove(), 700);
+  setTimeout(() => { if (rip && rip.parentNode) rip.remove(); }, 700);
 }
+
 function shakeEl(el) {
-  el.classList.remove('card-shake'); void el.offsetWidth; el.classList.add('card-shake');
+  /* Null-safe: some screens do not have a .glass-card ancestor.
+     Never allow visual feedback to crash the current action. */
+  if (!el || !el.classList) return;
+  el.classList.remove('card-shake');
+  void el.offsetWidth;
+  el.classList.add('card-shake');
 }
 
 /* ============================================================
@@ -4707,8 +4851,14 @@ function shakeEl(el) {
 function togglePwd(inputId, iconId) {
   const inp = document.getElementById(inputId);
   const icon = document.getElementById(iconId);
-  if (inp.type === 'password') { inp.type = 'text'; icon.className = 'ic-eye-slash field-icon-right'; }
-  else { inp.type = 'password'; icon.className = 'ic-eye field-icon-right'; }
+  if (!inp || !icon) return;
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'ic-eye-slash field-icon-right';
+  } else {
+    inp.type = 'password';
+    icon.className = 'ic-eye field-icon-right';
+  }
 }
 
 /* ============================================================
@@ -4726,25 +4876,100 @@ function toggleRemember() {
  * ============================================================ */
 function handleLogin(e) {
   const btn = document.getElementById('btnLogin');
+  if (!btn) return;
   if (e) addRipple(btn, e);
-  const nik = document.getElementById('loginNik').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  if (!nik || !password) { showToast('error', 'NIK dan Password wajib diisi.'); shakeEl(btn.closest('.glass-card')); return; }
+
+  const nikEl = document.getElementById('loginNik');
+  const passwordEl = document.getElementById('loginPassword');
+  const nik = nikEl ? nikEl.value.trim() : '';
+  const password = passwordEl ? passwordEl.value.trim() : '';
+
+  /* Frontend validation — exact wording requested. */
+  if (!nik || !password) {
+    showToast('error', 'NIK atau password yang anda input kosong, silahkan lengkapi');
+    shakeEl(
+      btn.closest('.login-form-card') ||
+      document.getElementById('screen-login')
+    );
+    return;
+  }
 
   setLoading('btnLogin', 'loginSpinner', 'loginBtnText', 'Memproses...');
+
   apiPost({ action:'login', nik, password })
     .then(res => {
       resetLoading('btnLogin', 'loginSpinner', 'loginBtnText', 'Login');
-      if (res.success) {
+
+      if (res && res.success) {
         setSession(res);
-        const remember = document.getElementById('rememberMeBox').checked;
-        if (remember) localStorage.setItem('ront_nik', res.nik); else localStorage.removeItem('ront_nik');
+
+        const rememberBox = document.getElementById('rememberMeBox');
+        const remember = !!(rememberBox && rememberBox.checked);
+
+        if (remember) {
+          localStorage.setItem('ront_nik', res.nik);
+        } else {
+          localStorage.removeItem('ront_nik');
+        }
+
         applySessionToUI(res);
         showToast('success', 'Login berhasil.');
         goTo('menu');
-      } else { showToast('error', res.message); shakeEl(btn.closest('.glass-card')); }
+        return;
+      }
+
+      /* Backend V42.3 returns stable error codes.
+         Keep a frontend fallback so the UX remains correct even if
+         an older backend response only contains a message. */
+      let message = (res && res.message) || 'Login gagal. Silakan coba lagi.';
+
+      if (res && res.code === 'EMPTY_LOGIN_FIELDS') {
+        message = 'NIK atau password yang anda input kosong, silahkan lengkapi';
+      } else if (res && res.code === 'NIK_NOT_REGISTERED') {
+        message = 'NIK Anda tidak terdaftar! Pastikan NIK yang anda input benar';
+      } else if (res && res.code === 'INVALID_PASSWORD') {
+        message = 'Password Salah! Pastikan Password yang anda input benar';
+      } else if (res && res.code === 'TELEGRAM_NOT_REGISTERED') {
+        message = 'Telegram ID Anda belum terdaftar. Silakan daftar terlebih dahulu melalui Bot Telegram.';
+      }
+
+      showToast('error', message);
+
+      shakeEl(
+        btn.closest('.login-form-card') ||
+        document.getElementById('screen-login')
+      );
+
+      /* If Telegram is not linked, offer the technician a direct
+         route to the registration bot without changing the layout. */
+      if (
+        res &&
+        res.code === 'TELEGRAM_NOT_REGISTERED' &&
+        res.registerUrl
+      ) {
+        setTimeout(() => {
+          const goRegister = window.confirm(
+            'Telegram ID Anda belum terdaftar.\n\n' +
+            'Daftar terlebih dahulu melalui Bot Telegram?'
+          );
+          if (goRegister) {
+            window.open(res.registerUrl, '_blank', 'noopener,noreferrer');
+          }
+        }, 250);
+      }
     })
-    .catch(err => { resetLoading('btnLogin', 'loginSpinner', 'loginBtnText', 'Login'); showToast('error', 'Error: ' + err.message); });
+    .catch(err => {
+      resetLoading('btnLogin', 'loginSpinner', 'loginBtnText', 'Login');
+      showToast(
+        'error',
+        'Tidak dapat terhubung ke server. Silakan coba lagi.'
+      );
+      shakeEl(
+        btn.closest('.login-form-card') ||
+        document.getElementById('screen-login')
+      );
+      console.error('handleLogin error:', err);
+    });
 }
 
 /* ============================================================
