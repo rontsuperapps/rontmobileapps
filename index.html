@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('ront_theme');
+      if (saved === 'dark' || saved === 'light') {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    } catch (e) {}
+  })();
+</script>
+
 <link rel="icon" type="image/png" href="/icons/icon-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -103,6 +114,12 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
   --shadow-strong: rgba(17,24,39,0.10);
   --toast-bg: #12151B;
   --toast-text: #ffffff;
+  --toast-error-text: #FCA5A5;
+  --toast-success-text: #86EFAC;
+  --toast-warning-text: #FCD34D;
+  --toast-info-text: #93C5FD;
+  --toast-border: rgba(255,255,255,0.10);
+  --toast-icon-bg: rgba(255,255,255,0.08);
   --skeleton-base: #ECEDF0;
   --skeleton-shine: #F6F7F8;
   --header-grad: linear-gradient(135deg, #2E6BFF 0%, #1554E0 55%, #0C3FC7 100%);
@@ -139,6 +156,12 @@ input[type="password"]::-ms-reveal, input[type="password"]::-ms-clear { display:
   --shadow-strong: rgba(0,0,0,0.45);
   --toast-bg: #F5F6F8;
   --toast-text: #12151B;
+  --toast-error-text: #B91C1C;
+  --toast-success-text: #15803D;
+  --toast-warning-text: #A16207;
+  --toast-info-text: #1D4ED8;
+  --toast-border: rgba(17,24,39,0.10);
+  --toast-icon-bg: rgba(17,24,39,0.06);
   --skeleton-base: #202023;
   --skeleton-shine: #2A2A2E;
   --header-grad: linear-gradient(135deg, #1D4ED8 0%, #16309B 55%, #0A1B63 100%);
@@ -3768,6 +3791,158 @@ button i[class*="ic-"][style], .btn i[class*="ic-"][style],
 }
 </style>
 
+
+<style id="v42-7-notification-theme-safe">
+/* =========================================================
+   V42.7 — THEMED NOTIFICATION SYSTEM
+   - Toast and in-app Telegram modal follow data-theme.
+   - No hard-coded semantic colors that become unreadable
+     when switching Light/Dark mode.
+   - Defensive sizing for compact mobile PWA layout.
+========================================================= */
+
+/* Toast */
+#toastWrap{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:calc(78px + env(safe-area-inset-bottom)) !important;
+  transform:translateX(-50%) !important;
+  width:min(420px, calc(100vw - 28px)) !important;
+  max-width:420px !important;
+  min-width:0 !important;
+  z-index:100000 !important;
+  pointer-events:none !important;
+  padding:0 !important;
+}
+
+#toast{
+  display:flex !important;
+  align-items:center !important;
+  gap:9px !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  padding:11px 14px !important;
+  border:1px solid var(--toast-border) !important;
+  border-radius:14px !important;
+  background:var(--toast-bg) !important;
+  color:var(--toast-text) !important;
+  box-shadow:0 12px 30px var(--shadow-strong) !important;
+  backdrop-filter:blur(12px) !important;
+  -webkit-backdrop-filter:blur(12px) !important;
+  overflow:hidden !important;
+}
+
+#toastIcon{
+  flex:0 0 20px !important;
+  width:20px !important;
+  height:20px !important;
+  min-width:20px !important;
+  min-height:20px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  margin:0 !important;
+  border-radius:999px !important;
+  background:var(--toast-icon-bg) !important;
+  color:currentColor !important;
+  font-size:14px !important;
+  transform:none !important;
+}
+
+#toastMsg{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  color:currentColor !important;
+  font-size:13px !important;
+  line-height:1.35 !important;
+  font-weight:700 !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+
+#toast.toast-box.error{
+  color:var(--toast-error-text) !important;
+}
+#toast.toast-box.success{
+  color:var(--toast-success-text) !important;
+}
+#toast.toast-box.warning{
+  color:var(--toast-warning-text) !important;
+}
+#toast.toast-box.info{
+  color:var(--toast-info-text) !important;
+}
+
+/* Telegram registration modal */
+#telegramRegisterOverlay{
+  background:rgba(15,23,42,.48) !important;
+}
+:root[data-theme="dark"] #telegramRegisterOverlay{
+  background:rgba(0,0,0,.68) !important;
+}
+
+#telegramRegisterDialog{
+  background:var(--glass-bg) !important;
+  color:var(--text-white) !important;
+  border-color:var(--glass-border) !important;
+  box-shadow:0 22px 55px var(--shadow-strong) !important;
+}
+
+#telegramRegisterIcon{
+  background:var(--accent-soft) !important;
+  color:var(--accent) !important;
+}
+
+#telegramRegisterText{
+  color:var(--text-muted) !important;
+}
+
+#telegramRegisterCancel{
+  background:transparent !important;
+  color:var(--accent) !important;
+  border-color:var(--glass-border) !important;
+}
+
+/* Keep notifications compact on small phones. */
+@media (max-width:480px){
+  #toastWrap{
+    width:calc(100vw - 24px) !important;
+    max-width:420px !important;
+    bottom:calc(74px + env(safe-area-inset-bottom)) !important;
+  }
+  #toast{
+    padding:10px 12px !important;
+    border-radius:13px !important;
+  }
+  #toastMsg{
+    font-size:12.5px !important;
+  }
+}
+
+@media (max-width:360px){
+  #toastWrap{
+    width:calc(100vw - 20px) !important;
+  }
+  #toast{
+    gap:8px !important;
+    padding:9px 11px !important;
+  }
+  #toastIcon{
+    flex-basis:19px !important;
+    width:19px !important;
+    height:19px !important;
+    min-width:19px !important;
+    min-height:19px !important;
+  }
+  #toastMsg{
+    font-size:12px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -5408,11 +5583,29 @@ function showToast(type, msg) {
   const box = document.getElementById('toast');
   const icon = document.getElementById('toastIcon');
   const txt = document.getElementById('toastMsg');
-  box.className = 'toast-box ' + type + ' show';
-  icon.className = type === 'error' ? 'ic-xmark' : 'ic-check';
-  txt.textContent = msg;
+
+  /* Defensive: a missing notification element must never crash the app. */
+  if (!box || !icon || !txt) return;
+
+  const safeType = ['error','success','warning','info'].includes(type) ? type : 'info';
+  box.className = 'toast-box ' + safeType + ' show';
+
+  if (safeType === 'error') {
+    icon.className = 'ic-xmark';
+  } else if (safeType === 'warning') {
+    icon.className = 'ic-warning';
+  } else if (safeType === 'info') {
+    icon.className = 'ic-info';
+  } else {
+    icon.className = 'ic-check';
+  }
+
+  txt.textContent = String(msg ?? '');
+
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { box.classList.remove('show'); }, 2800);
+  toastTimer = setTimeout(() => {
+    if (box) box.classList.remove('show');
+  }, 2800);
 }
 
 /* ============================================================
